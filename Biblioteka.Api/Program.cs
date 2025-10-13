@@ -1,5 +1,6 @@
 using Biblioteka.Api.Data;
 using Microsoft.EntityFrameworkCore;
+using Biblioteka.Api.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -25,6 +26,8 @@ builder.Services.AddCors(options =>
 
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
+
+builder.Services.AddScoped(typeof(IBaseService<>), typeof(BaseService<>));
 
 var app = builder.Build();
 

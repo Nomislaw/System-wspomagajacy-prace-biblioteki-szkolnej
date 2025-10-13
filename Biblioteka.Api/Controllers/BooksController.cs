@@ -1,34 +1,12 @@
-﻿using Biblioteka.Api.Data;
-using Biblioteka.Api.Models;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
+﻿using Biblioteka.Api.Models;
+using Biblioteka.Api.Services;
 
 namespace Biblioteka.Api.Controllers
 {
-    [ApiController]
-    [Route("api/[controller]")]
-    public class BooksController : ControllerBase
+    public class BooksController : BaseController<Book>
     {
-        private readonly AppDbContext _context;
+        public BooksController(IBaseService<Book> service) : base(service) { }
 
-        public BooksController(AppDbContext context)
-        {
-            _context = context;
-        }
-
-        [HttpGet]
-        public async Task<IActionResult> GetBooks()
-        {
-            var books = await _context.Books.ToListAsync();
-            return Ok(books);
-        }
-
-        [HttpPost]
-        public async Task<IActionResult> AddBook(Book book)
-        {
-            _context.Books.Add(book);
-            await _context.SaveChangesAsync();
-            return CreatedAtAction(nameof(GetBooks), new { id = book.Id }, book);
-        }
+   
     }
 }

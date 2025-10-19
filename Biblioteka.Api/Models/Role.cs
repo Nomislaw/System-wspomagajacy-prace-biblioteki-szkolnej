@@ -3,7 +3,6 @@
 public enum Role
 {
     User,
-    Teacher,
     Librarian,
     Administrator
 }

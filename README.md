@@ -1,1 +1,1 @@
-# System-wspomagaj-cy-prac-biblioteki-szkolnej
+# System-wspomagajacy-prace-biblioteki-szkolnej

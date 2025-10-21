@@ -4,7 +4,7 @@ import Register from "./components/Register";
 import BookList from "./components/BookList";
 import Users from "./components/Users";
 import Loans from "./components/Loans";
-import { User } from "./types/User";
+import { User } from "./types/Index";
 
 const App: React.FC = () => {
   const [user, setUser] = useState<User | null>(() => {
@@ -28,7 +28,7 @@ const App: React.FC = () => {
     return showLogin ? (
       <Login onLogin={handleLogin} goToRegister={() => setShowLogin(false)} />
     ) : (
-      <Register onRegister={handleLogin} goToLogin={() => setShowLogin(true)} />
+      <Register onRegister={() => setShowLogin(true)} goToLogin={() => setShowLogin(true)} />
     );
   }
 

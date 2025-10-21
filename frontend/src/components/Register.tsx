@@ -1,10 +1,10 @@
 import React, { useState } from "react";
-import { User } from "../types/User";
+import { User } from "../types/Index";
 import { register as registerAPI } from "../api/AuthService";
 import "./Login.css";
 
 interface RegisterProps {
-  onRegister: (user: User) => void;
+  onRegister: () => void;
   goToLogin: () => void;
 }
 
@@ -31,7 +31,7 @@ const Register: React.FC<RegisterProps> = ({ onRegister, goToLogin }) => {
 
 try {
   const user = await registerAPI({ password, firstName, lastName, email });
-  onRegister(user);
+  onRegister();
 } catch (err: any) {
   let errorMessage = "Hasło musi zawierać co najmniej 8 znaków, 3 cyfry, 1 znak specjalny i 1 wielką literę.";
 
@@ -97,7 +97,7 @@ try {
         </form>
         {error && <p className="error">{error}</p>}
 
-        {/* 🔹 Link do logowania */}
+        
         <p>
           Masz już konto?{" "}
           <span

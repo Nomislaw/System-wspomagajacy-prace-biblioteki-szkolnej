@@ -1,5 +1,5 @@
 import { fetchAPI } from "./api";
-import { User } from "../types/User";
+import { User } from "../types/Index";
 
 export const login = async (email: string, password: string): Promise<User> => {
   return fetchAPI("/auth/login", {

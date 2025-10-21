@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { User } from "../types/User";
+import { User } from "../types/Index";
 import { login as loginAPI } from "../api/AuthService";
 import "./Login.css";
 

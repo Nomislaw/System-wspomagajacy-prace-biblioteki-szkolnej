@@ -55,56 +55,20 @@ try {
       <div className="login-card">
         <h2>Rejestracja</h2>
         <form onSubmit={handleSubmit}>
-          <input
-            type="text"
-            placeholder="Imię"
-            value={firstName}
-            onChange={(e) => setFirstName(e.target.value)}
-            required
-          />
-          <input
-            type="text"
-            placeholder="Nazwisko"
-            value={lastName}
-            onChange={(e) => setLastName(e.target.value)}
-            required
-          />
-          <input
-            type="email"
-            placeholder="Email"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            required
-          />
-          <input
-            type="password"
-            placeholder="Hasło"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            required
-          />
-          <input
-            type="password"
-            placeholder="Powtórz hasło"
-            value={confirmPassword}
-            onChange={(e) => setConfirmPassword(e.target.value)}
-            required
-          />
+            <input type="text" placeholder="Imię" value={firstName} onChange={(e) => setFirstName(e.target.value)} required />
+            <input type="text" placeholder="Nazwisko" value={lastName} onChange={(e) => setLastName(e.target.value)} required />
+            <input type="email" placeholder="Email" value={email} onChange={(e) => setEmail(e.target.value)} required />
+            <input type="password" placeholder="Hasło" value={password} onChange={(e) => setPassword(e.target.value)} required />
+            <input type="password" placeholder="Powtórz hasło" value={confirmPassword} onChange={(e) => setConfirmPassword(e.target.value)} required />
           <button type="submit" disabled={loading}>
             {loading ? "Rejestrowanie..." : "Zarejestruj"}
           </button>
         </form>
         {error && <p className="error">{error}</p>}
 
-        
         <p>
           Masz już konto?{" "}
-          <span
-            className="link"
-            onClick={goToLogin}
-            style={{ cursor: "pointer", color: "blue" }}>
-            Zaloguj się
-          </span>
+          <span className="link" onClick={goToLogin} style={{ cursor: "pointer", color: "blue" }}>Zaloguj się</span>
         </p>
       </div>
     </div>

@@ -28,20 +28,8 @@ const Login: React.FC<LoginProps> = ({ onLogin, goToRegister }) => {
       <div className="login-card">
         <h2>Logowanie do Biblioteki</h2>
         <form onSubmit={handleSubmit}>
-          <input
-            type="email"
-            placeholder="E-mail"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            required
-          />
-          <input
-            type="password"
-            placeholder="Hasło"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            required
-          />
+            <input type="email" placeholder="E-mail" value={email} onChange={(e) => setEmail(e.target.value)} required />
+            <input type="password" placeholder="Hasło" value={password} onChange={(e) => setPassword(e.target.value)} required />
           <button type="submit">Zaloguj</button>
         </form>
 
@@ -49,12 +37,7 @@ const Login: React.FC<LoginProps> = ({ onLogin, goToRegister }) => {
 
         <p>
           Nie masz konta?{" "}
-          <span
-            className="link"
-            onClick={goToRegister}
-            style={{ cursor: "pointer", color: "blue" }}>
-            Zarejestruj się
-          </span>
+          <span className="link" onClick={goToRegister} style={{ cursor: "pointer", color: "blue" }}>Zarejestruj się</span>
         </p>
       </div>
     </div>

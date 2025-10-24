@@ -1,7 +1,7 @@
 import React, { useState } from "react";
-import { User } from "../types/Index";
-import { login as loginAPI } from "../api/AuthService";
-import "./Login.css";
+import { User } from "../../types/Index";
+import { login as loginAPI } from "../../api/AuthService";
+import "./index.css";
 
 interface LoginProps {
   onLogin: (user: User) => void;
@@ -26,7 +26,7 @@ const Login: React.FC<LoginProps> = ({ onLogin, goToRegister }) => {
   return (
     <div className="login-container">
       <div className="login-card">
-        <h2>📚 Logowanie do Biblioteki</h2>
+        <h2>Logowanie do Biblioteki</h2>
         <form onSubmit={handleSubmit}>
           <input
             type="email"
@@ -52,8 +52,7 @@ const Login: React.FC<LoginProps> = ({ onLogin, goToRegister }) => {
           <span
             className="link"
             onClick={goToRegister}
-            style={{ cursor: "pointer", color: "blue" }}
-          >
+            style={{ cursor: "pointer", color: "blue" }}>
             Zarejestruj się
           </span>
         </p>

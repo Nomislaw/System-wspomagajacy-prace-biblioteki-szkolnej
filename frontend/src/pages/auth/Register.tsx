@@ -1,7 +1,6 @@
 import React, { useState } from "react";
-import { User } from "../types/Index";
-import { register as registerAPI } from "../api/AuthService";
-import "./Login.css";
+import { register as registerAPI } from "../../api/AuthService";
+import "./index.css";
 
 interface RegisterProps {
   onRegister: () => void;
@@ -33,7 +32,7 @@ try {
   const user = await registerAPI({ password, firstName, lastName, email });
   onRegister();
 } catch (err: any) {
-  let errorMessage = "Hasło musi zawierać co najmniej 8 znaków, 3 cyfry, 1 znak specjalny i 1 wielką literę.";
+  let errorMessage = "Hasło musi zawierać co najmniej 8 znaków w tym 3 cyfry, 1 znak specjalny i 1 wielką literę.";
 
 
   if (err?.response) {
@@ -54,7 +53,7 @@ try {
   return (
     <div className="login-container">
       <div className="login-card">
-        <h2>📝 Rejestracja</h2>
+        <h2>Rejestracja</h2>
         <form onSubmit={handleSubmit}>
           <input
             type="text"
@@ -103,8 +102,7 @@ try {
           <span
             className="link"
             onClick={goToLogin}
-            style={{ cursor: "pointer", color: "blue" }}
-          >
+            style={{ cursor: "pointer", color: "blue" }}>
             Zaloguj się
           </span>
         </p>

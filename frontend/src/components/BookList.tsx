@@ -1,10 +1,12 @@
-import React, { useEffect, useState } from "react";
-import { Book } from "../types/Index";
+import React from "react";
 
-interface BookListProps { userRole: "User" | "Librarian" | "Administrator"; }
-
-const BookList: React.FC<BookListProps> = ({ userRole }) => {
-  return <div>Lista książek (rola: {userRole})</div>;
+const BookList: React.FC = () => {
+  return (
+    <div>
+      <h2 className="text-xl font-semibold mb-4">Katalog książek</h2>
+      <p>Tu będą wyświetlane książki z bazy danych.</p>
+    </div>
+  );
 };
 
 export default BookList;

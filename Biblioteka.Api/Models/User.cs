@@ -1,4 +1,6 @@
-﻿namespace Biblioteka.Api.Models;
+﻿using System.Text.Json.Serialization;
+
+namespace Biblioteka.Api.Models;
 
 public class User
 {
@@ -7,6 +9,7 @@ public class User
     public string Password { get; set; } = string.Empty;
     public string FirstName { get; set; } = string.Empty;
     public string LastName { get; set; } = string.Empty;
+    [JsonConverter(typeof(JsonStringEnumConverter))]
     public Role Role { get; set; }
 
     public virtual ICollection<Borrow>? Borrows { get; set; }

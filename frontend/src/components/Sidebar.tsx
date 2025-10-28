@@ -1,13 +1,17 @@
 import React from "react";
 import { User } from "../types/Index";
-import { NavLink } from "react-router-dom";
+import { NavLink, useLocation } from "react-router-dom";
 
 interface SidebarProps {
   user: User;
-  section: string;
 }
 
-const Sidebar: React.FC<SidebarProps> = ({ user, section }) => {
+const Sidebar: React.FC<SidebarProps> = ({ user }) => {
+  const location = useLocation();
+
+  const section = location.pathname.split("/")[1] || "books";
+
+
   const renderLinks = () => {
     switch (section) {
       case "books":
@@ -33,13 +37,13 @@ const Sidebar: React.FC<SidebarProps> = ({ user, section }) => {
             <NavLink to="/settings/profile" className={({ isActive }) => `sidebar-item ${isActive ? "active" : ""}`}>Edytuj profil</NavLink>
             <NavLink to="/settings/password" className={({ isActive }) => `sidebar-item ${isActive ? "active" : ""}`}>Zmień hasło</NavLink>
             {user.role === "Administrator" && (
-              <NavLink to="/settings/users" className={({ isActive }) => `sidebar-item ${isActive ? "active" : ""}`}>Użytkownicy</NavLink>
+              <NavLink to="/settings/users" className={({ isActive }) => `sidebar-item ${isActive ? "active" : ""}`}>Panel administratora</NavLink>
             )}
           </>
         );
 
       default:
-        return <p>Panel użytkownika</p>;
+        return <p>Brak strony</p>;
     }
   };
 

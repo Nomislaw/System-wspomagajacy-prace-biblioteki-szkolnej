@@ -1,5 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using Biblioteka.Api.Data;
+using Biblioteka.Api.DTOs;
 using Biblioteka.Api.Models;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -24,11 +25,11 @@ public class AuthController : ControllerBase
     {
         var user = await _context.Users.FirstOrDefaultAsync(u => u.Email == request.Email);
         if (user == null)
-            return Unauthorized("Niepoprawny e-mail lub hasło");
+            return Unauthorized(new ErrorResponse { Errors = new List<string> { "Niepoprawny adres e-mail" } });
 
         var result = _passwordHasher.VerifyHashedPassword(user, user.Password, request.Password);
         if (result == PasswordVerificationResult.Failed)
-            return Unauthorized("Niepoprawny e-mail lub hasło");
+            return Unauthorized(new ErrorResponse { Errors = new List<string> { "Niepoprawne hasło" } });
 
         return Ok(new
         {
@@ -44,10 +45,10 @@ public class AuthController : ControllerBase
     public async Task<IActionResult> Register([FromBody] RegisterRequest req)
     {
         if (!ModelState.IsValid)
-            return BadRequest(ModelState);
+            return ValidationProblem(ModelState);
 
         if (await _context.Users.AnyAsync(u => u.Email == req.Email))
-            return BadRequest("Ten adres e-mail jest już zarejestrowany");
+            return BadRequest(new ErrorResponse { Errors = new List<string> { "Adres e-mail jest już zarejestrowany" } });
 
         var user = new User
         {
@@ -66,31 +67,6 @@ public class AuthController : ControllerBase
     }
 }
 
-public class LoginRequest
-{
-    [Required]
-    [EmailAddress(ErrorMessage = "Niepoprawny adres e-mail.")]
-    public string Email { get; set; } = string.Empty;
 
-    [Required]
-    public string Password { get; set; } = string.Empty;
-}
 
-public class RegisterRequest
-{
-    [Required]
-    [MinLength(8, ErrorMessage = "Hasło musi mieć co najmniej 8 znaków.")]
-    [RegularExpression(@"^(?=(?:.*\d){3,})(?=.*[!@#$%^&*(),.?""{}|<>])(?=.*[A-Z]).*$",
-        ErrorMessage = "Hasło musi zawierać co najmniej 3 cyfry, 1 znak specjalny i 1 wielką literę.")]
-    public string Password { get; set; } = "";
 
-    [Required]
-    public string FirstName { get; set; } = "";
-
-    [Required]
-    public string LastName { get; set; } = "";
-
-    [Required]
-    [EmailAddress(ErrorMessage = "Niepoprawny adres e-mail.")]
-    public string Email { get; set; } = "";
-}

@@ -14,18 +14,21 @@ interface DashboardProps {
 }
 
 const Dashboard: React.FC<DashboardProps> = ({ onLogout, user }) => {
-  const [activeSection, setActiveSection] = useState("books");
 
   return (
     <div className={"dashboard"}>
-      <Sidebar user={user} section={activeSection}/>
+      <Sidebar user={user}/>
 
       <div className="main-content">
-        <Navbar user={user} onLogout={onLogout} setActiveSection={setActiveSection}/>
+        <Navbar user={user} onLogout={onLogout}/>
 
         <main className="content">
           <Routes>
             <Route path="/" element={<Navigate to="books" />} />
+            <Route path="/settings/" element={<Navigate to="profile" />} />
+            <Route path="/loans/" element={<Navigate to="active" />} />
+            <Route path="/books/" element={<Navigate to="list" />} />
+
                 <Route path="settings">
                     <Route path="password" element={<Password />} />
                     <Route path="users" element={<Users />} />

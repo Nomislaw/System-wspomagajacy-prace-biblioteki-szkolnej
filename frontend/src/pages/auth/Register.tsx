@@ -32,19 +32,8 @@ try {
   const user = await registerAPI({ password, firstName, lastName, email });
   onRegister();
 } catch (err: any) {
-  let errorMessage = "Hasło musi zawierać co najmniej 8 znaków w tym 3 cyfry, 1 znak specjalny i 1 wielką literę.";
-
-
-  if (err?.response) {
-    const data = await err.response.json();
-    if (data.errors?.Password) {
-      errorMessage = data.errors.Password.join(" ");
-    } else if (data.title) {
-      errorMessage = data.title;
-    }
-  }
-
-  setError(errorMessage);
+  
+  setError(err.message || "Błąd serwera.");
 } finally {
   setLoading(false);
 }

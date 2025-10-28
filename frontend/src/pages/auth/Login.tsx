@@ -19,7 +19,7 @@ const Login: React.FC<LoginProps> = ({ onLogin, goToRegister }) => {
       const user = await loginAPI(email, password);
       onLogin(user);
     } catch (err: any) {
-      setError("Niepoprawny e-mail lub hasło");
+      setError(err.message || "Błąd serwera.");
     }
   };
 

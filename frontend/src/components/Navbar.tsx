@@ -1,32 +1,26 @@
 import React, { useState } from "react";
 import { User } from "../types/Index";
+import { NavLink } from "react-router-dom";
 
 interface NavbarProps {
   user: User;
   onLogout: () => void;
-  setActiveSection: (section: string) => void;
 }
 
-const Navbar: React.FC<NavbarProps> = ({ user, onLogout, setActiveSection }) => {
-  const [activeButton, setActiveButton] = useState("books"); 
-
-  const handleClick = (section: string) => {
-    setActiveButton(section);
-    setActiveSection(section);
-  };
+const Navbar: React.FC<NavbarProps> = ({ user, onLogout}) => {
 
   return (
     <>
       <div className="navbar-top">
-        <h2>Witaj, {user.firstName} {user.lastName}</h2>
+        <h2>Witaj, {user.firstName} {user.lastName} ({user.role})</h2>
         <button className="logout-btn" onClick={onLogout}>Wyloguj</button>
       </div>
 
       <div className="navbar-bar">
         <div className="navbar-buttons">
-          <button className={`navbar-button ${activeButton === "books" ? "active" : ""}`} onClick={() => handleClick("books")}>Książki</button>
-          <button className={`navbar-button ${activeButton === "loans" ? "active" : ""}`} onClick={() => handleClick("loans")}>Wypożyczenia</button>
-          <button className={`navbar-button ${activeButton === "settings" ? "active" : ""}`} onClick={() => handleClick("settings")}>Ustawienia</button>
+          <NavLink to="/books" className={({ isActive }) => `navbar-button ${isActive ? "active" : ""}`} >Książki</NavLink>
+          <NavLink to="/loans" className={({ isActive }) => `navbar-button ${isActive ? "active" : ""}`} >Wypożyczenia</NavLink>
+          <NavLink to="/settings" className={({ isActive }) => `navbar-button ${isActive ? "active" : ""}`} >Ustawienia</NavLink>
         </div>
       </div>
     </>

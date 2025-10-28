@@ -1,6 +1,9 @@
+using System.Text.Json.Serialization;
 using Biblioteka.Api.Data;
+using Biblioteka.Api.DTOs;
 using Microsoft.EntityFrameworkCore;
 using Biblioteka.Api.Services;
+using Microsoft.AspNetCore.Mvc;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -24,10 +27,31 @@ builder.Services.AddCors(options =>
         });
 });
 
+builder.Services.Configure<ApiBehaviorOptions>(options =>
+{
+    options.InvalidModelStateResponseFactory = context =>
+    {
+        var errors = context.ModelState
+            .Where(x => x.Value.Errors.Count > 0)
+            .SelectMany(x => x.Value.Errors)
+            .Select(e => e.ErrorMessage)
+            .ToList();
+
+        var response = new ErrorResponse { Errors = errors };
+        return new BadRequestObjectResult(response);
+    };
+});
+builder.Services.AddControllers()
+    .AddJsonOptions(options =>
+    {
+        options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
+    });
+
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
 builder.Services.AddScoped(typeof(IBaseService<>), typeof(BaseService<>));
+builder.Services.AddScoped<IUserService, UserService>();
 
 var app = builder.Build();
 

@@ -9,9 +9,22 @@ export const fetchAPI = async (endpoint: string, options: RequestInit = {}) => {
     },
   });
 
-  if (!res.ok) {
-    const errorText = await res.text(); 
-    throw new Error(errorText || "Błąd API");
+   if (!res.ok) {
+    let errorData;
+
+    try {
+      errorData = await res.json();
+    } catch {
+      throw new Error("Nie udało się odczytać błędu z serwera");
+    }
+
+    console.log("Błąd API:", errorData);
+
+    const errorMessage = Array.isArray(errorData.errors)
+      ? errorData.errors.join("\n")
+      : errorData.errors || "Nieznany błąd API";
+    console.log(errorMessage);
+    throw new Error(errorMessage);
   }
 
   return res.json();

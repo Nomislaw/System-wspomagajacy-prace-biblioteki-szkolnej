@@ -90,3 +90,14 @@ export interface Report {
   createdAt: string;
   content: string;
 }
+
+export interface UpdateUserDto {
+  firstName: string;
+  lastName: string;
+  email: string;
+}
+
+export interface ChangePasswordDto{
+  oldPassword: string;
+  newPassword: string;
+}

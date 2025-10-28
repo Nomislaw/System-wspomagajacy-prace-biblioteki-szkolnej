@@ -2,10 +2,15 @@ import { fetchAPI } from "./api";
 import { User } from "../types/Index";
 
 export const login = async (email: string, password: string): Promise<User> => {
-  return fetchAPI("/auth/login", {
-    method: "POST",
-    body: JSON.stringify({ email, password }),
-  });
+  try {
+    const user = await fetchAPI("/auth/login", {
+      method: "POST",
+      body: JSON.stringify({ email, password }),
+    });
+    return user;
+  } catch (err: any) {
+    throw new Error(err.message || "Błąd logowania");
+  }
 };
 
 export const register = async (req: {
@@ -14,8 +19,13 @@ export const register = async (req: {
   lastName: string;
   email: string;
 }): Promise<User> => {
-  return fetchAPI("/auth/register", {
-    method: "POST",
-    body: JSON.stringify(req),
-  });
+  try {
+    const user = await fetchAPI("/auth/register", {
+      method: "POST",
+      body: JSON.stringify(req),
+    });
+    return user;
+  } catch (err: any) {
+    throw new Error(err.message || "Błąd rejestracji");
+  }
 };

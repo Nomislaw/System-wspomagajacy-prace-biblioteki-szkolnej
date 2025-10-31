@@ -114,6 +114,46 @@ public class AuthController : ControllerBase
         return Ok(new { message = "Twój adres e-mail został zweryfikowany. Możesz się teraz zalogować." });
     }
 
+    [HttpPost("request-password-reset")]
+    public async Task<IActionResult> RequestPasswordReset([FromBody] EmailRequest request)
+    {
+        var user = await _context.Users.FirstOrDefaultAsync(u => u.Email == request.Email);
+        
+        if (user == null)
+            return Ok(new { message = "Jeżeli użytkownik istnieje, wysłaliśmy link do resetu hasła." });
+        
+        var token = Guid.NewGuid().ToString();
+        user.PasswordResetToken = token;
+        user.PasswordResetTokenExpiry = DateTime.UtcNow.AddMinutes(30);
+
+        await _context.SaveChangesAsync();
+        
+        var resetLink = $"http://localhost:3000/reset?token={token}";
+        var body = $"Kliknij w link, aby zresetować hasło: <a href='{resetLink}'>Resetuj hasło</a>";
+        
+        await _emailService.SendEmailAsync(user.Email, "Reset hasła", body);
+
+        return Ok(new { message = "Jeżeli użytkownik istnieje, wysłaliśmy link do resetu hasła." });
+    }
+    
+    [HttpPost("reset-password")]
+    public async Task<IActionResult> ResetPassword([FromBody] ResetPasswordDto request)
+    {
+        var user = await _context.Users
+            .FirstOrDefaultAsync(u => u.PasswordResetToken == request.Token);
+
+        if (user == null || user.PasswordResetTokenExpiry < DateTime.UtcNow)
+            return BadRequest(new { message = "Token jest nieprawidłowy lub wygasł." });
+        
+        user.Password = _passwordHasher.HashPassword(user, request.NewPassword);
+        
+        user.PasswordResetToken = null;
+        user.PasswordResetTokenExpiry = null;
+
+        await _context.SaveChangesAsync();
+
+        return Ok(new { message = "Hasło zostało zresetowane." });
+    }
 
     private string GenerateJwtToken(User user)
     {

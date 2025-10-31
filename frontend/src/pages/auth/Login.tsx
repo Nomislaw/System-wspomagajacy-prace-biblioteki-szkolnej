@@ -41,6 +41,10 @@ const Login: React.FC<LoginProps> = ({ onLogin }) => {
           Nie masz konta?{" "}
           <span className="link" onClick={() => navigate("/register")} style={{ cursor: "pointer", color: "blue" }}>Zarejestruj się</span>
         </p>
+        <p>
+          Nie pamiętasz hasła?{" "}
+          <span className="link" onClick={() => navigate("/request")} style={{ cursor: "pointer", color: "red" }}>Zresetuj hasło</span>
+        </p>
       </div>
     </div>
   );

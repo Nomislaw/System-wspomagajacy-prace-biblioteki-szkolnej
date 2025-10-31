@@ -10,6 +10,7 @@ const Users: React.FC = () => {
     });
   const [users, setUsers] = useState<User[]>([]);
   const [newUser, setNewUser] = useState<Partial<User>>({});
+  const [view, setView] = useState<"list" | "add">("list");
 
   const fetchUsers = async () => {
     try {
@@ -69,9 +70,15 @@ const Users: React.FC = () => {
   };
 
   return (
-    <div className={styles.container}>
-      <h2 className={styles.title}>Panel administratora</h2>
+  <div className={styles.container}>
+    <h2 className={styles.title}>Panel administratora</h2>
 
+    <div className={styles.viewButtons}>
+      <button onClick={() => setView("list")} disabled={view === "list"}>Lista użytkowników</button>
+      <button onClick={() => setView("add")} disabled={view === "add"}>Dodaj użytkownika</button>
+    </div>
+
+    {view === "add" && (
       <div className={styles.addUserSection}>
         <h3>Dodaj nowego użytkownika</h3>      
         <input
@@ -100,7 +107,9 @@ const Users: React.FC = () => {
         />
         <button onClick={handleAddUser}>Dodaj</button>
       </div>
+    )}
 
+    {view === "list" && (
       <table className={styles.table}>
         <thead>
           <tr>
@@ -132,14 +141,23 @@ const Users: React.FC = () => {
                 </select>
               </td>
               <td>
-                <button className={styles.deleteButton}onClick={() => handleDeleteUser(user.id)} disabled={user.role === "Administrator"} style={{ cursor: user.role === "Administrator" ? "not-allowed" : "pointer" }}>Usuń</button>
+                <button
+                  className={styles.deleteButton}
+                  onClick={() => handleDeleteUser(user.id)}
+                  disabled={user.role === "Administrator"}
+                  style={{ cursor: user.role === "Administrator" ? "not-allowed" : "pointer" }}
+                >
+                  Usuń
+                </button>
               </td>
             </tr>
           ))}
         </tbody>
       </table>
-    </div>
-  );
+    )}
+  </div>
+);
+
 };
 
 export default Users;

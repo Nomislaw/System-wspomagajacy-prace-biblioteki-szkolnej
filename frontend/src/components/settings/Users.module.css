@@ -86,3 +86,29 @@
 .deleteButton:hover {
   background-color: #a71d2a;
 }
+
+.viewButtons {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+  margin-bottom: 20px;
+}
+
+.viewButtons button {
+  padding: 10px 20px;
+  border: none;
+  border-radius: 5px;
+  background-color: #6c757d;
+  color: white;
+  font-size: 16px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+.viewButtons button:hover:not(:disabled) {
+  background-color: #6c757d;
+}
+
+.viewButtons button:disabled {
+  background-color: #007BFF;
+}

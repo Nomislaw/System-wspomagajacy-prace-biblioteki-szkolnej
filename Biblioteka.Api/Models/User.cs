@@ -13,7 +13,9 @@ public class User
     public Role Role { get; set; }
     
     public bool EmailConfirmed { get; set; } = false;
-    public string? VerificationToken { get; set; }
+    public string? VerificationToken { get; set; } 
+    public string? PasswordResetToken { get; set; } 
+    public DateTime? PasswordResetTokenExpiry { get; set; }
 
     public virtual ICollection<Borrow>? Borrows { get; set; }
     public virtual ICollection<Reservation>? Reservations { get; set; }

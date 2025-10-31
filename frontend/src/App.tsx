@@ -6,6 +6,8 @@ import Dashboard from "./pages/dashboard/Dashboard";
 import VerifyEmail from "./pages/auth/VerifyEmail";
 import { User } from "./types/Index";
 import { useNavigate } from "react-router-dom";
+import RequestReset from "./pages/auth/RequestReset";
+import ResetPassword from "./pages/auth/ResetPassword";
 
 const App: React.FC = () => {
   const [user, setUser] = useState<User | null>(() => {
@@ -28,12 +30,17 @@ const App: React.FC = () => {
 
   return (
       <Routes>
-        <Route path="/login" element={<Login onLogin={handleLogin} />} />
-        <Route path="/register" element={<Register/>} />
-        <Route path="/verify" element={<VerifyEmail goToLogin={() => navigate("/login")} />}/>
-        <Route path="/*" element={user ? <Dashboard user={user} onLogout={handleLogout} /> : <Navigate to="/login" />} />
-        <Route path="*" element={<Navigate to={user ? "/" : "/login"} />} />
-      </Routes>
+
+          <Route path="/login" element={user ? <Navigate to="/" /> : <Login onLogin={handleLogin} />} />
+          <Route path="/register" element={user ? <Navigate to="/" /> : <Register />} />
+          <Route path="/verify" element={user ? <Navigate to="/" /> : <VerifyEmail goToLogin={() => navigate("/login")} />} />
+          <Route path="/request" element={user ? <Navigate to="/" /> : <RequestReset />} />
+          <Route path="/reset" element={user ? <Navigate to="/" /> : <ResetPassword />} />
+
+          <Route path="/*" element={user ? <Dashboard user={user} onLogout={handleLogout} /> : <Navigate to="/login" />} />
+
+          <Route path="*" element={<Navigate to={user ? "/" : "/login"} />} />
+        </Routes>
   );
 };
 

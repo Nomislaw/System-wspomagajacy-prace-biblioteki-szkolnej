@@ -1,21 +1,18 @@
 import React, { useState } from "react";
 import { register as registerAPI } from "../../api/AuthService";
 import "./index.css";
+import { useNavigate } from "react-router-dom";
 
-interface RegisterProps {
-  onRegister: () => void;
-  goToLogin: () => void;
-}
-
-const Register: React.FC<RegisterProps> = ({ onRegister, goToLogin }) => {
+const Register: React.FC = () => {
   const [password, setPassword] = useState("");
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
   const [email, setEmail] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [error, setError] = useState("");
+  const [success, setSuccess] = useState("");
   const [loading, setLoading] = useState(false);
-
+  const navigate = useNavigate();
 
   const handleSubmit = async (e: React.FormEvent) => {
   e.preventDefault();
@@ -30,9 +27,15 @@ const Register: React.FC<RegisterProps> = ({ onRegister, goToLogin }) => {
 
 try {
   const user = await registerAPI({ password, firstName, lastName, email });
-  onRegister();
+  setError("");
+  setFirstName("");
+  setLastName("");
+  setEmail("");
+  setPassword("");
+  setConfirmPassword("");
+  setSuccess("Zarejestrowano pomyślnie! Sprawdź swoją skrzynkę, aby potwierdzić e-mail.");
 } catch (err: any) {
-  
+  setSuccess("");
   setError(err.message || "Błąd serwera.");
 } finally {
   setLoading(false);
@@ -54,10 +57,11 @@ try {
           </button>
         </form>
         {error && <p className="error">{error}</p>}
+        {success && <p className="success">{success}</p>}
 
         <p>
           Masz już konto?{" "}
-          <span className="link" onClick={goToLogin} style={{ cursor: "pointer", color: "blue" }}>Zaloguj się</span>
+          <span className="link" onClick={() => navigate("/login")} style={{ cursor: "pointer", color: "blue" }}>Zaloguj się</span>
         </p>
       </div>
     </div>

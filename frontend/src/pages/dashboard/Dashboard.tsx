@@ -7,6 +7,7 @@ import Profile from "../../components/settings/Profile";
 import Users from "../../components/settings/Users";
 import { User } from "../../types/Index";
 import "./index.css";
+import ProtectedRoute from "../../components/ProtectedRoute";
 
 interface DashboardProps {
   user: User;
@@ -31,7 +32,7 @@ const Dashboard: React.FC<DashboardProps> = ({ onLogout, user }) => {
 
                 <Route path="settings">
                     <Route path="password" element={<Password />} />
-                    <Route path="users" element={<Users />} />
+                    <Route path="users" element={<ProtectedRoute user={user} allowedRoles={["Administrator"]}><Users /></ProtectedRoute>}/>
                     <Route path="profile" element={<Profile />} />
                 </Route>
           </Routes>

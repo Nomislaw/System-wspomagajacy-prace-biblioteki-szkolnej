@@ -79,6 +79,9 @@ export interface User {
   firstName: string;
   lastName: string;
   role: Role;
+  token: string;
+  emailConfirmed: boolean;
+  verificationToken: string;
   borrows?: Borrow[];
   reservations?: Reservation[];
   reviews?: Review[];

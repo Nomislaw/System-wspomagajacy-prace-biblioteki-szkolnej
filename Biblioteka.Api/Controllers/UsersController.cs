@@ -48,23 +48,15 @@ namespace Biblioteka.Api.Controllers
         }
         
         [HttpGet]
-        //[Authorize(Roles = "Administrator")]
+        [Authorize(Roles = "Administrator")]
         public async Task<IActionResult> GetAllUsers()
         {
             var users = await _userService.GetAllAsync();
             return Ok(users);
         }
         
-        [HttpPost]
-        //[Authorize(Roles = "Administrator")]
-        public async Task<IActionResult> AddUser([FromBody] User newUser)
-        {
-            var user = await _userService.AddAsync(newUser);
-            return CreatedAtAction(nameof(GetAllUsers), new { id = user.Id }, user);
-        }
-        
         [HttpPut("{id}/role")]
-        //[Authorize(Roles = "Administrator")]
+        [Authorize(Roles = "Administrator")]
         public async Task<IActionResult> ChangeUserRole(int id, [FromBody] ChangeRoleDto dto)
         {
             var updated = await _userService.ChangeUserRoleAsync(id, dto.Role);
@@ -74,7 +66,7 @@ namespace Biblioteka.Api.Controllers
 
         
         [HttpDelete("{id}")]
-        //[Authorize(Roles = "Administrator")]
+        [Authorize(Roles = "Administrator")]
         public async Task<IActionResult> DeleteUser(int id)
         {
             await _userService.DeleteAsync(id);

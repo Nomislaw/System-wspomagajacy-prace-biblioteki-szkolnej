@@ -119,7 +119,7 @@ const Profile: React.FC = () => {
 
       <div className={styles.field}>
         <label>Email:</label>
-        <input type="email" name="email" value={form.email} onChange={handleChange} required />
+        <input type="email" name="email" value={form.email} readOnly onChange={handleChange} required />
       </div>
 
       <button type="submit" className={styles.button}>Zapisz zmiany</button>

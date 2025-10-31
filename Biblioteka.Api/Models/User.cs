@@ -11,6 +11,9 @@ public class User
     public string LastName { get; set; } = string.Empty;
     [JsonConverter(typeof(JsonStringEnumConverter))]
     public Role Role { get; set; }
+    
+    public bool EmailConfirmed { get; set; } = false;
+    public string? VerificationToken { get; set; }
 
     public virtual ICollection<Borrow>? Borrows { get; set; }
     public virtual ICollection<Reservation>? Reservations { get; set; }

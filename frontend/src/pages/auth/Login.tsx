@@ -1,23 +1,25 @@
 import React, { useState } from "react";
 import { User } from "../../types/Index";
 import { login as loginAPI } from "../../api/AuthService";
+import { useNavigate } from "react-router-dom";
 import "./index.css";
 
 interface LoginProps {
   onLogin: (user: User) => void;
-  goToRegister: () => void;
 }
 
-const Login: React.FC<LoginProps> = ({ onLogin, goToRegister }) => {
+const Login: React.FC<LoginProps> = ({ onLogin }) => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
+  const navigate = useNavigate();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
       const user = await loginAPI(email, password);
       onLogin(user);
+      navigate("/");
     } catch (err: any) {
       setError(err.message || "Błąd serwera.");
     }
@@ -37,7 +39,7 @@ const Login: React.FC<LoginProps> = ({ onLogin, goToRegister }) => {
 
         <p>
           Nie masz konta?{" "}
-          <span className="link" onClick={goToRegister} style={{ cursor: "pointer", color: "blue" }}>Zarejestruj się</span>
+          <span className="link" onClick={() => navigate("/register")} style={{ cursor: "pointer", color: "blue" }}>Zarejestruj się</span>
         </p>
       </div>
     </div>

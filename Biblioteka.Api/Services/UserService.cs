@@ -23,7 +23,6 @@ public class UserService : BaseService<User>, IUserService
 
         user.FirstName = dto.FirstName;
         user.LastName = dto.LastName;
-        user.Email = dto.Email;
 
         await UpdateAsync(user);
         return user;

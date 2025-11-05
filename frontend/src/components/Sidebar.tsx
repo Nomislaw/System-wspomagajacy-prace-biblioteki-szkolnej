@@ -36,14 +36,40 @@ const Sidebar: React.FC<SidebarProps> = ({ user }) => {
           <>
             <NavLink to="/settings/profile" className={({ isActive }) => `sidebar-item ${isActive ? "active" : ""}`}>Edytuj profil</NavLink>
             <NavLink to="/settings/password" className={({ isActive }) => `sidebar-item ${isActive ? "active" : ""}`}>Zmień hasło</NavLink>
-            {user.role === "Administrator" && (
-              <NavLink to="/settings/users" className={({ isActive }) => `sidebar-item ${isActive ? "active" : ""}`}>Panel administratora</NavLink>
-            )}
+          </>
+        );
+        case "admin":
+        return (
+          <>
+                {user.role === "Administrator" && (
+                  <NavLink to="/admin" className={({ isActive }) => `sidebar-item ${isActive ? "active" : ""}`}>Użytkownicy</NavLink>
+                )}
           </>
         );
 
+        case "librarian":
+          return(
+            <>
+              {user.role === "Librarian" && (
+                  <NavLink to="/librarian/users" className={({ isActive }) => `sidebar-item ${isActive ? "active" : ""}`}>Autorzy</NavLink>
+                )}
+                {user.role === "Librarian" && (
+                  <NavLink to="/librarian/addUser" className={({ isActive }) => `sidebar-item ${isActive ? "active" : ""}`}>Książki</NavLink>
+                )}
+                {user.role === "Librarian" && (
+                  <NavLink to="/librarian/addUser" className={({ isActive }) => `sidebar-item ${isActive ? "active" : ""}`}>Kategorie</NavLink>
+                )}
+                {user.role === "Librarian" && (
+                  <NavLink to="/librarian/addUser" className={({ isActive }) => `sidebar-item ${isActive ? "active" : ""}`}>Wypożyczenia</NavLink>
+                )}
+                {user.role === "Librarian" && (
+                  <NavLink to="/librarian/addUser" className={({ isActive }) => `sidebar-item ${isActive ? "active" : ""}`}>Wydawnictwa</NavLink>
+                )}
+            </>
+          );
+
       default:
-        return <p>Brak strony</p>;
+        return <></>;
     }
   };
 

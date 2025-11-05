@@ -13,7 +13,15 @@ const Navbar: React.FC<NavbarProps> = ({ user, onLogout}) => {
     <>
       <div className="navbar-top">
         <h2>Witaj, {user.firstName} {user.lastName} ({user.role})</h2>
+        <div>
+            {user.role === "Administrator" && (
+                      <NavLink to="/admin" className="btn">Administrator</NavLink>
+            )}
+            {user.role === "Librarian" && (
+                      <NavLink to="/librarian" className="btn">Bibliotekarz</NavLink>
+            )}
         <button className="logout-btn" onClick={onLogout}>Wyloguj</button>
+        </div>
       </div>
 
       <div className="navbar-bar">

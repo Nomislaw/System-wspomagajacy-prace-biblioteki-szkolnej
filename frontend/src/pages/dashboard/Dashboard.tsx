@@ -9,6 +9,18 @@ import AddUser from "../../components/admin/AddUser";
 import { User } from "../../types/Index";
 import "./index.css";
 import ProtectedRoute from "../../components/ProtectedRoute";
+import AuthorsList from "../../components/librarian/AuthorsList";
+import AddAuthor from "../../components/librarian/AddAuthor";
+import AddCategory from "../../components/librarian/AddCategory";
+import CategoryList from "../../components/librarian/CategoryList";
+import PublisherList from "../../components/librarian/PublisherList";
+import AddPublisher from "../../components/librarian/AddPublisher";
+
+import AddBook from "../../components/librarian/AddBook";
+import BookList from "../../components/librarian/BookList";
+import EditBook from "../../components/librarian/EditBook";
+import ReservationList from "../../components/librarian/ReservationList";
+import BorrowList from "../../components/librarian/BorrowList";
 
 interface DashboardProps {
   user: User;
@@ -39,11 +51,39 @@ const Dashboard: React.FC<DashboardProps> = ({ onLogout, user }) => {
                     </Route>
             </Route>
 
-            <Route path="/librarian/" element={<ProtectedRoute user={user} allowedRoles={["Librarian"]}><Navigate to="users" /></ProtectedRoute>}/>
+            <Route path="/librarian/" element={<ProtectedRoute user={user} allowedRoles={["Librarian"]}><Navigate to="borrows" /></ProtectedRoute>}/>
 
             <Route path="/librarian/">
-                    <Route path="users" element={<ProtectedRoute user={user} allowedRoles={["Librarian"]}><UsersList /></ProtectedRoute>} />
-                    <Route path="addUser" element={<ProtectedRoute user={user} allowedRoles={["Librarian"]}><AddUser /></ProtectedRoute>} />
+                    <Route path="authors" element={<ProtectedRoute user={user} allowedRoles={["Librarian"]}><AuthorsList /></ProtectedRoute>} />
+                      <Route path="authors">
+                      <Route path="add" element={<ProtectedRoute user={user} allowedRoles={["Librarian"]}><AddAuthor /></ProtectedRoute>} />
+                    </Route>
+
+                    <Route path="books" element={<ProtectedRoute user={user} allowedRoles={["Librarian"]}><BookList /></ProtectedRoute>} />
+                      <Route path="books">
+                      <Route path="add" element={<ProtectedRoute user={user} allowedRoles={["Librarian"]}><AddBook /></ProtectedRoute>} />
+                      <Route path="edit/:id" element={<ProtectedRoute user={user} allowedRoles={["Librarian"]}><EditBook /></ProtectedRoute>} />
+                    </Route>
+
+                    <Route path="categories" element={<ProtectedRoute user={user} allowedRoles={["Librarian"]}><CategoryList /></ProtectedRoute>} />
+                      <Route path="categories">
+                      <Route path="add" element={<ProtectedRoute user={user} allowedRoles={["Librarian"]}><AddCategory /></ProtectedRoute>} />
+                    </Route>
+
+                    <Route path="borrows" element={<ProtectedRoute user={user} allowedRoles={["Librarian"]}><BorrowList /></ProtectedRoute>} />
+                      {/* <Route path="borrows">
+                      <Route path="add" element={<ProtectedRoute user={user} allowedRoles={["Librarian"]}><AddAuthor /></ProtectedRoute>} />
+                    </Route> */}
+
+                    <Route path="publishers" element={<ProtectedRoute user={user} allowedRoles={["Librarian"]}><PublisherList /></ProtectedRoute>} />
+                      <Route path="publishers">
+                      <Route path="add" element={<ProtectedRoute user={user} allowedRoles={["Librarian"]}><AddPublisher /></ProtectedRoute>} />
+                    </Route>
+
+                    <Route path="reservations" element={<ProtectedRoute user={user} allowedRoles={["Librarian"]}><ReservationList /></ProtectedRoute>} />
+                      {/* <Route path="reservations">
+                      <Route path="add" element={<ProtectedRoute user={user} allowedRoles={["Librarian"]}><AddAuthor /></ProtectedRoute>} />
+                    </Route> */}
             </Route>
 
 

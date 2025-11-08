@@ -8,13 +8,12 @@ export const fetchAPI = async (endpoint: string, options: RequestInit = {}) => {
     headers: {
       "Content-Type": "application/json",
       ...(options.headers || {}),
-      ...(token ? { "Authorization": `Bearer ${token}` } : {}), 
+      ...(token ? { "Authorization": `Bearer ${token}` } : {}),
     },
   });
 
   if (!res.ok) {
     let errorData;
-
     try {
       errorData = await res.json();
     } catch {

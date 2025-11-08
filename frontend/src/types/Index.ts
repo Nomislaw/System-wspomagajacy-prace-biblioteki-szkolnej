@@ -1,5 +1,24 @@
 
 export type Role = "User" | "Librarian" | "Administrator"; 
+//export type BorrowStatus = "Active" | "Returned" | "ReturnedLate" | "Canceled" | "Overdue" | "Lost" | "Damaged"
+export enum ReservationStatus {
+  Active = "Active",
+  Completed = "Completed",
+  Canceled = "Canceled",
+  Expired = "Expired",
+}
+
+
+export enum BorrowStatus {
+  Active = "Active",
+  Returned = "Returned",
+  ReturnedLate = "ReturnedLate",
+  Canceled = "Canceled",
+  Overdue = "Overdue",
+  Lost = "Lost",
+  Damaged = "Damaged"
+}
+
 
 export interface Author {
   id: number;
@@ -25,41 +44,34 @@ export interface Book {
   title: string;
   publicationYear: number;
   isbn: string;
+  quantity: number;
   authorId: number;
-  author: Author;
-  publisherId: number;
-  publisher: Publisher;
   categoryId: number;
-  category: Category;
-  copies: Copy[];
-  reviews: Review[];
-}
-
-export interface Copy {
-  id: number;
-  bookId: number;
-  book: Book;
-  isAvailable: boolean;
+  publisherId: number;
+  authorName?: string | null;      
+  categoryName?: string | null;
+  publisherName?: string | null;
 }
 
 export interface Borrow {
   id: number;
-  copyId: number;
-  copy: Copy;
-  userId: number;
-  user: string;
+  bookTitle: string;
+  userName: string;
   borrowDate: string;
-  returnDate?: string;
+  terminDate: string;
+  returnDate: string;
+  borrowStatus: BorrowStatus;
 }
 
 export interface Reservation {
   id: number;
-  copyId: number;
-  copy: Copy;
-  userId: number;
-  user: string;
+  bookTitle: string;
+  userName: string;
   reservationDate: string;
+  expirationDate: string;
+  reservationStatus: ReservationStatus;
 }
+
 
 export interface Review {
   id: number;
@@ -98,6 +110,11 @@ export interface UpdateUserDto {
   firstName: string;
   lastName: string;
   email: string;
+}
+
+export interface UpdatePersonDto {
+  firstName: string;
+  lastName: string;
 }
 
 export interface ChangePasswordDto{

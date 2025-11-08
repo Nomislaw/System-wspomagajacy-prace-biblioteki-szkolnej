@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Biblioteka.Api.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20251011212708_BasicModels")]
-    partial class BasicModels
+    [Migration("20251105134205_InitialCreate")]
+    partial class InitialCreate
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -70,6 +70,9 @@ namespace Biblioteka.Api.Migrations
                     b.Property<int>("PublisherId")
                         .HasColumnType("int");
 
+                    b.Property<int>("Quantity")
+                        .HasColumnType("int");
+
                     b.Property<string>("Title")
                         .IsRequired()
                         .HasColumnType("longtext");
@@ -93,10 +96,13 @@ namespace Biblioteka.Api.Migrations
 
                     MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("Id"));
 
+                    b.Property<int>("BookId")
+                        .HasColumnType("int");
+
                     b.Property<DateTime>("BorrowDate")
                         .HasColumnType("datetime(6)");
 
-                    b.Property<int>("CopyId")
+                    b.Property<int>("BorrowStatus")
                         .HasColumnType("int");
 
                     b.Property<DateTime?>("ReturnDate")
@@ -107,7 +113,7 @@ namespace Biblioteka.Api.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("CopyId");
+                    b.HasIndex("BookId");
 
                     b.HasIndex("UserId");
 
@@ -129,27 +135,6 @@ namespace Biblioteka.Api.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Categories");
-                });
-
-            modelBuilder.Entity("Biblioteka.Api.Models.Copy", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<int>("BookId")
-                        .HasColumnType("int");
-
-                    b.Property<bool>("IsAvailable")
-                        .HasColumnType("tinyint(1)");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("BookId");
-
-                    b.ToTable("Copies");
                 });
 
             modelBuilder.Entity("Biblioteka.Api.Models.Publisher", b =>
@@ -201,7 +186,7 @@ namespace Biblioteka.Api.Migrations
 
                     MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<int>("CopyId")
+                    b.Property<int>("BookId")
                         .HasColumnType("int");
 
                     b.Property<DateTime>("ReservationDate")
@@ -212,44 +197,11 @@ namespace Biblioteka.Api.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("CopyId");
-
-                    b.HasIndex("UserId");
-
-                    b.ToTable("Reservations");
-                });
-
-            modelBuilder.Entity("Biblioteka.Api.Models.Review", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<int>("BookId")
-                        .HasColumnType("int");
-
-                    b.Property<string>("Comment")
-                        .IsRequired()
-                        .HasColumnType("longtext");
-
-                    b.Property<DateTime>("CreatedAt")
-                        .HasColumnType("datetime(6)");
-
-                    b.Property<int>("Rating")
-                        .HasColumnType("int");
-
-                    b.Property<int>("UserId")
-                        .HasColumnType("int");
-
-                    b.HasKey("Id");
-
                     b.HasIndex("BookId");
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("Reviews");
+                    b.ToTable("Reservations");
                 });
 
             modelBuilder.Entity("Biblioteka.Api.Models.User", b =>
@@ -262,7 +214,10 @@ namespace Biblioteka.Api.Migrations
 
                     b.Property<string>("Email")
                         .IsRequired()
-                        .HasColumnType("longtext");
+                        .HasColumnType("varchar(255)");
+
+                    b.Property<bool>("EmailConfirmed")
+                        .HasColumnType("tinyint(1)");
 
                     b.Property<string>("FirstName")
                         .IsRequired()
@@ -272,18 +227,26 @@ namespace Biblioteka.Api.Migrations
                         .IsRequired()
                         .HasColumnType("longtext");
 
-                    b.Property<string>("Login")
-                        .IsRequired()
-                        .HasColumnType("longtext");
-
                     b.Property<string>("Password")
                         .IsRequired()
                         .HasColumnType("longtext");
 
+                    b.Property<string>("PasswordResetToken")
+                        .HasColumnType("longtext");
+
+                    b.Property<DateTime?>("PasswordResetTokenExpiry")
+                        .HasColumnType("datetime(6)");
+
                     b.Property<int>("Role")
                         .HasColumnType("int");
 
+                    b.Property<string>("VerificationToken")
+                        .HasColumnType("longtext");
+
                     b.HasKey("Id");
+
+                    b.HasIndex("Email")
+                        .IsUnique();
 
                     b.ToTable("Users");
                 });
@@ -317,9 +280,9 @@ namespace Biblioteka.Api.Migrations
 
             modelBuilder.Entity("Biblioteka.Api.Models.Borrow", b =>
                 {
-                    b.HasOne("Biblioteka.Api.Models.Copy", "Copy")
+                    b.HasOne("Biblioteka.Api.Models.Book", "Book")
                         .WithMany()
-                        .HasForeignKey("CopyId")
+                        .HasForeignKey("BookId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
@@ -329,51 +292,21 @@ namespace Biblioteka.Api.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("Copy");
+                    b.Navigation("Book");
 
                     b.Navigation("User");
                 });
 
-            modelBuilder.Entity("Biblioteka.Api.Models.Copy", b =>
-                {
-                    b.HasOne("Biblioteka.Api.Models.Book", "Book")
-                        .WithMany("Copies")
-                        .HasForeignKey("BookId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Book");
-                });
-
             modelBuilder.Entity("Biblioteka.Api.Models.Reservation", b =>
                 {
-                    b.HasOne("Biblioteka.Api.Models.Copy", "Copy")
+                    b.HasOne("Biblioteka.Api.Models.Book", "Book")
                         .WithMany()
-                        .HasForeignKey("CopyId")
+                        .HasForeignKey("BookId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.HasOne("Biblioteka.Api.Models.User", "User")
                         .WithMany("Reservations")
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Copy");
-
-                    b.Navigation("User");
-                });
-
-            modelBuilder.Entity("Biblioteka.Api.Models.Review", b =>
-                {
-                    b.HasOne("Biblioteka.Api.Models.Book", "Book")
-                        .WithMany("Reviews")
-                        .HasForeignKey("BookId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("Biblioteka.Api.Models.User", "User")
-                        .WithMany("Reviews")
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -386,13 +319,6 @@ namespace Biblioteka.Api.Migrations
             modelBuilder.Entity("Biblioteka.Api.Models.Author", b =>
                 {
                     b.Navigation("Books");
-                });
-
-            modelBuilder.Entity("Biblioteka.Api.Models.Book", b =>
-                {
-                    b.Navigation("Copies");
-
-                    b.Navigation("Reviews");
                 });
 
             modelBuilder.Entity("Biblioteka.Api.Models.Category", b =>
@@ -410,8 +336,6 @@ namespace Biblioteka.Api.Migrations
                     b.Navigation("Borrows");
 
                     b.Navigation("Reservations");
-
-                    b.Navigation("Reviews");
                 });
 #pragma warning restore 612, 618
         }

@@ -1,20 +1,12 @@
-﻿namespace Biblioteka.Api.Models;
+﻿namespace Biblioteka.Api.DTOs;
 
-public class Book
+public class AddBookDto
 {
-    public int Id { get; set; }
     public string Title { get; set; } = string.Empty;
     public int PublicationYear { get; set; }
     public string ISBN { get; set; } = string.Empty;
     public int Quantity { get; set; }
-
     public int AuthorId { get; set; }
-    public virtual Author Author { get; set; } = null!;
-
     public int PublisherId { get; set; }
-    public virtual Publisher Publisher { get; set; } = null!;
-
     public int CategoryId { get; set; }
-    public virtual Category Category { get; set; } = null!;
-    
 }

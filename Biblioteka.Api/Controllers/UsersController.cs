@@ -27,7 +27,7 @@ namespace Biblioteka.Api.Controllers
         }
         
         [HttpPut("profile/{id}")]
-        public async Task<ActionResult<User>> UpdateProfile(int id, [FromBody] UpdateUserDto dto)
+        public async Task<ActionResult<User>> UpdateProfile(int id, [FromBody] UpdatePersonDto dto)
         {
             var updatedUser = await _userService.UpdateProfileAsync(id, dto);
             if (updatedUser == null) return NotFound(new ErrorResponse { Errors = new List<string> { "Użytkownik nie istnieje" } });

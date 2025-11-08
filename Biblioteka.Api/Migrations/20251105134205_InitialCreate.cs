@@ -7,7 +7,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace Biblioteka.Api.Migrations
 {
     /// <inheritdoc />
-    public partial class BasicModels : Migration
+    public partial class InitialCreate : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -86,7 +86,7 @@ namespace Biblioteka.Api.Migrations
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
-                    Login = table.Column<string>(type: "longtext", nullable: false)
+                    Email = table.Column<string>(type: "varchar(255)", nullable: false)
                         .Annotation("MySql:CharSet", "utf8mb4"),
                     Password = table.Column<string>(type: "longtext", nullable: false)
                         .Annotation("MySql:CharSet", "utf8mb4"),
@@ -94,9 +94,13 @@ namespace Biblioteka.Api.Migrations
                         .Annotation("MySql:CharSet", "utf8mb4"),
                     LastName = table.Column<string>(type: "longtext", nullable: false)
                         .Annotation("MySql:CharSet", "utf8mb4"),
-                    Email = table.Column<string>(type: "longtext", nullable: false)
+                    Role = table.Column<int>(type: "int", nullable: false),
+                    EmailConfirmed = table.Column<bool>(type: "tinyint(1)", nullable: false),
+                    VerificationToken = table.Column<string>(type: "longtext", nullable: true)
                         .Annotation("MySql:CharSet", "utf8mb4"),
-                    Role = table.Column<int>(type: "int", nullable: false)
+                    PasswordResetToken = table.Column<string>(type: "longtext", nullable: true)
+                        .Annotation("MySql:CharSet", "utf8mb4"),
+                    PasswordResetTokenExpiry = table.Column<DateTime>(type: "datetime(6)", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -115,6 +119,7 @@ namespace Biblioteka.Api.Migrations
                     PublicationYear = table.Column<int>(type: "int", nullable: false),
                     ISBN = table.Column<string>(type: "longtext", nullable: false)
                         .Annotation("MySql:CharSet", "utf8mb4"),
+                    Quantity = table.Column<int>(type: "int", nullable: false),
                     AuthorId = table.Column<int>(type: "int", nullable: false),
                     PublisherId = table.Column<int>(type: "int", nullable: false),
                     CategoryId = table.Column<int>(type: "int", nullable: false)
@@ -144,65 +149,14 @@ namespace Biblioteka.Api.Migrations
                 .Annotation("MySql:CharSet", "utf8mb4");
 
             migrationBuilder.CreateTable(
-                name: "Copies",
-                columns: table => new
-                {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
-                    BookId = table.Column<int>(type: "int", nullable: false),
-                    IsAvailable = table.Column<bool>(type: "tinyint(1)", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Copies", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_Copies_Books_BookId",
-                        column: x => x.BookId,
-                        principalTable: "Books",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                })
-                .Annotation("MySql:CharSet", "utf8mb4");
-
-            migrationBuilder.CreateTable(
-                name: "Reviews",
-                columns: table => new
-                {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
-                    BookId = table.Column<int>(type: "int", nullable: false),
-                    UserId = table.Column<int>(type: "int", nullable: false),
-                    Rating = table.Column<int>(type: "int", nullable: false),
-                    Comment = table.Column<string>(type: "longtext", nullable: false)
-                        .Annotation("MySql:CharSet", "utf8mb4"),
-                    CreatedAt = table.Column<DateTime>(type: "datetime(6)", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Reviews", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_Reviews_Books_BookId",
-                        column: x => x.BookId,
-                        principalTable: "Books",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
-                        name: "FK_Reviews_Users_UserId",
-                        column: x => x.UserId,
-                        principalTable: "Users",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                })
-                .Annotation("MySql:CharSet", "utf8mb4");
-
-            migrationBuilder.CreateTable(
                 name: "Borrows",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
-                    CopyId = table.Column<int>(type: "int", nullable: false),
+                    BookId = table.Column<int>(type: "int", nullable: false),
                     UserId = table.Column<int>(type: "int", nullable: false),
+                    BorrowStatus = table.Column<int>(type: "int", nullable: false),
                     BorrowDate = table.Column<DateTime>(type: "datetime(6)", nullable: false),
                     ReturnDate = table.Column<DateTime>(type: "datetime(6)", nullable: true)
                 },
@@ -210,9 +164,9 @@ namespace Biblioteka.Api.Migrations
                 {
                     table.PrimaryKey("PK_Borrows", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_Borrows_Copies_CopyId",
-                        column: x => x.CopyId,
-                        principalTable: "Copies",
+                        name: "FK_Borrows_Books_BookId",
+                        column: x => x.BookId,
+                        principalTable: "Books",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
@@ -230,7 +184,7 @@ namespace Biblioteka.Api.Migrations
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
-                    CopyId = table.Column<int>(type: "int", nullable: false),
+                    BookId = table.Column<int>(type: "int", nullable: false),
                     UserId = table.Column<int>(type: "int", nullable: false),
                     ReservationDate = table.Column<DateTime>(type: "datetime(6)", nullable: false)
                 },
@@ -238,9 +192,9 @@ namespace Biblioteka.Api.Migrations
                 {
                     table.PrimaryKey("PK_Reservations", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_Reservations_Copies_CopyId",
-                        column: x => x.CopyId,
-                        principalTable: "Copies",
+                        name: "FK_Reservations_Books_BookId",
+                        column: x => x.BookId,
+                        principalTable: "Books",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
@@ -268,9 +222,9 @@ namespace Biblioteka.Api.Migrations
                 column: "PublisherId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Borrows_CopyId",
+                name: "IX_Borrows_BookId",
                 table: "Borrows",
-                column: "CopyId");
+                column: "BookId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Borrows_UserId",
@@ -278,14 +232,9 @@ namespace Biblioteka.Api.Migrations
                 column: "UserId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Copies_BookId",
-                table: "Copies",
-                column: "BookId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Reservations_CopyId",
+                name: "IX_Reservations_BookId",
                 table: "Reservations",
-                column: "CopyId");
+                column: "BookId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Reservations_UserId",
@@ -293,14 +242,10 @@ namespace Biblioteka.Api.Migrations
                 column: "UserId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Reviews_BookId",
-                table: "Reviews",
-                column: "BookId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Reviews_UserId",
-                table: "Reviews",
-                column: "UserId");
+                name: "IX_Users_Email",
+                table: "Users",
+                column: "Email",
+                unique: true);
         }
 
         /// <inheritdoc />
@@ -316,16 +261,10 @@ namespace Biblioteka.Api.Migrations
                 name: "Reservations");
 
             migrationBuilder.DropTable(
-                name: "Reviews");
-
-            migrationBuilder.DropTable(
-                name: "Copies");
+                name: "Books");
 
             migrationBuilder.DropTable(
                 name: "Users");
-
-            migrationBuilder.DropTable(
-                name: "Books");
 
             migrationBuilder.DropTable(
                 name: "Authors");

@@ -9,6 +9,7 @@ namespace Biblioteka.Api.Services
         Task<T?> GetByIdAsync(int id);
         Task<T> AddAsync(T entity);
         Task UpdateAsync(T entity);
+        Task<T?> UpdateAsync(int id, T dto);
         Task DeleteAsync(int id);
     }
 }

@@ -2,7 +2,7 @@
 
 namespace Biblioteka.Api.DTOs;
 
-public class UpdateUserDto
+public class UpdatePersonDto
 {
     public string FirstName { get; set; }
     public string LastName { get; set; }

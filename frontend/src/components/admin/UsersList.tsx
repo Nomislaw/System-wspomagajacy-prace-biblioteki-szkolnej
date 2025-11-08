@@ -81,7 +81,7 @@ const UsersList: React.FC = () => {
                   <td>{user.lastName}</td>
                   <td>
                     <select
-                      className={styles.roleSelect}
+                      className={styles.select}
                       value={user.role}
                       onChange={(e) => handleChangeRole(user.id, e.target.value as Role)}
                       disabled={user.id === currentUser?.id}

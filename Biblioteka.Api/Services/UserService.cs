@@ -16,7 +16,7 @@ public class UserService : BaseService<User>, IUserService
 
     }
 
-    public async Task<User> UpdateProfileAsync(int userId, UpdateUserDto dto)
+    public async Task<User> UpdateProfileAsync(int userId, UpdatePersonDto dto)
     {
         var user = await GetByIdAsync(userId);
         if (user == null) return null;

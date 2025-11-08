@@ -1,6 +1,8 @@
 
 .container {
-  max-width: 700px;
+  max-width: 1000px;
+  min-width: 500px;
+  width: fit-content;
   margin: 50px auto;
   padding: 30px;
   background-color: #f9f9f9;
@@ -11,22 +13,23 @@
 
 
 .title {
+  clear:both;
   text-align: center;
   margin-bottom: 20px;
   font-size: 24px;
   color: #333;
 }
 
-.addUserSection {
+.addSection {
   margin-bottom: 25px;
 }
 
-.addUserSection h3 {
+.addSection h3 {
   margin-bottom: 10px;
   color: #555;
 }
 
-.addUserSection input {
+.addSection input {
   width: 100%;
   padding: 10px 12px;
   margin-bottom: 10px;
@@ -36,7 +39,7 @@
   box-sizing: border-box;
 }
 
-.addUserSection button {
+.addSection button.submit {
   width: 100%;
   padding: 12px;
   border: none;
@@ -48,7 +51,7 @@
   transition: background-color 0.3s;
 }
 
-.addUserSection button:hover {
+.addSection button.submit:hover {
   background-color: #0056b3;
 }
 
@@ -67,27 +70,25 @@
   background-color: #f0f0f0;
 }
 
-.roleSelect {
+.select {
+  margin-bottom: 10px;
+  margin-right: 10px;
   padding: 6px;
   border-radius: 5px;
   border: 1px solid #ccc;
+  margin: 6px;
 }
 
-.deleteButton {
-  padding: 6px 12px;
-  border: none;
+input {
+  padding: 8px 12px;
+  margin-bottom: 10px;
   border-radius: 5px;
-  background-color: #dc3545;
-  color: white;
-  cursor: pointer;
-  transition: background-color 0.3s;
+  border: 1px solid #ccc;
+  font-size: 16px;
+  box-sizing: border-box;
 }
 
-.deleteButton:hover {
-  background-color: #a71d2a;
-}
-
-.viewButtons {
+/* .viewButtons {
   display: flex;
   justify-content: center;
   gap: 10px;
@@ -111,4 +112,133 @@
 
 .viewButtons button:disabled {
   background-color: #007BFF;
+} */
+
+.navigateButton{
+  padding: 10px 12px;
+  border: none;
+  border-radius: 5px;
+  background-color: #007BFF;
+  color: white;
+  font-size: 16px;
+  cursor: pointer;
+  float: right;
+  transition: background-color 0.3s;
+}
+
+.returnButton {
+  padding: 10px 18px;
+  border: 1px solid #d0d0d0;
+  border-radius: 8px;
+  background-color: #f7f7f7;
+  color: #333;
+  font-size: 15px;
+  font-weight: 500;
+  cursor: pointer;
+  float: right;
+  transition: all 0.25s ease;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.08);
+}
+
+.addButton {
+  background-color: #007BFF;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  padding: 5px 10px;
+  cursor: pointer;
+}
+
+.addButton:hover {
+  background-color: #0056b3;
+}
+
+
+.inputEdit {
+  padding: 4px 6px;
+  font-size: 14px;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+}
+
+.saveButton {
+  background-color: #ff8c42;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  padding: 5px 10px;
+  cursor: pointer;
+  margin-right: 5px;
+  transition: background-color 0.2s ease;
+}
+
+.saveButton:hover {
+  background-color: #e6762f;
+}
+
+.cancelButton {
+  background-color: #ccc;
+  color: #333;
+  border: none;
+  border-radius: 6px;
+  padding: 5px 10px;
+  cursor: pointer;
+}
+
+.editButton {
+  background-color: #ffa94d;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  padding: 5px 10px;
+  cursor: pointer;
+  margin: 6px;
+}
+
+.editButton:hover {
+  background-color: #ff922b;
+}
+
+.deleteButton {
+  padding: 6px 12px;
+  border: none;
+  border-radius: 5px;
+  background-color: #dc3545;
+  color: white;
+  cursor: pointer;
+  transition: background-color 0.3s;
+  margin: 6px;
+}
+
+.deleteButton:hover {
+  background-color: #a71d2a;
+}
+.selectRow {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 5px;
+}
+
+.modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+.modalContent {
+  background: white;
+  padding: 20px;
+  border-radius: 8px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  width: 300px;
 }

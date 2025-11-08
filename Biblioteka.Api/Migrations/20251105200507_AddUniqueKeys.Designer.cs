@@ -4,6 +4,7 @@ using Biblioteka.Api.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Biblioteka.Api.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20251105200507_AddUniqueKeys")]
+    partial class AddUniqueKeys
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -62,7 +65,7 @@ namespace Biblioteka.Api.Migrations
 
                     b.Property<string>("ISBN")
                         .IsRequired()
-                        .HasColumnType("varchar(255)");
+                        .HasColumnType("longtext");
 
                     b.Property<int>("PublicationYear")
                         .HasColumnType("int");
@@ -75,7 +78,7 @@ namespace Biblioteka.Api.Migrations
 
                     b.Property<string>("Title")
                         .IsRequired()
-                        .HasColumnType("varchar(255)");
+                        .HasColumnType("longtext");
 
                     b.HasKey("Id");
 
@@ -83,13 +86,7 @@ namespace Biblioteka.Api.Migrations
 
                     b.HasIndex("CategoryId");
 
-                    b.HasIndex("ISBN")
-                        .IsUnique();
-
                     b.HasIndex("PublisherId");
-
-                    b.HasIndex("Title", "AuthorId", "PublisherId")
-                        .IsUnique();
 
                     b.ToTable("Books");
                 });
@@ -111,13 +108,7 @@ namespace Biblioteka.Api.Migrations
                     b.Property<int>("BorrowStatus")
                         .HasColumnType("int");
 
-                    b.Property<int?>("ReservationId")
-                        .HasColumnType("int");
-
                     b.Property<DateTime?>("ReturnDate")
-                        .HasColumnType("datetime(6)");
-
-                    b.Property<DateTime?>("TerminDate")
                         .HasColumnType("datetime(6)");
 
                     b.Property<int>("UserId")
@@ -126,9 +117,6 @@ namespace Biblioteka.Api.Migrations
                     b.HasKey("Id");
 
                     b.HasIndex("BookId");
-
-                    b.HasIndex("ReservationId")
-                        .IsUnique();
 
                     b.HasIndex("UserId");
 
@@ -210,14 +198,8 @@ namespace Biblioteka.Api.Migrations
                     b.Property<int>("BookId")
                         .HasColumnType("int");
 
-                    b.Property<DateTime>("ExpirationDate")
-                        .HasColumnType("datetime(6)");
-
                     b.Property<DateTime>("ReservationDate")
                         .HasColumnType("datetime(6)");
-
-                    b.Property<int>("ReservationStatus")
-                        .HasColumnType("int");
 
                     b.Property<int>("UserId")
                         .HasColumnType("int");
@@ -283,19 +265,19 @@ namespace Biblioteka.Api.Migrations
                     b.HasOne("Biblioteka.Api.Models.Author", "Author")
                         .WithMany("Books")
                         .HasForeignKey("AuthorId")
-                        .OnDelete(DeleteBehavior.Restrict)
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.HasOne("Biblioteka.Api.Models.Category", "Category")
                         .WithMany("Books")
                         .HasForeignKey("CategoryId")
-                        .OnDelete(DeleteBehavior.Restrict)
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.HasOne("Biblioteka.Api.Models.Publisher", "Publisher")
                         .WithMany("Books")
                         .HasForeignKey("PublisherId")
-                        .OnDelete(DeleteBehavior.Restrict)
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.Navigation("Author");
@@ -313,11 +295,6 @@ namespace Biblioteka.Api.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("Biblioteka.Api.Models.Reservation", "Reservation")
-                        .WithOne("Borrow")
-                        .HasForeignKey("Biblioteka.Api.Models.Borrow", "ReservationId")
-                        .OnDelete(DeleteBehavior.SetNull);
-
                     b.HasOne("Biblioteka.Api.Models.User", "User")
                         .WithMany("Borrows")
                         .HasForeignKey("UserId")
@@ -325,8 +302,6 @@ namespace Biblioteka.Api.Migrations
                         .IsRequired();
 
                     b.Navigation("Book");
-
-                    b.Navigation("Reservation");
 
                     b.Navigation("User");
                 });
@@ -363,11 +338,6 @@ namespace Biblioteka.Api.Migrations
             modelBuilder.Entity("Biblioteka.Api.Models.Publisher", b =>
                 {
                     b.Navigation("Books");
-                });
-
-            modelBuilder.Entity("Biblioteka.Api.Models.Reservation", b =>
-                {
-                    b.Navigation("Borrow");
                 });
 
             modelBuilder.Entity("Biblioteka.Api.Models.User", b =>

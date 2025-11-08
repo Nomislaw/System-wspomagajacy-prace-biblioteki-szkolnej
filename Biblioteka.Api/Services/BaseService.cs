@@ -33,6 +33,16 @@ namespace Biblioteka.Api.Services
             _context.Entry(entity).State = EntityState.Modified;
             await _context.SaveChangesAsync();
         }
+        
+        public async Task<T?> UpdateAsync(int id, T dto)
+        {
+            var existing = await _dbSet.FindAsync(id);
+            if (existing == null) return null;
+
+            _context.Entry(existing).CurrentValues.SetValues(dto);
+            await _context.SaveChangesAsync();
+            return existing;
+        }
 
         public async Task DeleteAsync(int id)
         {

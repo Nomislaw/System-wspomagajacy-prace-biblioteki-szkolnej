@@ -28,7 +28,7 @@ const AddUser: React.FC = () => {
 
   return (
     <div className={styles.container}>
-        <div className={styles.addUserSection}>
+        <div className={styles.addSection}>
           <button className={styles.returnButton} onClick={() => navigate("/admin/users")}>Cofnij</button>
           <h2 className={styles.title}>Dodaj nowego użytkownika</h2>
           <form onSubmit={handleAddUser} className={styles.form}>

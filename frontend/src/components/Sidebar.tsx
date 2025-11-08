@@ -50,20 +50,23 @@ const Sidebar: React.FC<SidebarProps> = ({ user }) => {
         case "librarian":
           return(
             <>
+                {user.role === "Librarian" && (
+                  <NavLink to="/librarian/borrows" className={({ isActive }) => `sidebar-item ${isActive ? "active" : ""}`}>Wypożyczenia</NavLink>
+                )}
+                {user.role === "Librarian" && (
+                  <NavLink to="/librarian/reservations" className={({ isActive }) => `sidebar-item ${isActive ? "active" : ""}`}>Rezerwacje</NavLink>
+                )}
+                {user.role === "Librarian" && (
+                  <NavLink to="/librarian/books" className={({ isActive }) => `sidebar-item ${isActive ? "active" : ""}`}>Książki</NavLink>
+                )}
               {user.role === "Librarian" && (
-                  <NavLink to="/librarian/users" className={({ isActive }) => `sidebar-item ${isActive ? "active" : ""}`}>Autorzy</NavLink>
+                  <NavLink to="/librarian/authors" className={({ isActive }) => `sidebar-item ${isActive ? "active" : ""}`}>Autorzy</NavLink>
                 )}
                 {user.role === "Librarian" && (
-                  <NavLink to="/librarian/addUser" className={({ isActive }) => `sidebar-item ${isActive ? "active" : ""}`}>Książki</NavLink>
+                  <NavLink to="/librarian/categories" className={({ isActive }) => `sidebar-item ${isActive ? "active" : ""}`}>Kategorie</NavLink>
                 )}
                 {user.role === "Librarian" && (
-                  <NavLink to="/librarian/addUser" className={({ isActive }) => `sidebar-item ${isActive ? "active" : ""}`}>Kategorie</NavLink>
-                )}
-                {user.role === "Librarian" && (
-                  <NavLink to="/librarian/addUser" className={({ isActive }) => `sidebar-item ${isActive ? "active" : ""}`}>Wypożyczenia</NavLink>
-                )}
-                {user.role === "Librarian" && (
-                  <NavLink to="/librarian/addUser" className={({ isActive }) => `sidebar-item ${isActive ? "active" : ""}`}>Wydawnictwa</NavLink>
+                  <NavLink to="/librarian/publishers" className={({ isActive }) => `sidebar-item ${isActive ? "active" : ""}`}>Wydawnictwa</NavLink>
                 )}
             </>
           );

@@ -16,7 +16,7 @@ const EditBook: React.FC = () => {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const navigate = useNavigate();
 
-  // pobranie danych książki i list pomocniczych
+
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -60,9 +60,9 @@ const EditBook: React.FC = () => {
       await BookService.updateBook(Number(id), bookData);
       alert("Dane książki zostały zaktualizowane.");
       navigate("/librarian/books");
-    } catch (err) {
+    } catch (err :any) {
       console.error(err);
-      alert("Błąd podczas zapisywania zmian.");
+      alert(err.message || "Błąd podczas zapisywania zmian.");
     } finally {
       setIsSubmitting(false);
     }
@@ -115,7 +115,7 @@ const EditBook: React.FC = () => {
               setBookData({ ...bookData, quantity: Number(e.target.value) })
             }
           />
-
+            <div className={styles.selectRow}>
           <select
             className={styles.select}
             value={bookData.authorId || ""}
@@ -130,7 +130,9 @@ const EditBook: React.FC = () => {
               </option>
             ))}
           </select>
-
+            </div>
+            
+            <div className={styles.selectRow}>
           <select
             className={styles.select}
             value={bookData.categoryId || ""}
@@ -145,7 +147,9 @@ const EditBook: React.FC = () => {
               </option>
             ))}
           </select>
+            </div>
 
+           <div className={styles.selectRow}>
           <select
             className={styles.select}
             value={bookData.publisherId || ""}
@@ -160,6 +164,7 @@ const EditBook: React.FC = () => {
               </option>
             ))}
           </select>
+            </div>
 
           <button className={styles.submit} type="submit" disabled={isSubmitting}>
             {isSubmitting ? "Zapisywanie..." : "Zapisz zmiany"}

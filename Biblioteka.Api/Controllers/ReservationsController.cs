@@ -1,4 +1,5 @@
-﻿using Biblioteka.Api.Data;
+﻿using System.Security.Claims;
+using Biblioteka.Api.Data;
 using Biblioteka.Api.DTOs;
 using Biblioteka.Api.Models;
 using Biblioteka.Api.Services;
@@ -29,7 +30,33 @@ public class ReservationsController : ControllerBase
             .Select(r => new ReservationDto
             {
                 Id = r.Id,
+                BookId = r.BookId,
                 BookTitle = r.Book.Title,
+                UserId = r.UserId,
+                UserName = r.User.FirstName + "  " + r.User.LastName,
+                ReservationDate = r.ReservationDate,
+                ExpirationDate = r.ExpirationDate,
+                ReservationStatus = r.ReservationStatus
+            })
+            .ToListAsync();
+
+        return Ok(reservations);
+    }
+    [HttpGet("user")]
+    public async Task<IActionResult> GetAllUserReservations()
+    {
+        var userId = GetCurrentUserId();
+
+        var reservations = await _context.Reservations
+            .Include(r => r.Book)
+            .Include(r => r.User)
+            .Where(r => r.UserId == userId)
+            .Select(r => new ReservationDto
+            {
+                Id = r.Id,
+                BookId = r.BookId,
+                BookTitle = r.Book.Title,
+                UserId = r.UserId,
                 UserName = r.User.FirstName + "  " + r.User.LastName,
                 ReservationDate = r.ReservationDate,
                 ExpirationDate = r.ExpirationDate,
@@ -40,15 +67,76 @@ public class ReservationsController : ControllerBase
         return Ok(reservations);
     }
 
+    
+    [HttpPost("reserve/{bookId}")]
+    public async Task<IActionResult> ReserveBook(int bookId)
+    {
+        var userId = GetCurrentUserId();
+        
+        var activeReservationsCount = await _context.Reservations
+            .CountAsync(r => r.UserId == userId && r.ReservationStatus == ReservationStatus.Active);
+
+        if (activeReservationsCount >= 2)
+        {
+            return BadRequest(new ErrorResponse { Errors = new List<string> { "Osiągnięto limit 2 aktywnych rezerwacji." } });
+        }
+
+
+        var book = await _context.Books.FindAsync(bookId);
+        if (book == null || book.Quantity <= 0)
+            return BadRequest("Książka niedostępna");
+
+        var existingReservation = await _context.Reservations
+            .FirstOrDefaultAsync(r => r.BookId == bookId && r.UserId == userId && r.ReservationStatus == ReservationStatus.Active);
+
+        if (existingReservation != null)
+            return BadRequest(new ErrorResponse { Errors = new List<string> { "Zarezerwowałęś już tę książkę." } });
+
+        var reservation = new Reservation
+        {
+            BookId = bookId,
+            UserId = userId,
+            ReservationStatus = ReservationStatus.Active,
+            ReservationDate = DateTime.Now,
+            ExpirationDate = DateTime.Now.AddDays(7)
+        };
+
+        _context.Reservations.Add(reservation);
+        book.Quantity -= 1;
+        await _context.SaveChangesAsync();
+
+        return Ok(reservation);
+    }
+    
+    [HttpPut("{bookId}/cancel-user")]
+    public async Task<IActionResult> CancelReservationUser(int bookId)
+    {
+        var userId = GetCurrentUserId();
+    
+        var reservation = await _context.Reservations
+            .Include(r => r.Book) 
+            .FirstOrDefaultAsync(r => r.BookId == bookId && r.UserId == userId && r.ReservationStatus == ReservationStatus.Active);
+    
+        if (reservation == null)
+            return NotFound(new ErrorResponse { Errors = new List<string> { "Rezerwacja nie istnieje." } });
+    
+        reservation.ReservationStatus = ReservationStatus.Canceled;
+        reservation.Book.Quantity += 1;
+        await _context.SaveChangesAsync();
+    
+        return Ok(reservation);
+    }
 
     [HttpPut("{id}/cancel")]
-    [Authorize(Roles = "Librarian")]
     public async Task<IActionResult> CancelReservation(int id)
     {
-        var reservation = await _context.Reservations.FindAsync(id);
+        var reservation = await _context.Reservations
+            .Include(r => r.Book) 
+            .FirstOrDefaultAsync( r => r.Id == id && r.ReservationStatus == ReservationStatus.Active);
         if (reservation == null) return NotFound();
 
         reservation.ReservationStatus = ReservationStatus.Canceled;
+        reservation.Book.Quantity += 1;
         await _context.SaveChangesAsync();
         return Ok(reservation);
     }
@@ -84,21 +172,33 @@ public class ReservationsController : ControllerBase
         return Ok(new { message = "Utworzono wypożyczenie." });
     }
     
-    [HttpPut("update-expired")]
-    [Authorize(Roles = "Librarian")]
-    public async Task<IActionResult> MarkExpiredReservations()
+    // [HttpPut("update-expired")]
+    // public async Task<IActionResult> MarkExpiredReservations()
+    // {
+    //     var now = DateTime.Now;
+    //
+    //     var overdue = await _context.Reservations
+    //         .Include(r => r.Book)
+    //         .Where(b => b.ReservationStatus == ReservationStatus.Active && b.ExpirationDate < now)
+    //         .ToListAsync();
+    //
+    //     foreach (var b in overdue)
+    //     {
+    //         b.ReservationStatus = ReservationStatus.Expired;
+    //         b.Book.Quantity += 1;
+    //     }
+    //
+    //     await _context.SaveChangesAsync();
+    //
+    //     return Ok(new { message = $"Zaktualizowano {overdue.Count} rezerwacji na przeterminowane." });
+    // }
+    
+    private int GetCurrentUserId()
     {
-        var now = DateTime.Now;
-
-        var overdue = await _context.Reservations
-            .Where(b => b.ReservationStatus == ReservationStatus.Active && b.ExpirationDate < now)
-            .ToListAsync();
-
-        foreach (var b in overdue)
-            b.ReservationStatus = ReservationStatus.Expired;
-
-        await _context.SaveChangesAsync();
-
-        return Ok(new { message = $"Zaktualizowano {overdue.Count} rezerwacji na przeterminowane." });
+        var userIdClaim = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier);
+        if (userIdClaim == null)
+            throw new Exception("Nie udało się pobrać ID użytkownika z tokena");
+    
+        return int.Parse(userIdClaim.Value);
     }
 }

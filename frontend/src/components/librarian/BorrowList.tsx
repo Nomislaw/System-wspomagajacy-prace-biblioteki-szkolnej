@@ -14,7 +14,7 @@ const BorrowList: React.FC = () => {
   const fetchData = async () => {
     setLoading(true);
     try {
-      await BorrowService.updateOverdueBorrows();
+      //await BorrowService.updateOverdueBorrows();
 
       const data = await BorrowService.getAllBorrows();
       setBorrows(data);
@@ -204,7 +204,7 @@ const getStatusColor = (status: any): string => {
                           </option>
                           <option value="Active">Aktywny</option>
                           <option value="Returned">Zwrócony</option>
-                          <option value="Canceled">Anulujowany</option>
+                          <option value="Canceled">Anulowany</option>
                           <option value="Lost">Zagubiony</option>
                           <option value="Damaged">Uszkodzony</option>
                         </select>

@@ -1,6 +1,6 @@
 
 export type Role = "User" | "Librarian" | "Administrator"; 
-//export type BorrowStatus = "Active" | "Returned" | "ReturnedLate" | "Canceled" | "Overdue" | "Lost" | "Damaged"
+
 export enum ReservationStatus {
   Active = "Active",
   Completed = "Completed",
@@ -55,21 +55,27 @@ export interface Book {
 
 export interface Borrow {
   id: number;
+  bookId: number;
   bookTitle: string;
+  userId: number;
   userName: string;
   borrowDate: string;
   terminDate: string;
   returnDate: string;
   borrowStatus: BorrowStatus;
+  book?: Book;
 }
 
 export interface Reservation {
   id: number;
+  bookId: number;
   bookTitle: string;
+  userId: number;
   userName: string;
   reservationDate: string;
   expirationDate: string;
   reservationStatus: ReservationStatus;
+  book?: Book;
 }
 
 

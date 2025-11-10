@@ -1,24 +1,35 @@
 import React, { useEffect, useState } from "react";
-import { Book } from "../../types/Index";
+import { Book, Borrow, Reservation } from "../../types/Index";
 import { BookService } from "../../api/BookService";
+import { ReservationService } from "../../api/ReservationService";
+import { BorrowService } from "../../api/BorrowService";
 import styles from "./User.module.css";
 
 interface CatalogProps {
-  categoryName?: string;
+  categoryId?: number;
 }
 
-const Catalog: React.FC<CatalogProps> = ({ categoryName }) => {
+const Catalog: React.FC<CatalogProps> = ({ categoryId }) => {
   const [books, setBooks] = useState<Book[]>([]);
+  const [reservations, setReservations] = useState<Reservation[]>([]);
+  const [borrows, setBorrows] = useState<Borrow[]>([]);
   const [searchTitle, setSearchTitle] = useState("");
   const [searchAuthor, setSearchAuthor] = useState("");
 
   const fetchData = async () => {
     try {
-      const booksRes = await BookService.getAllBooks();
+      const [booksRes, reservationsRes, borrowsRes] = await Promise.all([
+        BookService.getAllBooks(),
+        ReservationService.getAllUserReservations(),
+        BorrowService.getAllUserBorrows(),
+      ]);
+
       setBooks(booksRes);
+      setReservations(reservationsRes);
+      setBorrows(borrowsRes);
     } catch (err) {
       console.error(err);
-      alert("Błąd podczas pobierania danych o książkach");
+      alert("Błąd podczas pobierania danych");
     }
   };
 
@@ -29,13 +40,37 @@ const Catalog: React.FC<CatalogProps> = ({ categoryName }) => {
   const filteredBooks = books.filter((book) => {
     const matchesTitle = book.title.toLowerCase().includes(searchTitle.toLowerCase());
     const matchesAuthor = book.authorName?.toLowerCase().includes(searchAuthor.toLowerCase()) ?? true;
-    const matchesCategory = !categoryName || book.categoryName === categoryName;
+    const matchesCategory = !categoryId || book.categoryId === categoryId;
     return matchesTitle && matchesAuthor && matchesCategory;
   });
 
-  const handleReserve = (bookId: number) => {
-    // TODO: podłącz logikę rezerwacji/wypożyczenia
-    alert(`Rezerwujesz książkę o ID: ${bookId}`);
+  const getButtonState = (book: Book) => {
+    const userReservation = reservations.find(r => r.bookId === book.id && r.reservationStatus === "Active");
+    const userBorrow = borrows.find(b => b.bookId === book.id && (b.borrowStatus === "Active" || b.borrowStatus === "Damaged" || b.borrowStatus === "Lost" || b.borrowStatus === "Overdue"));
+    const bookQuantity = books.find(b => b.id === book.id && b.quantity <=0 );
+
+    if (userBorrow) return { text: "Wypożyczone", disabled: true };
+    if (userReservation) return { text: "Anuluj rezerwację", disabled: false };
+    if (bookQuantity) return { text: "Niedostępne", disabled: true};
+    return { text: "Rezerwuj", disabled: false };
+  };
+
+  const handleReserveToggle = async (book: Book) => {
+    try {
+      const userReservation = reservations.find(r => r.bookId === book.id && r.reservationStatus === "Active");
+
+      if (userReservation) {
+        if (!window.confirm("Na pewno chcesz anulować rezerwację?")) return;
+        await ReservationService.cancelReservationUser(book.id);
+      } else {
+        if (!window.confirm("Na pewno chcesz dokonać rezerwacji?")) return;
+        await ReservationService.reserveBook(book.id);
+      }
+
+      fetchData(); 
+    } catch (err :any) {
+      alert(err.message || "Błąd przy rezerwacji/anulowaniu książki");
+    }
   };
 
   return (
@@ -63,27 +98,32 @@ const Catalog: React.FC<CatalogProps> = ({ categoryName }) => {
         <p className={styles.noResults}>Brak książek spełniających kryteria.</p>
       ) : (
         <div className={styles.booksGrid}>
-          {filteredBooks.map((book) => (
-            <div key={book.id} className={styles.bookCard}>
-              <div className={styles.bookHeader}>
-                <h3 className={styles.bookTitle}>{book.title}</h3>
-                <span className={styles.categoryTag}>
-                  {book.categoryName || "Bez kategorii"}
-                </span>
-              </div>
-              <p className={styles.p}><strong>Autor:</strong> {book.authorName || "—"}</p>
-              <p className={styles.p}><strong>Rok:</strong> {book.publicationYear}</p>
-              <p className={styles.p}><strong>Wydawnictwo:</strong> {book.publisherName || "—"}</p>
-              <p className={styles.p}><strong>Dostępne:</strong> {book.quantity}</p>
+          {filteredBooks.map((book) => {
+            const { text, disabled } = getButtonState(book);
 
-              <button
-                className={styles.reserveButton}
-                onClick={() => handleReserve(book.id)}
-              >
-                Rezerwuj
-              </button>
-            </div>
-          ))}
+            return (
+              <div key={book.id} className={styles.bookCard}>
+                <div className={styles.bookHeader}>
+                  <h3 className={styles.bookTitle}>{book.title}</h3>
+                  <span className={styles.categoryTag}>{book.categoryName || "Bez kategorii"}</span>
+                </div>
+                <p className={styles.p}><strong>Autor:</strong> {book.authorName || "—"}</p>
+                <p className={styles.p}><strong>Rok:</strong> {book.publicationYear}</p>
+                <p className={styles.p}><strong>Wydawnictwo:</strong> {book.publisherName || "—"}</p>
+                <p className={styles.p}><strong>ISBN:</strong> {book.isbn}</p>
+                <p className={styles.p}><strong>Dostępne:</strong> {book.quantity}</p>
+
+                <button
+                  className={`${styles.reserveButton} ${text === "Anuluj rezerwację" ? styles.cancelButton : ""} 
+                  ${text === "Wypożyczone" ? styles.borrowedButton : ""} ${text === "Niedostępne" ? styles.disabledButton : ""}`}
+                  onClick={() => handleReserveToggle(book)}
+                  disabled={disabled}
+                >
+                  {text}
+                </button>
+              </div>
+            );
+          })}
         </div>
       )}
     </div>

@@ -6,7 +6,7 @@ import Password from "../../components/settings/Password";
 import Profile from "../../components/settings/Profile";
 import UsersList from "../../components/admin/UsersList";
 import AddUser from "../../components/admin/AddUser";
-import { User,Category } from "../../types/Index";
+import { User,Category, ReservationStatus, BorrowStatus } from "../../types/Index";
 import "./index.css";
 import ProtectedRoute from "../../components/ProtectedRoute";
 import AuthorsList from "../../components/librarian/AuthorsList";
@@ -23,6 +23,8 @@ import ReservationList from "../../components/librarian/ReservationList";
 import BorrowList from "../../components/librarian/BorrowList";
 import { CategoryService } from "../../api/CategoryService";
 import Catalog from "../../components/user/Catalog";
+import MyReservationsList from "../../components/user/MyReservationsList";
+import MyBorrowsList from "../../components/user/MyBorrowsList";
 
 interface DashboardProps {
   user: User;
@@ -49,19 +51,35 @@ const Dashboard: React.FC<DashboardProps> = ({ onLogout, user }) => {
 
         <main className="content">
           <Routes>
-            <Route path="/" element={<Navigate to="my-reservations" />} />
+            <Route path="/" element={<Navigate to="catalog" />} />
 
             <Route path="/settings/" element={<Navigate to="profile" />} />
 
             <Route path="/my-reservations/" element={<Navigate to="active" />}/>
+            <Route path="/my-reservations/">
+                <Route path="active" element={<MyReservationsList statusFilter={ReservationStatus.Active}/>} />
+                <Route path="completed" element={<MyReservationsList statusFilter={ReservationStatus.Completed}/>} />
+                <Route path="canceled" element={<MyReservationsList statusFilter={ReservationStatus.Canceled}/>} />
+                <Route path="expired" element={<MyReservationsList statusFilter={ReservationStatus.Expired}/>} />
+              
+            </Route>
+
 
             <Route path="/my-borrows/" element={<Navigate to="active" />}/>
+            <Route path="/my-borrows/">
+                 <Route path="active" element={<MyBorrowsList statusFilter={[BorrowStatus.Active]}/>} />
+                <Route path="overdue" element={<MyBorrowsList statusFilter={[BorrowStatus.Overdue]}/>} />
+                <Route path="returned" element={<MyBorrowsList statusFilter={[BorrowStatus.Returned,BorrowStatus.ReturnedLate]}/>} />
+                <Route path="damaged" element={<MyBorrowsList statusFilter={[BorrowStatus.Damaged, BorrowStatus.Lost]}/>} />
+                
+            </Route>
+
 
             <Route path="/catalog/" element={<Navigate to="all" />}/>
             <Route path="/catalog/">
                 <Route path="all" element={<Catalog/>} />
                  {categories.map(category => (
-                <Route path={category.name} element={<Catalog categoryName={category.name}/>} />
+                <Route path={category.name} element={<Catalog categoryId={category.id}/>} />
                 ))}
             </Route>
 

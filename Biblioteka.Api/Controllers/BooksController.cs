@@ -66,6 +66,9 @@ public class BooksController : ControllerBase
                 ISBN = b.ISBN,
                 PublicationYear = b.PublicationYear,
                 Quantity = b.Quantity,
+                AuthorId = b.AuthorId,
+                CategoryId = b.CategoryId,
+                PublisherId = b.PublisherId,
                 AuthorName = b.Author.FirstName + " " + b.Author.LastName,
                 CategoryName = b.Category.Name,
                 PublisherName = b.Publisher.Name

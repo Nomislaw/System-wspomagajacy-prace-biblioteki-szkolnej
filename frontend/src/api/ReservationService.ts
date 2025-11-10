@@ -6,8 +6,20 @@ export const ReservationService = {
     return fetchAPI(`/reservations`, { method: "GET" });
   },
 
+   getAllUserReservations: async (): Promise<Reservation[]> => {
+    return fetchAPI(`/reservations/user`, { method: "GET" });
+  },
+
   getReservationById: async (id: number): Promise<Reservation> => {
     return fetchAPI(`/reservations/${id}`, { method: "GET" });
+  },
+
+  reserveBook: async (id: number): Promise<void> => {
+    return fetchAPI(`/reservations/reserve/${id}`, { method: "POST" });
+  },
+
+  cancelReservationUser: async (id: number): Promise<void> => {
+    return fetchAPI(`/reservations/${id}/cancel-user`, { method: "PUT" });
   },
 
   cancelReservation: async (id: number): Promise<void> => {

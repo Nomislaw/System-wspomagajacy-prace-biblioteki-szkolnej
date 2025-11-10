@@ -10,7 +10,7 @@ interface SidebarProps {
 const Sidebar: React.FC<SidebarProps> = ({ user }) => {
   const location = useLocation();
   const [categories, setCategories] = useState<Category[]>([]);
-  const section = location.pathname.split("/")[1] || "my-reservations";
+  const section = location.pathname.split("/")[1] || "catalog";
 
   useEffect(() => {
     const fetchCategories = async () => {
@@ -31,6 +31,7 @@ const Sidebar: React.FC<SidebarProps> = ({ user }) => {
             <NavLink to="/my-reservations/active" className={({ isActive }) => `sidebar-item ${isActive ? "active" : ""}`}>Aktywne</NavLink>
             <NavLink to="/my-reservations/completed" className={({ isActive }) => `sidebar-item ${isActive ? "active" : ""}`}>Zakończone</NavLink>
             <NavLink to="/my-reservations/canceled" className={({ isActive }) => `sidebar-item ${isActive ? "active" : ""}`}>Anulowane</NavLink>
+            <NavLink to="/my-reservations/expired" className={({ isActive }) => `sidebar-item ${isActive ? "active" : ""}`}>Wygasłe</NavLink>
           </>
         );
 

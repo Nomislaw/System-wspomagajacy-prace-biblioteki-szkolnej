@@ -99,8 +99,95 @@
   background-color: #218838;
 }
 
+.borrowedButton {
+  margin-top: 10px;
+  padding: 8px;
+  border: none;
+  border-radius: 6px;
+  background-color: #ff8c42;
+  color: white;
+  cursor: pointer;
+  font-weight: 500;
+  transition: background-color 0.2s;
+}
+
+.borrowedButton:hover{
+  background-color: #ff8c42;
+}
+
+.disabledButton {
+  margin-top: 10px;
+  padding: 8px;
+  border: none;
+  border-radius: 6px;
+  background-color: #d3d3d3;
+  color: #333;
+  cursor: pointer;
+  font-weight: 500;
+  transition: background-color 0.2s;
+}
+
+.disabledButton:hover{
+  background-color: #d3d3d3;
+}
+
+.cancelButton {
+  margin-top: 10px;
+  padding: 8px;
+  border: none;
+  border-radius: 6px;
+  background-color: #dc3545;
+  color: white;
+  cursor: pointer;
+  font-weight: 500;
+  transition: background-color 0.2s;
+}
+
+.cancelButton:hover {
+  background-color: #a71d2a;
+}
+
+.lostButton {
+  margin-top: 10px;
+  padding: 8px;
+  border: none;
+  border-radius: 6px;
+  background-color: purple;
+  color: white;
+  cursor: pointer;
+  font-weight: 500;
+  transition: background-color 0.2s;
+}
+
+.lostButton:hover {
+  background-color: #4e004e;
+}
+
+.damagedButton {
+  margin-top: 10px;
+  padding: 8px;
+  border: none;
+  border-radius: 6px;
+  background-color: brown;
+  color: white;
+  cursor: pointer;
+  font-weight: 500;
+  transition: background-color 0.2s;
+}
+
+.damagedButton:hover {
+  background-color: #5a2d0c;
+}
+
 .noResults {
   text-align: center;
   margin-top: 40px;
   color: #777;
+}
+
+.infoText {
+  color: #17a2b8;
+  margin-top: 20px;
+  text-align: center;
+  font-size: 13px;
 }

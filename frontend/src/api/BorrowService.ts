@@ -7,6 +7,12 @@ export const BorrowService = {
       method: "GET",
     });
   },
+  
+  getAllUserBorrows: async (): Promise<Borrow[]> => {
+    return fetchAPI(`/borrows/user`, {
+      method: "GET",
+    });
+  },
 
   updateBorrowStatus: async (borrowId: number, newStatus: BorrowStatus): Promise<void> => {
     return fetchAPI(`/borrows/${borrowId}/status`, {

@@ -6,7 +6,7 @@ import { useNavigate } from "react-router-dom";
 
 const BookList: React.FC = () => {
   const [books, setBooks] = useState<Book[]>([]);
-  const [searchTitle, setSearchTitle] = useState(""); // 👈 stan wyszukiwania
+  const [searchTitle, setSearchTitle] = useState(""); 
   const navigate = useNavigate();
 
   const fetchData = async () => {
@@ -35,7 +35,6 @@ const BookList: React.FC = () => {
     }
   };
 
-  // 🔍 Filtrowanie po tytule (case-insensitive)
   const filteredBooks = books.filter((book) =>
     book.title.toLowerCase().includes(searchTitle.toLowerCase())
   );

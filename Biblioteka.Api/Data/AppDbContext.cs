@@ -39,10 +39,6 @@ public class AppDbContext : DbContext
             .IsUnique();
         
         modelBuilder.Entity<Book>()
-            .HasIndex(b => new { b.Title, b.AuthorId, b.PublisherId })
-            .IsUnique();
-        
-        modelBuilder.Entity<Book>()
             .HasOne(b => b.Category)
             .WithMany(c => c.Books)
             .HasForeignKey(b => b.CategoryId)

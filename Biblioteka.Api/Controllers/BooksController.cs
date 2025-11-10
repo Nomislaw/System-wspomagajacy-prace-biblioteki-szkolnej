@@ -53,7 +53,6 @@ public class BooksController : ControllerBase
 
 
     [HttpGet]
-    [Authorize(Roles = "Librarian")]
     public async Task<IActionResult> GetAllBooks()
     {
         var books = await _context.Books

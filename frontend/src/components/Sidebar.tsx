@@ -1,6 +1,7 @@
-import React from "react";
-import { User } from "../types/Index";
+import React, { useEffect, useState } from "react";
+import { User, Category } from "../types/Index";
 import { NavLink, useLocation } from "react-router-dom";
+import { CategoryService } from "../api/CategoryService";
 
 interface SidebarProps {
   user: User;
@@ -8,26 +9,50 @@ interface SidebarProps {
 
 const Sidebar: React.FC<SidebarProps> = ({ user }) => {
   const location = useLocation();
+  const [categories, setCategories] = useState<Category[]>([]);
+  const section = location.pathname.split("/")[1] || "my-reservations";
 
-  const section = location.pathname.split("/")[1] || "books";
+  useEffect(() => {
+    const fetchCategories = async () => {
+      const data = await CategoryService.getAllCategories();
+      setCategories(data);
+    };
+
+    fetchCategories();
+  }, []);
+ 
 
 
   const renderLinks = () => {
     switch (section) {
-      case "books":
+      case "my-reservations":
         return (
           <>
-            <NavLink to="/books/list" className={({ isActive }) => `sidebar-item ${isActive ? "active" : ""}`}>Lista książek</NavLink>
-            <NavLink to="/books/add" className={({ isActive }) => `sidebar-item ${isActive ? "active" : ""}`}>Dodaj książkę</NavLink>
-            <NavLink to="/books/delete" className={({ isActive }) => `sidebar-item ${isActive ? "active" : ""}`}>Usuń książkę</NavLink>
+            <NavLink to="/my-reservations/active" className={({ isActive }) => `sidebar-item ${isActive ? "active" : ""}`}>Aktywne</NavLink>
+            <NavLink to="/my-reservations/completed" className={({ isActive }) => `sidebar-item ${isActive ? "active" : ""}`}>Zakończone</NavLink>
+            <NavLink to="/my-reservations/canceled" className={({ isActive }) => `sidebar-item ${isActive ? "active" : ""}`}>Anulowane</NavLink>
           </>
         );
 
-      case "loans":
+      case "my-borrows":
         return (
           <>
-            <NavLink to="/loans/active" className={({ isActive }) => `sidebar-item ${isActive ? "active" : ""}`}>Aktywne wypożyczenia</NavLink>
-            <NavLink to="/loans/history" className={({ isActive }) => `sidebar-item ${isActive ? "active" : ""}`}>Historia wypożyczeń</NavLink>
+            <NavLink to="/my-borrows/active" className={({ isActive }) => `sidebar-item ${isActive ? "active" : ""}`}>Aktywne</NavLink>
+            <NavLink to="/my-borrows/overdue" className={({ isActive }) => `sidebar-item ${isActive ? "active" : ""}`}>Zaległe</NavLink>
+            <NavLink to="/my-borrows/returned" className={({ isActive }) => `sidebar-item ${isActive ? "active" : ""}`}>Zwrócone</NavLink>
+            <NavLink to="/my-borrows/damaged" className={({ isActive }) => `sidebar-item ${isActive ? "active" : ""}`}>Zgubione/Uszkodzone</NavLink>
+          </>
+        );
+      case "catalog":
+        return (
+          <>
+            <NavLink to="/catalog/all" className={({ isActive }) => `sidebar-item ${isActive ? "active" : ""}`}>Wszystkie</NavLink>
+             {categories.map(category => (
+            <NavLink key={category.id} to={`/catalog/${category.name}`} className={({ isActive }) => `sidebar-item ${isActive ? "active" : ""}`}>
+              {category.name}
+            </NavLink>
+          ))}
+
           </>
         );
 

@@ -6,6 +6,7 @@ using Biblioteka.Api.Data;
 using Biblioteka.Api.DTOs;
 using Biblioteka.Api.Models;
 using Biblioteka.Api.Services;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -83,7 +84,7 @@ public class AuthController : ControllerBase
         await _context.SaveChangesAsync();
         
         var verifyUrl = $"http://localhost:3000/verify?token={user.VerificationToken}";
-        var body = $"<h3>Witaj {user.Email}!</h3><p>Kliknij link, aby zweryfikować swoje konto:</p><a href='{verifyUrl}'>Zweryfikuj konto</a>";
+        var body = $"<h3>Witaj {user.FirstName} {user.LastName}!</h3><p>Kliknij link, aby zweryfikować swoje konto:</p><a href='{verifyUrl}'>Zweryfikuj konto</a>";
         await _emailService.SendEmailAsync(user.Email, "Weryfikacja konta", body);
 
         return Ok(new { user.Id, user.Email, Role = user.Role.ToString() });

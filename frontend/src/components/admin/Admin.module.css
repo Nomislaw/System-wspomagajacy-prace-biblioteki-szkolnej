@@ -1,6 +1,8 @@
 
 .container {
-  max-width: 700px;
+  max-width: 1000px;
+  min-width: 500px;
+  width: fit-content;
   margin: 50px auto;
   padding: 30px;
   background-color: #f9f9f9;
@@ -82,10 +84,26 @@
   color: white;
   cursor: pointer;
   transition: background-color 0.3s;
+  margin: 6px;
 }
 
 .deleteButton:hover {
   background-color: #a71d2a;
+}
+
+.activeButton {
+  padding: 6px 12px;
+  border: 1px solid #d0d0d0;
+  border-radius: 5px;
+  background-color: #ffffff;
+  color: #374151;
+  cursor: pointer;
+  transition: background-color 0.3s;
+  margin: 6px;
+}
+
+.activeButton:hover {
+  background-color: #d3d3d3;
 }
 
 /* .viewButtons {

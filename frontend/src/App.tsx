@@ -37,10 +37,7 @@ const App: React.FC = () => {
           <Route path="/verify" element={user ? <Navigate to="/" /> : <VerifyEmail goToLogin={() => navigate("/login")} />} />
           <Route path="/request" element={user ? <Navigate to="/" /> : <RequestReset />} />
           <Route path="/reset" element={user ? <Navigate to="/" /> : <ResetPassword />} />
-
-          <Route path="/*" element={user ? <Dashboard user={user} onLogout={handleLogout} /> : <Navigate to="/login" />} />
-
-          <Route path="*" element={<Navigate to={user ? "/" : "/login"} />} />
+          <Route path="/*" element={user ? <Dashboard user={user} onLogout={handleLogout} /> : <Navigate to="/login" replace />} /> 
         </Routes>
   );
 };

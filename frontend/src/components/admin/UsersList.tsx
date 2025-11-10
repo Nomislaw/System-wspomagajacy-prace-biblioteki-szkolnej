@@ -56,6 +56,37 @@ const UsersList: React.FC = () => {
     }
   };
 
+  const handleActiveUser = async (id: number) => {
+    const user = users.find((u) => u.id === id);
+    if (!user) return;
+
+    if (!window.confirm("Na pewno chcesz aktywować to konto?")) return;
+
+    try {
+      await UserService.activeUser(id);
+      fetchUsers();
+    } catch (err) {
+      console.error(err);
+      alert("Błąd podczas aktywowania użytkownika");
+    }
+  };
+
+  const handleSendTokenToUser = async (id: number) => {
+    const user = users.find((u) => u.id === id);
+    if (!user) return;
+
+    if (!window.confirm("Na pewno chcesz wysłać token do użytkownika?")) return;
+
+    try {
+      await UserService.sendTokenToUser(id);
+      alert("Wysłano token pomyślnie!");
+      fetchUsers();
+    } catch (err) {
+      console.error(err);
+      alert("Błąd podczas wysyłania tokenu do użytkownika");
+    }
+  };
+
   return (
     <div className={styles.container}>
         <div className={styles.userListSection}>
@@ -69,7 +100,8 @@ const UsersList: React.FC = () => {
                 <th>Imię</th>
                 <th>Nazwisko</th>
                 <th>Rola</th>
-                <th>Akcje</th>
+                <th>Usuń</th>
+                <th>Aktywacja konta</th>
               </tr>
             </thead>
             <tbody>
@@ -96,10 +128,27 @@ const UsersList: React.FC = () => {
                       className={styles.deleteButton}
                       onClick={() => handleDeleteUser(user.id)}
                       disabled={user.role === "Administrator"}
-                      style={{ cursor: user.role === "Administrator" ? "not-allowed" : "pointer" }}
-                    >
+                      style={{ cursor: user.role === "Administrator" ? "not-allowed" : "pointer" }}>
                       Usuń
                     </button>
+                  </td>
+                  <td>
+
+                     {(user.emailConfirmed === false) && (
+                    <button
+                      className={styles.activeButton}
+                      onClick={() => handleActiveUser(user.id)}>
+                      Aktywuj
+                    </button>
+                  )}
+                   {(user.emailConfirmed === false) && (
+                  <button
+                      className={styles.activeButton}
+                      onClick={() => handleSendTokenToUser(user.id)}>
+                      Wyślij token
+                    </button>
+                   )}
+
                   </td>
                 </tr>
               ))}

@@ -20,6 +20,7 @@ const AddUser: React.FC = () => {
       await UserService.addUser(newUser);
       alert("Użytkownik został dodany pomyślnie");
       setNewUser({});
+      navigate("/admin/users");
     } catch (err: any) {
       console.error(err);
       alert(err.message || "Błąd podczas dodawania użytkownika");

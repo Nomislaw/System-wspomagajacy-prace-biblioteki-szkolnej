@@ -103,7 +103,7 @@
 
 .dashboard {
   display: flex;
-  height: 100vh;
+  height: calc(100vh - 180px);
   margin-top: 180px; 
   background-color: #f9fafb;
 }

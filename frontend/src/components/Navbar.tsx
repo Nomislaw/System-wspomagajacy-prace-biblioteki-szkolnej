@@ -26,8 +26,9 @@ const Navbar: React.FC<NavbarProps> = ({ user, onLogout}) => {
 
       <div className="navbar-bar">
         <div className="navbar-buttons">
-          <NavLink to="/books" className={({ isActive }) => `navbar-button ${isActive ? "active" : ""}`} >Książki</NavLink>
-          <NavLink to="/loans" className={({ isActive }) => `navbar-button ${isActive ? "active" : ""}`} >Wypożyczenia</NavLink>
+          <NavLink to="/my-reservations" className={({ isActive }) => `navbar-button ${isActive ? "active" : ""}`} >Moje rezerwacje</NavLink>
+          <NavLink to="/my-borrows" className={({ isActive }) => `navbar-button ${isActive ? "active" : ""}`} >Moje wypożyczenia</NavLink>
+          <NavLink to="/catalog" className={({ isActive }) => `navbar-button ${isActive ? "active" : ""}`} >Katalog</NavLink>
           <NavLink to="/settings" className={({ isActive }) => `navbar-button ${isActive ? "active" : ""}`} >Ustawienia</NavLink>
         </div>
       </div>

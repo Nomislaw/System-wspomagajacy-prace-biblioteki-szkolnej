@@ -202,10 +202,11 @@ const getStatusColor = (status: any): string => {
                           <option value="" disabled>
                             Zmień status
                           </option>
-                          <option value="Returned">Zwróć</option>
-                          <option value="Canceled">Anuluj</option>
-                          <option value="Lost">Zagubiona</option>
-                          <option value="Damaged">Uszkodzona</option>
+                          <option value="Active">Aktywny</option>
+                          <option value="Returned">Zwrócony</option>
+                          <option value="Canceled">Anulujowany</option>
+                          <option value="Lost">Zagubiony</option>
+                          <option value="Damaged">Uszkodzony</option>
                         </select>
                       )}
                     </td>

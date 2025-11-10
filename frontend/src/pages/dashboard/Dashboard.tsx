@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Routes, Route, Navigate } from "react-router-dom";
 import Navbar from "../../components/Navbar";
 import Sidebar from "../../components/Sidebar";
@@ -6,7 +6,7 @@ import Password from "../../components/settings/Password";
 import Profile from "../../components/settings/Profile";
 import UsersList from "../../components/admin/UsersList";
 import AddUser from "../../components/admin/AddUser";
-import { User } from "../../types/Index";
+import { User,Category } from "../../types/Index";
 import "./index.css";
 import ProtectedRoute from "../../components/ProtectedRoute";
 import AuthorsList from "../../components/librarian/AuthorsList";
@@ -21,6 +21,8 @@ import BookList from "../../components/librarian/BookList";
 import EditBook from "../../components/librarian/EditBook";
 import ReservationList from "../../components/librarian/ReservationList";
 import BorrowList from "../../components/librarian/BorrowList";
+import { CategoryService } from "../../api/CategoryService";
+import Catalog from "../../components/user/Catalog";
 
 interface DashboardProps {
   user: User;
@@ -28,6 +30,15 @@ interface DashboardProps {
 }
 
 const Dashboard: React.FC<DashboardProps> = ({ onLogout, user }) => {
+   const [categories, setCategories] = useState<Category[]>([]);
+   useEffect(() => {
+       const fetchCategories = async () => {
+         const data = await CategoryService.getAllCategories();
+         setCategories(data);
+       };
+   
+       fetchCategories();
+     }, []);
 
   return (
     <div className={"dashboard"}>
@@ -38,12 +49,24 @@ const Dashboard: React.FC<DashboardProps> = ({ onLogout, user }) => {
 
         <main className="content">
           <Routes>
-            <Route path="/" element={<Navigate to="books" />} />
-            <Route path="/settings/" element={<Navigate to="profile" />} />
-            <Route path="/loans/" element={<Navigate to="active" />} />
-            <Route path="/books/" element={<Navigate to="list" />} />
-            <Route path="/admin/" element={<ProtectedRoute user={user} allowedRoles={["Administrator"]}><Navigate to="users" /></ProtectedRoute>}/>
+            <Route path="/" element={<Navigate to="my-reservations" />} />
 
+            <Route path="/settings/" element={<Navigate to="profile" />} />
+
+            <Route path="/my-reservations/" element={<Navigate to="active" />}/>
+
+            <Route path="/my-borrows/" element={<Navigate to="active" />}/>
+
+            <Route path="/catalog/" element={<Navigate to="all" />}/>
+            <Route path="/catalog/">
+                <Route path="all" element={<Catalog/>} />
+                 {categories.map(category => (
+                <Route path={category.name} element={<Catalog categoryName={category.name}/>} />
+                ))}
+            </Route>
+
+
+            <Route path="/admin/" element={<ProtectedRoute user={user} allowedRoles={["Administrator"]}><Navigate to="users" /></ProtectedRoute>}/>
             <Route path="/admin/">
                     <Route path="users" element={<ProtectedRoute user={user} allowedRoles={["Administrator"]}><UsersList /></ProtectedRoute>} />
                     <Route path="users">
@@ -52,7 +75,6 @@ const Dashboard: React.FC<DashboardProps> = ({ onLogout, user }) => {
             </Route>
 
             <Route path="/librarian/" element={<ProtectedRoute user={user} allowedRoles={["Librarian"]}><Navigate to="borrows" /></ProtectedRoute>}/>
-
             <Route path="/librarian/">
                     <Route path="authors" element={<ProtectedRoute user={user} allowedRoles={["Librarian"]}><AuthorsList /></ProtectedRoute>} />
                       <Route path="authors">

@@ -46,4 +46,16 @@ export const UserService = {
       method: "DELETE",
     });
   },
+
+  activeUser: async (userId: number): Promise<void> => {
+    return fetchAPI(`/users/active-profile/${userId}`, {
+      method: "PUT",
+    });
+  },
+
+  sendTokenToUser: async (userId: number): Promise<void> => {
+    return fetchAPI(`/users/${userId}/send-verify-token`, {
+      method: "POST",
+    });
+  },
 };

@@ -15,7 +15,7 @@ public class UserService : BaseService<User>, IUserService
     {
 
     }
-
+    
     public async Task<User> UpdateProfileAsync(int userId, UpdatePersonDto dto)
     {
         var user = await GetByIdAsync(userId);

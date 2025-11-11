@@ -100,7 +100,7 @@ const UsersList: React.FC = () => {
                 <th>Imię</th>
                 <th>Nazwisko</th>
                 <th>Rola</th>
-                <th>Usuń</th>
+                <th>Akcje</th>
                 <th>Aktywacja konta</th>
               </tr>
             </thead>

@@ -25,6 +25,7 @@ import { CategoryService } from "../../api/CategoryService";
 import Catalog from "../../components/user/Catalog";
 import MyReservationsList from "../../components/user/MyReservationsList";
 import MyBorrowsList from "../../components/user/MyBorrowsList";
+import ReportsPage from "../../components/librarian/ReportsPage";
 
 interface DashboardProps {
   user: User;
@@ -58,8 +59,8 @@ const Dashboard: React.FC<DashboardProps> = ({ onLogout, user }) => {
             <Route path="/my-reservations/" element={<Navigate to="active" />}/>
             <Route path="/my-reservations/">
                 <Route path="active" element={<MyReservationsList statusFilter={ReservationStatus.Active}/>} />
-                <Route path="completed" element={<MyReservationsList statusFilter={ReservationStatus.Completed}/>} />
-                <Route path="canceled" element={<MyReservationsList statusFilter={ReservationStatus.Canceled}/>} />
+                {/* <Route path="completed" element={<MyReservationsList statusFilter={ReservationStatus.Completed}/>} /> */}
+                {/* <Route path="canceled" element={<MyReservationsList statusFilter={ReservationStatus.Canceled}/>} /> */}
                 <Route path="expired" element={<MyReservationsList statusFilter={ReservationStatus.Expired}/>} />
               
             </Route>
@@ -124,6 +125,8 @@ const Dashboard: React.FC<DashboardProps> = ({ onLogout, user }) => {
                       {/* <Route path="reservations">
                       <Route path="add" element={<ProtectedRoute user={user} allowedRoles={["Librarian"]}><AddAuthor /></ProtectedRoute>} />
                     </Route> */}
+
+                    <Route path="reports" element={<ProtectedRoute user={user} allowedRoles={["Librarian"]}><ReportsPage /></ProtectedRoute>} />
             </Route>
 
 

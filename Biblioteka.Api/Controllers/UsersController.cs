@@ -69,7 +69,7 @@ namespace Biblioteka.Api.Controllers
         }
         
         [HttpGet]
-        [Authorize(Roles = "Administrator")]
+        [Authorize(Roles = "Administrator,Librarian")]
         public async Task<IActionResult> GetAllUsers()
         {
             var users = await _userService.GetAllAsync();

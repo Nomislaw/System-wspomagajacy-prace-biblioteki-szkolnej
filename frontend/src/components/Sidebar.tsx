@@ -29,8 +29,8 @@ const Sidebar: React.FC<SidebarProps> = ({ user }) => {
         return (
           <>
             <NavLink to="/my-reservations/active" className={({ isActive }) => `sidebar-item ${isActive ? "active" : ""}`}>Aktywne</NavLink>
-            <NavLink to="/my-reservations/completed" className={({ isActive }) => `sidebar-item ${isActive ? "active" : ""}`}>Zakończone</NavLink>
-            <NavLink to="/my-reservations/canceled" className={({ isActive }) => `sidebar-item ${isActive ? "active" : ""}`}>Anulowane</NavLink>
+            {/* <NavLink to="/my-reservations/completed" className={({ isActive }) => `sidebar-item ${isActive ? "active" : ""}`}>Zakończone</NavLink> */}
+            {/* <NavLink to="/my-reservations/canceled" className={({ isActive }) => `sidebar-item ${isActive ? "active" : ""}`}>Anulowane</NavLink> */}
             <NavLink to="/my-reservations/expired" className={({ isActive }) => `sidebar-item ${isActive ? "active" : ""}`}>Wygasłe</NavLink>
           </>
         );
@@ -93,6 +93,9 @@ const Sidebar: React.FC<SidebarProps> = ({ user }) => {
                 )}
                 {user.role === "Librarian" && (
                   <NavLink to="/librarian/publishers" className={({ isActive }) => `sidebar-item ${isActive ? "active" : ""}`}>Wydawnictwa</NavLink>
+                )}
+                {user.role === "Librarian" && (
+                  <NavLink to="/librarian/reports" className={({ isActive }) => `sidebar-item ${isActive ? "active" : ""}`}>Raporty</NavLink>
                 )}
             </>
           );

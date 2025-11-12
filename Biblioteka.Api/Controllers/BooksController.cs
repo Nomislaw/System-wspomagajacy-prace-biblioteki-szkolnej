@@ -22,24 +22,28 @@ public class BooksController : ControllerBase
     }
     
     [HttpGet("{id}")]
+    [Authorize]
     public async Task<IActionResult> GetBookById(int id)
     {
         var book = await _context.Books
             .Include(b => b.Author)
             .Include(b => b.Category)
             .Include(b => b.Publisher)
+            .Include(b => b.Reservations)
+            .Include(b => b.Borrows)
             .FirstOrDefaultAsync(b => b.Id == id);
 
         if (book == null)
             return NotFound();
 
-        var result = new
+        var result = new BookDto
         {
-            book.Id,
-            book.Title,
-            book.PublicationYear,
-            book.ISBN,
-            book.Quantity,
+            Id = book.Id,
+            Title = book.Title,
+            PublicationYear = book.PublicationYear,
+            ISBN = book.ISBN,
+            Quantity = book.Quantity,
+            Available = book.GetAvailableQuantity(),
             AuthorId = book.AuthorId,
             AuthorName = book.Author.FirstName + " " + book.Author.LastName,
             CategoryId = book.CategoryId,
@@ -53,12 +57,15 @@ public class BooksController : ControllerBase
 
 
     [HttpGet]
+    [Authorize]
     public async Task<IActionResult> GetAllBooks()
     {
         var books = await _context.Books
             .Include(b => b.Author)
             .Include(b => b.Category)
             .Include(b => b.Publisher)
+            .Include(b => b.Reservations)
+            .Include(b => b.Borrows)
             .Select(b => new BookDto
             {
                 Id = b.Id,
@@ -66,6 +73,7 @@ public class BooksController : ControllerBase
                 ISBN = b.ISBN,
                 PublicationYear = b.PublicationYear,
                 Quantity = b.Quantity,
+                Available = b.GetAvailableQuantity(),
                 AuthorId = b.AuthorId,
                 CategoryId = b.CategoryId,
                 PublisherId = b.PublisherId,

@@ -46,12 +46,12 @@ const Catalog: React.FC<CatalogProps> = ({ categoryId }) => {
 
   const getButtonState = (book: Book) => {
     const userReservation = reservations.find(r => r.bookId === book.id && r.reservationStatus === "Active");
-    const userBorrow = borrows.find(b => b.bookId === book.id && (b.borrowStatus === "Active" || b.borrowStatus === "Damaged" || b.borrowStatus === "Lost" || b.borrowStatus === "Overdue"));
-    const bookQuantity = books.find(b => b.id === book.id && b.quantity <=0 );
+    const userBorrow = borrows.find(b => b.bookId === book.id && (b.borrowStatus === "Active" || /*b.borrowStatus === "Damaged" || b.borrowStatus === "Lost" ||*/ b.borrowStatus === "Overdue"));
+    const bookAvailable = books.find(b => b.id === book.id && b.available <=0 );
 
     if (userBorrow) return { text: "Wypożyczone", disabled: true };
     if (userReservation) return { text: "Anuluj rezerwację", disabled: false };
-    if (bookQuantity) return { text: "Niedostępne", disabled: true};
+    if (bookAvailable) return { text: "Niedostępne", disabled: true};
     return { text: "Rezerwuj", disabled: false };
   };
 
@@ -111,7 +111,7 @@ const Catalog: React.FC<CatalogProps> = ({ categoryId }) => {
                 <p className={styles.p}><strong>Rok:</strong> {book.publicationYear}</p>
                 <p className={styles.p}><strong>Wydawnictwo:</strong> {book.publisherName || "—"}</p>
                 <p className={styles.p}><strong>ISBN:</strong> {book.isbn}</p>
-                <p className={styles.p}><strong>Dostępne:</strong> {book.quantity}</p>
+                <p className={styles.p}><strong>Dostępne:</strong> {book.available}</p>
 
                 <button
                   className={`${styles.reserveButton} ${text === "Anuluj rezerwację" ? styles.cancelButton : ""} 

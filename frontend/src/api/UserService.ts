@@ -8,14 +8,14 @@ export const UserService = {
   },
 
   updateProfile: async (userId: number, data: UpdateUserDto): Promise<User> => {
-    return fetchAPI(`/users/profile/${userId}`, {
+    return fetchAPI(`/users/${userId}`, {
       method: "PUT",
       body: JSON.stringify(data),
     });
   },
 
   updatePassword: async (userId: number, data: ChangePasswordDto): Promise<User> => {
-    return fetchAPI(`/users/profile/${userId}/change-password`, {
+    return fetchAPI(`/users/${userId}/change-password`, {
       method: "PUT",
       body: JSON.stringify(data),
     });
@@ -48,7 +48,7 @@ export const UserService = {
   },
 
   activeUser: async (userId: number): Promise<void> => {
-    return fetchAPI(`/users/active-profile/${userId}`, {
+    return fetchAPI(`/users/${userId}/active-profile`, {
       method: "PUT",
     });
   },

@@ -10,12 +10,8 @@ export const ReservationService = {
     return fetchAPI(`/reservations/user`, { method: "GET" });
   },
 
-  getReservationById: async (id: number): Promise<Reservation> => {
-    return fetchAPI(`/reservations/${id}`, { method: "GET" });
-  },
-
   reserveBook: async (id: number): Promise<void> => {
-    return fetchAPI(`/reservations/reserve/${id}`, { method: "POST" });
+    return fetchAPI(`/reservations/${id}`, { method: "POST" });
   },
 
   cancelReservationUser: async (id: number): Promise<void> => {
@@ -27,12 +23,7 @@ export const ReservationService = {
   },
 
   convertToBorrow: async (id: number): Promise<void> => {
-    return fetchAPI(`/reservations/convert/${id}`, { method: "POST" });
+    return fetchAPI(`/reservations/${id}/convert`, { method: "POST" });
   },
 
-  updateExpiredReservations: async (): Promise<void> => {
-    return fetchAPI(`/reservations/update-expired`, {
-      method: "PUT",
-    });
-  },
 };

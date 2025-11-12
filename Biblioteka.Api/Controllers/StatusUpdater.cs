@@ -33,7 +33,6 @@ public class StatusUpdater : BackgroundService
                 foreach (var r in overdueReservations)
                 {
                     r.ReservationStatus = ReservationStatus.Expired;
-                    r.Book.Quantity += 1;
                 }
                 
                 var overdueBorrows = await context.Borrows

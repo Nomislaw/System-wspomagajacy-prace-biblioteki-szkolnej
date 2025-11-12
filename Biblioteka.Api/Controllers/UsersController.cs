@@ -1,4 +1,5 @@
-﻿using Biblioteka.Api.Models;
+﻿using System.Security.Claims;
+using Biblioteka.Api.Models;
 using Biblioteka.Api.Services;
 using Microsoft.AspNetCore.Mvc;
 using System.Threading.Tasks;
@@ -24,22 +25,31 @@ namespace Biblioteka.Api.Controllers
         }
         
         [HttpGet("{id}")]
+        [Authorize]
         public async Task<ActionResult<User>> Get(int id)
         {
+            var userId = GetCurrentUserId();
+            if (id != userId)
+                return Forbid();
+            
             var entity = await _userService.GetByIdAsync(id);
             if (entity == null) return NotFound();
             return Ok(entity);
         }
         
-        [HttpPut("profile/{id}")]
+        [HttpPut("{id}")]
+        [Authorize]
         public async Task<ActionResult<User>> UpdateProfile(int id, [FromBody] UpdatePersonDto dto)
         {
+            var userId = GetCurrentUserId();
+            if (id != userId)
+                return Forbid();
             var updatedUser = await _userService.UpdateProfileAsync(id, dto);
             if (updatedUser == null) return NotFound(new ErrorResponse { Errors = new List<string> { "Użytkownik nie istnieje" } });
             return Ok(updatedUser);
         }
         
-        [HttpPut("active-profile/{id}")]
+        [HttpPut("{id}/active-profile")]
         [Authorize(Roles = "Administrator")]
         public async Task<ActionResult<User>> ActiveProfile(int id)
         {
@@ -55,9 +65,13 @@ namespace Biblioteka.Api.Controllers
             return Ok(user);
         }
         
-        [HttpPut("profile/{id}/change-password")]
+        [HttpPut("{id}/change-password")]
+        [Authorize]
         public async Task<IActionResult> ChangePassword(int id, [FromBody] ChangePasswordDto dto)
         {
+            var userId = GetCurrentUserId();
+            if (id != userId)
+                return Forbid();
             var user = await _userService.GetByIdAsync(id);
             if (user == null) return NotFound(new ErrorResponse { Errors = new List<string> { "Użytkownik nie istnieje" } });
 
@@ -102,7 +116,6 @@ namespace Biblioteka.Api.Controllers
         
             return Ok(new { message = "Token weryfikacyjny został pomyślnie wysłany." });
         }
-
         
         [HttpDelete("{id}")]
         [Authorize(Roles = "Administrator")]
@@ -110,6 +123,15 @@ namespace Biblioteka.Api.Controllers
         {
             await _userService.DeleteAsync(id);
             return Ok(new ErrorResponse { Errors = new List<string> { "Użytkownik usunięty" } });
+        }
+        
+        private int GetCurrentUserId()
+        {
+            var userIdClaim = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier);
+            if (userIdClaim == null)
+                throw new Exception("Nie udało się pobrać ID użytkownika z tokena");
+    
+            return int.Parse(userIdClaim.Value);
         }
     }
 }

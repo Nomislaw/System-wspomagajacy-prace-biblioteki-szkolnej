@@ -36,10 +36,10 @@ const MyBorrowsList: React.FC<MyBorrowsProps> = ({ statusFilter }) => {
         return "red";
       case BorrowStatus.Overdue:
         return "orange";
-      case BorrowStatus.Lost:
-        return "purple";
-      case BorrowStatus.Damaged:
-        return "brown";
+      // case BorrowStatus.Lost:
+      //   return "purple";
+      // case BorrowStatus.Damaged:
+      //   return "brown";
       default:
         return "black";
     }
@@ -133,7 +133,7 @@ const MyBorrowsList: React.FC<MyBorrowsProps> = ({ statusFilter }) => {
                 </span>
               </p>
 
-              {b.borrowStatus === BorrowStatus.Active && (
+              {/* {b.borrowStatus === BorrowStatus.Active && (
                 <div style={{ marginTop: "10px" }}>
                   <button
                     className={styles.lostButton}
@@ -153,7 +153,7 @@ const MyBorrowsList: React.FC<MyBorrowsProps> = ({ statusFilter }) => {
 
               {(b.borrowStatus === BorrowStatus.Lost || b.borrowStatus === BorrowStatus.Damaged) && (
                 <p className={`${styles.p} ${styles.infoText}`}><strong>Skontaktuj się z bibliotekarzem.</strong></p>
-                )}
+                )} */}
 
             </div>
           ))}

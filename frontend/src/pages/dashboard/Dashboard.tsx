@@ -25,7 +25,8 @@ import { CategoryService } from "../../api/CategoryService";
 import Catalog from "../../components/user/Catalog";
 import MyReservationsList from "../../components/user/MyReservationsList";
 import MyBorrowsList from "../../components/user/MyBorrowsList";
-import ReportsPage from "../../components/librarian/ReportsPage";
+import ReportPage from "../../components/librarian/ReportPage";
+
 
 interface DashboardProps {
   user: User;
@@ -71,7 +72,7 @@ const Dashboard: React.FC<DashboardProps> = ({ onLogout, user }) => {
                  <Route path="active" element={<MyBorrowsList statusFilter={[BorrowStatus.Active]}/>} />
                 <Route path="overdue" element={<MyBorrowsList statusFilter={[BorrowStatus.Overdue]}/>} />
                 <Route path="returned" element={<MyBorrowsList statusFilter={[BorrowStatus.Returned,BorrowStatus.ReturnedLate]}/>} />
-                <Route path="damaged" element={<MyBorrowsList statusFilter={[BorrowStatus.Damaged, BorrowStatus.Lost]}/>} />
+                {/* <Route path="damaged" element={<MyBorrowsList statusFilter={[BorrowStatus.Damaged, BorrowStatus.Lost]}/>} /> */}
                 
             </Route>
 
@@ -112,21 +113,15 @@ const Dashboard: React.FC<DashboardProps> = ({ onLogout, user }) => {
                     </Route>
 
                     <Route path="borrows" element={<ProtectedRoute user={user} allowedRoles={["Librarian"]}><BorrowList /></ProtectedRoute>} />
-                      {/* <Route path="borrows">
-                      <Route path="add" element={<ProtectedRoute user={user} allowedRoles={["Librarian"]}><AddAuthor /></ProtectedRoute>} />
-                    </Route> */}
-
+                     
                     <Route path="publishers" element={<ProtectedRoute user={user} allowedRoles={["Librarian"]}><PublisherList /></ProtectedRoute>} />
                       <Route path="publishers">
                       <Route path="add" element={<ProtectedRoute user={user} allowedRoles={["Librarian"]}><AddPublisher /></ProtectedRoute>} />
                     </Route>
 
                     <Route path="reservations" element={<ProtectedRoute user={user} allowedRoles={["Librarian"]}><ReservationList /></ProtectedRoute>} />
-                      {/* <Route path="reservations">
-                      <Route path="add" element={<ProtectedRoute user={user} allowedRoles={["Librarian"]}><AddAuthor /></ProtectedRoute>} />
-                    </Route> */}
-
-                    <Route path="reports" element={<ProtectedRoute user={user} allowedRoles={["Librarian"]}><ReportsPage /></ProtectedRoute>} />
+                    
+                    <Route path="reports" element={<ProtectedRoute user={user} allowedRoles={["Librarian"]}><ReportPage /></ProtectedRoute>} />
             </Route>
 
 

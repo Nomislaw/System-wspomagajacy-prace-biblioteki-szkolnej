@@ -9,7 +9,7 @@ export const AuthorService = {
   },
 
   updateAuthor: async (authorId: number, data: UpdatePersonDto): Promise<Author> => {
-      return fetchAPI(`/authors/profile/${authorId}`, {
+      return fetchAPI(`/authors/${authorId}`, {
         method: "PUT",
         body: JSON.stringify(data),
       });

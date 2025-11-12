@@ -43,7 +43,6 @@ const ReservationList: React.FC = () => {
     if (!window.confirm("Czy chcesz przekształcić tę rezerwację w wypożyczenie?")) return;
     try {
       await ReservationService.convertToBorrow(id);
-      alert("Rezerwacja została przekształcona w wypożyczenie");
       fetchData();
     } catch (err) {
       console.error(err);

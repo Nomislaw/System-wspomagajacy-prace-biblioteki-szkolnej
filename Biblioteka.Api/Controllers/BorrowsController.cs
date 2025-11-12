@@ -43,6 +43,7 @@ namespace Biblioteka.Api.Controllers
             return Ok(borrows);
         }
         [HttpGet("user")]
+        [Authorize]
         public async Task<IActionResult> GetAllUserBorrows()
         {
             var userId = GetCurrentUserId();
@@ -70,9 +71,10 @@ namespace Biblioteka.Api.Controllers
 
         
         [HttpPut("{id}/status")]
+        [Authorize(Roles="Librarian")]
         public async Task<IActionResult> UpdateBorrowStatus(int id, [FromBody] BorrowStatus newStatus)
         {
-            var borrow = await _context.Borrows.Include(r => r.Book).FirstOrDefaultAsync(r => r.Id == id);
+            var borrow = await _context.Borrows.FirstOrDefaultAsync(r => r.Id == id);
             if (borrow == null)
                 return NotFound(new ErrorResponse { Errors = new List<string> { "Nie znaleziono wypożyczenia." } });
 
@@ -80,42 +82,17 @@ namespace Biblioteka.Api.Controllers
                 return BadRequest(new ErrorResponse { Errors = new List<string> { "Wypożyczenie już ma ten status." } });
 
             borrow.BorrowStatus = newStatus;
-
-            if (newStatus == BorrowStatus.Canceled)
-            {
-                borrow.Book.Quantity += 1;
-            }
             
             await _context.SaveChangesAsync();
 
             return Ok(new { message = $"Status wypożyczenia został zmieniony na {newStatus}." });
         }
         
-        // [HttpPut("update-overdue")]
-        // [Authorize(Roles = "Librarian")]
-        // public async Task<IActionResult> MarkOverdueBorrows()
-        // {
-        //     var now = DateTime.Now;
-        //     
-        //     var overdue = await _context.Borrows
-        //         .Where(b => b.BorrowStatus == BorrowStatus.Active && b.TerminDate < now && b.ReturnDate == null)
-        //         .ToListAsync();
-        //
-        //     foreach (var b in overdue)
-        //     {
-        //         b.BorrowStatus = BorrowStatus.Overdue;
-        //     }
-        //
-        //     await _context.SaveChangesAsync();
-        //
-        //     return Ok(new { message = $"Zaktualizowano {overdue.Count} wypożyczeń jako przeterminowane." });
-        // }
-        
         [HttpPut("{id}/set-return-date")]
         [Authorize(Roles = "Librarian")]
         public async Task<IActionResult> ReturnBorrow(int id)
         {
-            var borrow = await _context.Borrows.Include(r => r.Book).FirstOrDefaultAsync(r => r.Id == id);
+            var borrow = await _context.Borrows.FirstOrDefaultAsync(r => r.Id == id);
             
             if (borrow == null)
                 return NotFound(new ErrorResponse { Errors = new List<string> { "Nie znaleziono wypożyczenia." } });
@@ -129,8 +106,6 @@ namespace Biblioteka.Api.Controllers
                 borrow.BorrowStatus = BorrowStatus.ReturnedLate;
             else
                 borrow.BorrowStatus = BorrowStatus.Returned;
-            
-            borrow.Book.Quantity += 1;
 
             await _context.SaveChangesAsync();
 

@@ -1,24 +1,19 @@
 import { fetchAPI } from "./api"; 
 
 export const ReportService = {
-  getUserReport: async (fromDate: string, toDate: string, userId?: number | string) => {
-    const query = new URLSearchParams({
-      fromDate,  
-      toDate,    
-      ...(userId && userId !== "all" ? { userId: String(userId) } : {}),
-    });
-console.log("Wysyłam zapytanie do backendu:", `/reports/user-report?${query.toString()}`);
+  getUserReport: async (fromDate?: string, toDate?: string, userId?: number | string) => {
+    const query: Record<string, string> = {};
+    if (fromDate) query.fromDate = fromDate; 
+    if (toDate) query.toDate = toDate;
+    if (userId && userId !== "all") query.userId = String(userId);
 
-    try {
-      const response = await fetchAPI(`/reports/user-report?${query.toString()}`, {
-        method: "GET",
-      });
-      return response;
-    } catch (error) {
-      console.error("Błąd pobierania raportu:", error);
-      throw error;
-    }
+    const queryString = new URLSearchParams(query).toString();
+
+    return await fetchAPI(`/reports/user-activity${queryString ? `?${queryString}` : ""}`, { method: "GET" });
+  },
+
+   getBooksReport: async () => {
+    return await fetchAPI(`/reports/book-state`, { method: "GET" });
   },
 };
-
 

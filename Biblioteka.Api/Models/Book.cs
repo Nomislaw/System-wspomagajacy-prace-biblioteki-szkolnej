@@ -22,4 +22,14 @@ public class Book
     public int CategoryId { get; set; }
     public virtual Category Category { get; set; } = null!;
     
+    public ICollection<Reservation>? Reservations { get; set; }
+    public ICollection<Borrow>? Borrows { get; set; }
+    public int GetAvailableQuantity()
+    {
+        int reserved = Reservations?.Count(r => r.ReservationStatus == ReservationStatus.Active) ?? 0;
+        int borrowed = Borrows?.Count(b => b.BorrowStatus is BorrowStatus.Active or BorrowStatus.Overdue) ?? 0;
+
+        int available = Quantity - reserved - borrowed;
+        return available < 0 ? 0 : available;
+    }
 }

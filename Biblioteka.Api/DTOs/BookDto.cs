@@ -11,6 +11,7 @@ public class BookDto
     public string ISBN { get; set; } = string.Empty;
     public int PublicationYear { get; set; }
     public int Quantity { get; set; }
+    public int Available { get; set; }
     public int AuthorId { get; set; }
     public int CategoryId { get; set; }
     public int PublisherId { get; set; }

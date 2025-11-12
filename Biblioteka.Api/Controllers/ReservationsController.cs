@@ -43,6 +43,7 @@ public class ReservationsController : ControllerBase
         return Ok(reservations);
     }
     [HttpGet("user")]
+    [Authorize]
     public async Task<IActionResult> GetAllUserReservations()
     {
         var userId = GetCurrentUserId();
@@ -68,7 +69,8 @@ public class ReservationsController : ControllerBase
     }
 
     
-    [HttpPost("reserve/{bookId}")]
+    [HttpPost("{bookId}")]
+    [Authorize]
     public async Task<IActionResult> ReserveBook(int bookId)
     {
         var userId = GetCurrentUserId();
@@ -83,7 +85,7 @@ public class ReservationsController : ControllerBase
 
 
         var book = await _context.Books.FindAsync(bookId);
-        if (book == null || book.Quantity <= 0)
+        if (book == null || book.GetAvailableQuantity() <= 0)
             return BadRequest("Książka niedostępna");
 
         var existingReservation = await _context.Reservations
@@ -102,46 +104,49 @@ public class ReservationsController : ControllerBase
         };
 
         _context.Reservations.Add(reservation);
-        book.Quantity -= 1;
         await _context.SaveChangesAsync();
 
-        return Ok(reservation);
+        return Ok(new {message = "Zarezerwowano książkę."});
     }
     
     [HttpPut("{bookId}/cancel-user")]
+    [Authorize]
     public async Task<IActionResult> CancelReservationUser(int bookId)
     {
         var userId = GetCurrentUserId();
     
         var reservation = await _context.Reservations
-            .Include(r => r.Book) 
             .FirstOrDefaultAsync(r => r.BookId == bookId && r.UserId == userId && r.ReservationStatus == ReservationStatus.Active);
     
         if (reservation == null)
             return NotFound(new ErrorResponse { Errors = new List<string> { "Rezerwacja nie istnieje." } });
     
         reservation.ReservationStatus = ReservationStatus.Canceled;
-        reservation.Book.Quantity += 1;
         await _context.SaveChangesAsync();
     
-        return Ok(reservation);
+        return Ok(new {message = "Anulowano rezerwację."});
     }
 
     [HttpPut("{id}/cancel")]
+    [Authorize]
     public async Task<IActionResult> CancelReservation(int id)
     {
+        var userId = GetCurrentUserId();
+        var isLibrarian = User.IsInRole("Librarian");
+        
         var reservation = await _context.Reservations
-            .Include(r => r.Book) 
             .FirstOrDefaultAsync( r => r.Id == id && r.ReservationStatus == ReservationStatus.Active);
         if (reservation == null) return NotFound();
+        
+        if (reservation.UserId != userId && !isLibrarian)
+            return Forbid();
 
         reservation.ReservationStatus = ReservationStatus.Canceled;
-        reservation.Book.Quantity += 1;
         await _context.SaveChangesAsync();
-        return Ok(reservation);
+        return Ok(new {message = "Anulowano rezerwację."});
     }
 
-    [HttpPost("convert/{reservationId}")]
+    [HttpPost("{reservationId}/convert")]
     [Authorize(Roles = "Librarian")]
     public async Task<IActionResult> ConvertToBorrow(int reservationId)
     {
@@ -171,28 +176,6 @@ public class ReservationsController : ControllerBase
 
         return Ok(new { message = "Utworzono wypożyczenie." });
     }
-    
-    // [HttpPut("update-expired")]
-    // public async Task<IActionResult> MarkExpiredReservations()
-    // {
-    //     var now = DateTime.Now;
-    //
-    //     var overdue = await _context.Reservations
-    //         .Include(r => r.Book)
-    //         .Where(b => b.ReservationStatus == ReservationStatus.Active && b.ExpirationDate < now)
-    //         .ToListAsync();
-    //
-    //     foreach (var b in overdue)
-    //     {
-    //         b.ReservationStatus = ReservationStatus.Expired;
-    //         b.Book.Quantity += 1;
-    //     }
-    //
-    //     await _context.SaveChangesAsync();
-    //
-    //     return Ok(new { message = $"Zaktualizowano {overdue.Count} rezerwacji na przeterminowane." });
-    // }
-    
     private int GetCurrentUserId()
     {
         var userIdClaim = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier);

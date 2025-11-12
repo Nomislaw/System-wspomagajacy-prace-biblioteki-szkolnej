@@ -15,8 +15,8 @@ export enum BorrowStatus {
   ReturnedLate = "ReturnedLate",
   Canceled = "Canceled",
   Overdue = "Overdue",
-  Lost = "Lost",
-  Damaged = "Damaged"
+  // Lost = "Lost",
+  // Damaged = "Damaged"
 }
 
 
@@ -45,6 +45,7 @@ export interface Book {
   publicationYear: number;
   isbn: string;
   quantity: number;
+  available: number;
   authorId: number;
   categoryId: number;
   publisherId: number;

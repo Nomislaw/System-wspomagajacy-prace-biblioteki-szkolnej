@@ -21,12 +21,6 @@ export const BorrowService = {
     });
   },
 
-  updateOverdueBorrows: async (): Promise<void> => {
-    return fetchAPI(`/borrows/update-overdue`, {
-      method: "PUT",
-    });
-  },
-
   setBorrowReturnDate: async (id: number): Promise<void> => {
     return fetchAPI(`/borrows/${id}/set-return-date`, {
       method: "PUT",

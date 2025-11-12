@@ -26,7 +26,7 @@ public class AuthorsController : ControllerBase
     }
     
     
-    [HttpPut("profile/{id}")]
+    [HttpPut("{id}")]
     [Authorize(Roles = "Librarian")]
     public async Task<ActionResult<Author>> UpdateProfile(int id, [FromBody] Author dto)
     {

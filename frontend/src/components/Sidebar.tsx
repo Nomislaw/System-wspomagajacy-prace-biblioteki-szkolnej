@@ -41,7 +41,7 @@ const Sidebar: React.FC<SidebarProps> = ({ user }) => {
             <NavLink to="/my-borrows/active" className={({ isActive }) => `sidebar-item ${isActive ? "active" : ""}`}>Aktywne</NavLink>
             <NavLink to="/my-borrows/overdue" className={({ isActive }) => `sidebar-item ${isActive ? "active" : ""}`}>Zaległe</NavLink>
             <NavLink to="/my-borrows/returned" className={({ isActive }) => `sidebar-item ${isActive ? "active" : ""}`}>Zwrócone</NavLink>
-            <NavLink to="/my-borrows/damaged" className={({ isActive }) => `sidebar-item ${isActive ? "active" : ""}`}>Zgubione/Uszkodzone</NavLink>
+            {/* <NavLink to="/my-borrows/damaged" className={({ isActive }) => `sidebar-item ${isActive ? "active" : ""}`}>Zgubione/Uszkodzone</NavLink> */}
           </>
         );
       case "catalog":
@@ -95,7 +95,7 @@ const Sidebar: React.FC<SidebarProps> = ({ user }) => {
                   <NavLink to="/librarian/publishers" className={({ isActive }) => `sidebar-item ${isActive ? "active" : ""}`}>Wydawnictwa</NavLink>
                 )}
                 {user.role === "Librarian" && (
-                  <NavLink to="/librarian/reports" className={({ isActive }) => `sidebar-item ${isActive ? "active" : ""}`}>Raporty</NavLink>
+                  <NavLink to="/librarian/reports" className={({ isActive }) => `sidebar-item ${isActive ? "active" : ""}`}>Generowanie raportów</NavLink>
                 )}
             </>
           );

@@ -6,7 +6,7 @@ public enum BorrowStatus
     Returned = 1,
     ReturnedLate = 2,
     Canceled = 3,
-    Overdue = 4,
-    Lost = 5,
-    Damaged = 6
+    Overdue = 4
+    // Lost = 5,
+    // Damaged = 6
 }

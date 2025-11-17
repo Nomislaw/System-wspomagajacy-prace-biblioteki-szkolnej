@@ -15,8 +15,6 @@ export enum BorrowStatus {
   ReturnedLate = "ReturnedLate",
   Canceled = "Canceled",
   Overdue = "Overdue",
-  // Lost = "Lost",
-  // Damaged = "Damaged"
 }
 
 

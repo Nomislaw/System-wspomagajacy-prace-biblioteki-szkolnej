@@ -60,8 +60,6 @@ const Dashboard: React.FC<DashboardProps> = ({ onLogout, user }) => {
             <Route path="/my-reservations/" element={<Navigate to="active" />}/>
             <Route path="/my-reservations/">
                 <Route path="active" element={<MyReservationsList statusFilter={ReservationStatus.Active}/>} />
-                {/* <Route path="completed" element={<MyReservationsList statusFilter={ReservationStatus.Completed}/>} /> */}
-                {/* <Route path="canceled" element={<MyReservationsList statusFilter={ReservationStatus.Canceled}/>} /> */}
                 <Route path="expired" element={<MyReservationsList statusFilter={ReservationStatus.Expired}/>} />
               
             </Route>
@@ -71,9 +69,7 @@ const Dashboard: React.FC<DashboardProps> = ({ onLogout, user }) => {
             <Route path="/my-borrows/">
                  <Route path="active" element={<MyBorrowsList statusFilter={[BorrowStatus.Active]}/>} />
                 <Route path="overdue" element={<MyBorrowsList statusFilter={[BorrowStatus.Overdue]}/>} />
-                <Route path="returned" element={<MyBorrowsList statusFilter={[BorrowStatus.Returned,BorrowStatus.ReturnedLate]}/>} />
-                {/* <Route path="damaged" element={<MyBorrowsList statusFilter={[BorrowStatus.Damaged, BorrowStatus.Lost]}/>} /> */}
-                
+                <Route path="returned" element={<MyBorrowsList statusFilter={[BorrowStatus.Returned,BorrowStatus.ReturnedLate]}/>} />                
             </Route>
 
 

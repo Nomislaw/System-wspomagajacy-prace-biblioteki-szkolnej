@@ -36,10 +36,6 @@ const MyBorrowsList: React.FC<MyBorrowsProps> = ({ statusFilter }) => {
         return "red";
       case BorrowStatus.Overdue:
         return "orange";
-      // case BorrowStatus.Lost:
-      //   return "purple";
-      // case BorrowStatus.Damaged:
-      //   return "brown";
       default:
         return "black";
     }
@@ -65,19 +61,6 @@ const MyBorrowsList: React.FC<MyBorrowsProps> = ({ statusFilter }) => {
   const filteredBorrows = borrows.filter((b) =>
     statusFilter.includes(b.borrowStatus)
   );
-
-  const updateBorrowStatus = async (borrowId: number, newStatus: BorrowStatus) => {
-    try {
-        if (!window.confirm("Na pewno chcesz zgłosić problem ze swoją książką?")) return;
-      await BorrowService.updateBorrowStatus(borrowId, newStatus); 
-      setBorrows((prev) =>
-        prev.map((b) => (b.id === borrowId ? { ...b, borrowStatus: newStatus } : b))
-      );
-    } catch (err) {
-      console.error(err);
-      alert("Błąd podczas aktualizacji statusu wypożyczenia");
-    }
-  };
 
   return (
     <div className={styles.container}>
@@ -132,29 +115,6 @@ const MyBorrowsList: React.FC<MyBorrowsProps> = ({ statusFilter }) => {
                   {b.borrowStatus}
                 </span>
               </p>
-
-              {/* {b.borrowStatus === BorrowStatus.Active && (
-                <div style={{ marginTop: "10px" }}>
-                  <button
-                    className={styles.lostButton}
-                    onClick={() => updateBorrowStatus(b.id, BorrowStatus.Lost)}
-                  >
-                    Zgłoś zgubienie
-                  </button>
-                  <button
-                    className={styles.damagedButton}
-                    onClick={() => updateBorrowStatus(b.id, BorrowStatus.Damaged)}
-                    style={{ marginLeft: "10px" }}
-                  >
-                    Zgłoś uszkodzenie
-                  </button>
-                </div>
-              )}
-
-              {(b.borrowStatus === BorrowStatus.Lost || b.borrowStatus === BorrowStatus.Damaged) && (
-                <p className={`${styles.p} ${styles.infoText}`}><strong>Skontaktuj się z bibliotekarzem.</strong></p>
-                )} */}
-
             </div>
           ))}
         </div>

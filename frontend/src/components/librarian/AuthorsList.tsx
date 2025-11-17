@@ -8,7 +8,7 @@ const AuthorsList: React.FC = () => {
   const [authors, setAuthors] = useState<Author[]>([]);
   const [editingId, setEditingId] = useState<number | null>(null);
   const [editedAuthor, setEditedAuthor] = useState<Author | null>(null);
-  const [searchLastName, setSearchLastName] = useState(""); // 👈 nowe pole do wyszukiwania
+  const [searchLastName, setSearchLastName] = useState(""); 
   const navigate = useNavigate();
 
   const fetchAuthors = async () => {

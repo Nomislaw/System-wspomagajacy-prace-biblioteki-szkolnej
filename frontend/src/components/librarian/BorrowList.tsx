@@ -36,10 +36,6 @@ const BorrowList: React.FC = () => {
       return 6;
     case BorrowStatus.Canceled:
       return 7;
-    // case BorrowStatus.Lost:
-    //   return 3;
-    // case BorrowStatus.Damaged:
-    //   return 4;
     default:
       return 99;
   }
@@ -92,10 +88,6 @@ const getStatusName = (status: any): string => {
       return "Anulowane";
     case BorrowStatus.Overdue:
       return "Opóźnione";
-    // case BorrowStatus.Lost:
-    //   return "Zagubione";
-    // case BorrowStatus.Damaged:
-    //   return "Uszkodzone";
     default:
       return "Nieznany";
   }
@@ -113,10 +105,6 @@ const getStatusColor = (status: any): string => {
       return "red";
     case BorrowStatus.Overdue:
       return "orange";
-    // case BorrowStatus.Lost:
-    //   return "purple";
-    // case BorrowStatus.Damaged:
-    //   return "brown";
     default:
       return "black";
   }
@@ -187,9 +175,7 @@ const getStatusColor = (status: any): string => {
                     </td>
                     <td>
                       {(b.borrowStatus === BorrowStatus.Active ||
-                        b.borrowStatus === BorrowStatus.Overdue /*||
-                        b.borrowStatus === BorrowStatus.Lost ||
-                        b.borrowStatus === BorrowStatus.Damaged*/) && (
+                        b.borrowStatus === BorrowStatus.Overdue) && (
                         <select
                           className={styles.select}
                           onChange={(e) =>
@@ -200,11 +186,8 @@ const getStatusColor = (status: any): string => {
                           <option value="" disabled>
                             Zmień status
                           </option>
-                          {/* <option value="Active">Aktywny</option> */}
                           <option value="Returned">Zwrócony</option>
                           <option value="Canceled">Anulowany</option>
-                          {/* <option value="Lost">Zagubiony</option>
-                          <option value="Damaged">Uszkodzony</option> */}
                         </select>
                       )}
                     </td>

@@ -46,7 +46,7 @@ const Catalog: React.FC<CatalogProps> = ({ categoryId }) => {
 
   const getButtonState = (book: Book) => {
     const userReservation = reservations.find(r => r.bookId === book.id && r.reservationStatus === "Active");
-    const userBorrow = borrows.find(b => b.bookId === book.id && (b.borrowStatus === "Active" || /*b.borrowStatus === "Damaged" || b.borrowStatus === "Lost" ||*/ b.borrowStatus === "Overdue"));
+    const userBorrow = borrows.find(b => b.bookId === book.id && (b.borrowStatus === "Active" || b.borrowStatus === "Overdue"));
     const bookAvailable = books.find(b => b.id === book.id && b.available <=0 );
 
     if (userBorrow) return { text: "Wypożyczone", disabled: true };

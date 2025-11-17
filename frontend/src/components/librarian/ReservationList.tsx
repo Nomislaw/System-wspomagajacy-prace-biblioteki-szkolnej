@@ -13,7 +13,6 @@ const ReservationList: React.FC = () => {
   const fetchData = async () => {
     setLoading(true);
     try {
-      //await ReservationService.updateExpiredReservations();
       const data = await ReservationService.getAllReservations();
       setReservations(data);
     } catch (err) {

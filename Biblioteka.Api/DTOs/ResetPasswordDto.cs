@@ -6,8 +6,6 @@ public class ResetPasswordDto
 {
     public string Token { get; set; }
     [Required]
-    [MinLength(8, ErrorMessage = "Hasło musi mieć co najmniej 8 znaków.")]
-    [RegularExpression(@"^(?=(?:.*\d){3,})(?=.*[!@#$%^&*(),.?""{}|<>])(?=.*[A-Z]).*$",
-        ErrorMessage = "Hasło musi zawierać co najmniej 3 cyfry, 1 znak specjalny i 1 wielką literę.")]
+    [PasswordCheck(MinDigits = 3, MinLength = 8)]
     public string NewPassword { get; set; }
 }

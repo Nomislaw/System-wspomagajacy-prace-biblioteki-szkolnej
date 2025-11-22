@@ -6,6 +6,7 @@ import { useNavigate } from "react-router-dom";
 
 const AddUser: React.FC = () => {
   const [newUser, setNewUser] = useState<Partial<User>>({});
+  const [repeatPassword, setRepeatPassword] = useState<string>("");
    const navigate = useNavigate();
 
   const handleAddUser = async (e: React.FormEvent) => {
@@ -13,6 +14,11 @@ const AddUser: React.FC = () => {
 
     if (!newUser.email || !newUser.password || !newUser.firstName || !newUser.lastName) {
       alert("Wypełnij wszystkie pola: imię, nazwisko, email i hasło");
+      return;
+    }
+
+    if (newUser.password !== repeatPassword) {
+      alert("Hasła muszą być identyczne!");
       return;
     }
 
@@ -56,6 +62,12 @@ const AddUser: React.FC = () => {
               placeholder="Hasło"
               value={newUser.password || ""}
               onChange={(e) => setNewUser({ ...newUser, password: e.target.value })}
+            />
+             <input
+              type="password"
+              placeholder="Powtórz hasło"
+              value={repeatPassword}
+              onChange={(e) => setRepeatPassword(e.target.value)}
             />
             <button className={styles.submit} type="submit">Dodaj użytkownika</button>
           </form>

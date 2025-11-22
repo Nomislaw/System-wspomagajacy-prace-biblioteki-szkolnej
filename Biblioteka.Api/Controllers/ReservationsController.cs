@@ -27,13 +27,14 @@ public class ReservationsController : ControllerBase
         var reservations = await _context.Reservations
             .Include(r => r.Book)
             .Include(r => r.User)
+            .ThenInclude(r=>r.SchoolClass)
             .Select(r => new ReservationDto
             {
                 Id = r.Id,
                 BookId = r.BookId,
                 BookTitle = r.Book.Title,
                 UserId = r.UserId,
-                UserName = r.User.FirstName + "  " + r.User.LastName,
+                UserName = r.User.FirstName + "  " + r.User.LastName + (" " + (r.User.SchoolClass != null ? r.User.SchoolClass.ClassName : "")),
                 ReservationDate = r.ReservationDate,
                 ExpirationDate = r.ExpirationDate,
                 ReservationStatus = r.ReservationStatus
@@ -84,9 +85,12 @@ public class ReservationsController : ControllerBase
         }
 
 
-        var book = await _context.Books.FindAsync(bookId);
+        var book = await _context.Books
+            .Include(b => b.BookCopies) 
+            .FirstOrDefaultAsync(b => b.Id == bookId);
+        
         if (book == null || book.GetAvailableQuantity() <= 0)
-            return BadRequest("Książka niedostępna");
+            return BadRequest(new ErrorResponse { Errors = new List<string> { "Książka jest niedostępna." } });
 
         var existingReservation = await _context.Reservations
             .FirstOrDefaultAsync(r => r.BookId == bookId && r.UserId == userId && r.ReservationStatus == ReservationStatus.Active);
@@ -145,37 +149,53 @@ public class ReservationsController : ControllerBase
         await _context.SaveChangesAsync();
         return Ok(new {message = "Anulowano rezerwację."});
     }
-
+    
     [HttpPost("{reservationId}/convert")]
     [Authorize(Roles = "Librarian")]
-    public async Task<IActionResult> ConvertToBorrow(int reservationId)
+    public async Task<IActionResult> ConvertToBorrow(int reservationId, [FromBody] BarcodeRequest request)
     {
         var reservation = await _context.Reservations
             .Include(r => r.Book)
+            .ThenInclude(b => b.BookCopies)
             .Include(r => r.User)
             .FirstOrDefaultAsync(r => r.Id == reservationId);
 
-        if (reservation == null) return NotFound(new ErrorResponse { Errors = new List<string> { "Nie znaleziono rezerwacji" } });
+        if (reservation == null)
+            return NotFound(new ErrorResponse { Errors = new List<string> { "Nie znaleziono rezerwacji" } });
 
         if (reservation.ReservationStatus != ReservationStatus.Active)
             return BadRequest(new ErrorResponse { Errors = new List<string> { "Rezerwacja nie jest aktywna" } });
+        
+        var copy = reservation.Book.BookCopies
+            ?.FirstOrDefault(c => c.BarCode == request.Barcode);
 
+        if (copy == null)
+            return BadRequest(new ErrorResponse { Errors =  new List<string>{ "Kod kreskowy nie pasuje do tej książki" } });
+
+        if (!copy.IsAvailable)
+            return BadRequest(new ErrorResponse { Errors =  new List<string>{ "Egzemplarz jest już wypożyczony" } });
+        
         var borrow = new Borrow
         {
-            BookId = reservation.BookId,
+            BookCopyId = copy.Id,             
             UserId = reservation.UserId,
             BorrowDate = DateTime.Now,
             TerminDate = DateTime.Now.AddDays(14),
-            ReturnDate = null,
+            BorrowStatus = BorrowStatus.Active,
             ReservationId = reservation.Id
         };
-
+        
         reservation.ReservationStatus = ReservationStatus.Completed;
+        
+        copy.IsAvailable = false;
+
         _context.Borrows.Add(borrow);
         await _context.SaveChangesAsync();
 
-        return Ok(new { message = "Utworzono wypożyczenie." });
+        return Ok(new { message = "Wypożyczono egzemplarz." });
     }
+
+
     private int GetCurrentUserId()
     {
         var userIdClaim = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier);

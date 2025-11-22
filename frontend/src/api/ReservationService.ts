@@ -22,8 +22,11 @@ export const ReservationService = {
     return fetchAPI(`/reservations/${id}/cancel`, { method: "PUT" });
   },
 
-  convertToBorrow: async (id: number): Promise<void> => {
-    return fetchAPI(`/reservations/${id}/convert`, { method: "POST" });
-  },
+  convertToBorrow: async (id: number, barCode: string): Promise<void> => {
+  return fetchAPI(`/reservations/${id}/convert`, {
+    method: "POST",
+    body: JSON.stringify({ barCode })
+  });
+},
 
 };

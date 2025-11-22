@@ -9,6 +9,7 @@ public class BookDto
     [Required]
     [StringLength(13, MinimumLength = 13, ErrorMessage = "ISBN musi mieć dokładnie 13 znaków.")]
     public string ISBN { get; set; } = string.Empty;
+    public string Description { get; set; } = string.Empty;
     public int PublicationYear { get; set; }
     public int Quantity { get; set; }
     public int Available { get; set; }

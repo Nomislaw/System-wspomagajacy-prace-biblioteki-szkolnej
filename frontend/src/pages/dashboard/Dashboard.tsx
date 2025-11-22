@@ -9,23 +9,29 @@ import AddUser from "../../components/admin/AddUser";
 import { User,Category, ReservationStatus, BorrowStatus } from "../../types/Index";
 import "./index.css";
 import ProtectedRoute from "../../components/ProtectedRoute";
-import AuthorsList from "../../components/librarian/AuthorsList";
-import AddAuthor from "../../components/librarian/AddAuthor";
-import AddCategory from "../../components/librarian/AddCategory";
-import CategoryList from "../../components/librarian/CategoryList";
-import PublisherList from "../../components/librarian/PublisherList";
-import AddPublisher from "../../components/librarian/AddPublisher";
+import AuthorsList from "../../components/librarian/bookProperties/AuthorsList";
+import AddAuthor from "../../components/librarian/bookProperties/AddAuthor";
+import AddCategory from "../../components/librarian/bookProperties/AddCategory";
+import CategoryList from "../../components/librarian/bookProperties/CategoryList";
+import PublisherList from "../../components/librarian/bookProperties/PublisherList";
+import AddPublisher from "../../components/librarian/bookProperties/AddPublisher";
 
-import AddBook from "../../components/librarian/AddBook";
-import BookList from "../../components/librarian/BookList";
-import EditBook from "../../components/librarian/EditBook";
-import ReservationList from "../../components/librarian/ReservationList";
-import BorrowList from "../../components/librarian/BorrowList";
+import AddBook from "../../components/librarian/book/AddBook";
+import BookList from "../../components/librarian/book/BookList";
+import EditBook from "../../components/librarian/book/EditBook";
+import ReservationList from "../../components/librarian/userDependenties/ReservationList";
+import BorrowList from "../../components/librarian/userDependenties/BorrowList";
 import { CategoryService } from "../../api/CategoryService";
 import Catalog from "../../components/user/Catalog";
 import MyReservationsList from "../../components/user/MyReservationsList";
 import MyBorrowsList from "../../components/user/MyBorrowsList";
 import ReportPage from "../../components/librarian/ReportPage";
+import BookCopiesList from "../../components/librarian/book/BookCopiesList";
+import AddBookCopy from "../../components/librarian/book/AddBookCopy";
+import SchoolClassesList from "../../components/librarian/userDependenties/SchoolClassesList";
+import AddSchoolClass from "../../components/librarian/userDependenties/AddSchoolClass";
+import StudentsList from "../../components/librarian/userDependenties/StudentsList";
+import AddStudent from "../../components/librarian/userDependenties/AddStudent";
 
 
 interface DashboardProps {
@@ -101,6 +107,10 @@ const Dashboard: React.FC<DashboardProps> = ({ onLogout, user }) => {
                       <Route path="books">
                       <Route path="add" element={<ProtectedRoute user={user} allowedRoles={["Librarian"]}><AddBook /></ProtectedRoute>} />
                       <Route path="edit/:id" element={<ProtectedRoute user={user} allowedRoles={["Librarian"]}><EditBook /></ProtectedRoute>} />
+                      <Route path=":id/copies" element={<ProtectedRoute user={user} allowedRoles={["Librarian"]}><BookCopiesList /></ProtectedRoute>} />
+                      <Route path=":id/copies">
+                        <Route path="add" element={<ProtectedRoute user={user} allowedRoles={["Librarian"]}><AddBookCopy /></ProtectedRoute>} />
+                      </Route>
                     </Route>
 
                     <Route path="categories" element={<ProtectedRoute user={user} allowedRoles={["Librarian"]}><CategoryList /></ProtectedRoute>} />
@@ -116,6 +126,15 @@ const Dashboard: React.FC<DashboardProps> = ({ onLogout, user }) => {
                     </Route>
 
                     <Route path="reservations" element={<ProtectedRoute user={user} allowedRoles={["Librarian"]}><ReservationList /></ProtectedRoute>} />
+
+                    <Route path="school-classes" element={<ProtectedRoute user={user} allowedRoles={["Librarian"]}><SchoolClassesList /></ProtectedRoute>} />
+                    <Route path="school-classes">
+                      <Route path="add" element={<ProtectedRoute user={user} allowedRoles={["Librarian"]}><AddSchoolClass /></ProtectedRoute>} />
+                      <Route path=":id/students" element={<ProtectedRoute user={user} allowedRoles={["Librarian"]}><StudentsList /></ProtectedRoute>} />
+                      <Route path=":id/students">
+                        <Route path="add" element={<ProtectedRoute user={user} allowedRoles={["Librarian"]}><AddStudent /></ProtectedRoute>} />
+                      </Route>
+                    </Route>
                     
                     <Route path="reports" element={<ProtectedRoute user={user} allowedRoles={["Librarian"]}><ReportPage /></ProtectedRoute>} />
             </Route>

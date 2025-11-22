@@ -1,0 +1,118 @@
+import React, { useEffect, useState } from "react";
+import { useParams, useNavigate, useLocation } from "react-router-dom";
+import { User } from "../../../types/Index";
+import { SchoolClassService } from "../../../api/SchoolClassService";
+import styles from "./../Librarian.module.css";
+
+const StudentsList: React.FC = () => {
+  const { id } = useParams(); 
+  const classId = Number(id);
+  const navigate = useNavigate();
+
+  const location = useLocation();
+  const { className } = location.state as { className: string };
+
+  const [students, setStudents] = useState<User[]>([]);
+  const [searchName, setSearchName] = useState("");
+
+  const fetchStudents = async () => {
+    try {
+      const res = await SchoolClassService.getStudents(classId);
+      setStudents(res);
+    } catch (err) {
+      console.error(err);
+    }
+  };
+
+  const handleRemoveClass = async (userId: number) => {
+
+  try {
+    await SchoolClassService.changeUserClass(userId,undefined);
+    fetchStudents();
+    
+  } catch (err) {
+    console.error(err);
+    alert("Wystąpił błąd podczas usuwania klasy ucznia");
+  }
+};
+
+  useEffect(() => {
+    if (classId) fetchStudents();
+  }, [classId]);
+
+  const filteredStudents = students.filter(
+    (s) =>
+      s.firstName.toLowerCase().includes(searchName.toLowerCase()) ||
+      s.lastName.toLowerCase().includes(searchName.toLowerCase())
+  );
+
+  return (
+    <div className={styles.container}>
+        <div className={styles.headerSectionMoreItems}>
+            <button
+                className={styles.returnButton}
+                onClick={() => navigate("/librarian/school-classes")}
+            >
+                Cofnij
+            </button>
+             <button
+            className={styles.navigateButton}
+            onClick={() => navigate(`/librarian/school-classes/${classId}/students/add`, { state: { className: className}})}
+          >
+            Dodaj uczniów
+          </button>
+        </div>
+      <h2 className={styles.title}>Uczniowie klasy {className}</h2>
+
+      <input
+        type="text"
+        className={styles.input}
+        placeholder="Szukaj po imieniu lub nazwisku..."
+        value={searchName}
+        onChange={(e) => setSearchName(e.target.value)}
+      />
+
+      <table className={styles.table}>
+        <thead>
+          <tr>
+            <th>ID</th>
+            <th>Imię</th>
+            <th>Nazwisko</th>
+            <th>Email</th>
+            <th>Klasa</th>
+            <th>Akcje</th>
+          </tr>
+        </thead>
+        <tbody>
+          {filteredStudents.length === 0 ? (
+            <tr>
+              <td colSpan={6} style={{ textAlign: "center" }}>
+                Brak uczniów pasujących do wyszukiwania.
+              </td>
+            </tr>
+          ) : (
+            filteredStudents.map((student) => (
+              <tr key={student.id}>
+                <td>{student.id}</td>
+                <td>{student.firstName}</td>
+                <td>{student.lastName}</td>
+                <td>{student.email}</td>
+                <td>{student.className}</td>
+                <td>
+                    <button
+                    className={styles.deleteButton}
+                    onClick={() => handleRemoveClass(student.id)}
+                    >
+                    Usuń
+                    </button>
+                </td>
+              </tr>
+            ))
+          )}
+        </tbody>
+      </table>
+    </div>
+  );
+};
+
+export default StudentsList;

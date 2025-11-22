@@ -1,16 +1,20 @@
 import { fetchAPI } from "./api"; 
 
 export const ReportService = {
-  getUserReport: async (fromDate?: string, toDate?: string, userId?: number | string) => {
+  getUserReport: async (fromDate?: string, toDate?: string, classId?: number | string) => {
     const query: Record<string, string> = {};
-    if (fromDate) query.fromDate = fromDate; 
+
+    if (fromDate) query.fromDate = fromDate;
     if (toDate) query.toDate = toDate;
-    if (userId && userId !== "all") query.userId = String(userId);
+    if (classId && classId !== "all") query.classId = String(classId);
 
     const queryString = new URLSearchParams(query).toString();
 
-    return await fetchAPI(`/reports/user-activity${queryString ? `?${queryString}` : ""}`, { method: "GET" });
-  },
+    return await fetchAPI(`/reports/user-activity${queryString ? `?${queryString}` : ""}`, {
+      method: "GET"
+    });
+},
+
 
    getBooksReport: async () => {
     return await fetchAPI(`/reports/book-state`, { method: "GET" });

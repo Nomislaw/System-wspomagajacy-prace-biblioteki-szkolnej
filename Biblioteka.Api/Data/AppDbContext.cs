@@ -7,11 +7,12 @@ public class AppDbContext : DbContext
 
     public DbSet<Author> Authors { get; set; }
     public DbSet<Book> Books { get; set; }
+    public DbSet<BookCopy> BookCopies { get; set; }
     public DbSet<Borrow> Borrows { get; set; }
     public DbSet<Category> Categories { get; set; }
     public DbSet<Publisher> Publishers { get; set; }
-    public DbSet<Report> Reports { get; set; }
     public DbSet<Reservation> Reservations { get; set; }
+    public DbSet<SchoolClass> SchoolClasses { get; set; }
     public DbSet<User> Users { get; set; }
     
     protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -38,6 +39,14 @@ public class AppDbContext : DbContext
             .HasIndex(b => b.ISBN)
             .IsUnique();
         
+        modelBuilder.Entity<SchoolClass>()
+            .HasIndex(b => b.ClassName)
+            .IsUnique();
+        
+        modelBuilder.Entity<BookCopy>()
+            .HasIndex(b => b.BarCode)
+            .IsUnique();
+        
         modelBuilder.Entity<Book>()
             .HasOne(b => b.Category)
             .WithMany(c => c.Books)
@@ -61,5 +70,24 @@ public class AppDbContext : DbContext
             .WithOne(b => b.Reservation)
             .HasForeignKey<Borrow>(b => b.ReservationId)
             .OnDelete(DeleteBehavior.SetNull);
+        
+        modelBuilder.Entity<User>()
+            .HasOne(u => u.SchoolClass)
+            .WithMany(c => c.Users)
+            .HasForeignKey(u => u.SchoolClassId)
+            .OnDelete(DeleteBehavior.SetNull); 
+        
+        modelBuilder.Entity<BookCopy>()
+            .HasOne(bc => bc.Book)
+            .WithMany(b => b.BookCopies)
+            .HasForeignKey(bc => bc.BookId)
+            .OnDelete(DeleteBehavior.Restrict);
+        
+        modelBuilder.Entity<Borrow>()
+            .HasOne(b => b.BookCopy)
+            .WithMany(bc => bc.Borrows)
+            .HasForeignKey(b => b.BookCopyId)
+            .OnDelete(DeleteBehavior.Restrict); 
+
     }
 }

@@ -6,6 +6,7 @@ import { UserService } from "../../api/UserService";
 import { User } from "../../types/Index";
 import "../../fonts/FreeSans-normal";
 import styles from "./Librarian.module.css";
+import { SchoolClassService } from "../../api/SchoolClassService";
 
 declare module "jspdf" {
   interface jsPDF {
@@ -17,8 +18,8 @@ declare module "jspdf" {
 
 const ReportPage: React.FC = () => {
   const [reportType, setReportType] = useState<"users" | "books">("users");
-  const [users, setUsers] = useState<User[]>([]);
-  const [userId, setUserId] = useState<string | number>("all");
+  const [classes, setClasses] = useState<any[]>([]);
+  const [classId, setClassId] = useState<string | number>("all");
   const [from, setFrom] = useState("");
   const [to, setTo] = useState("");
   const [reportData, setReportData] = useState<any>(null);
@@ -27,7 +28,7 @@ const ReportPage: React.FC = () => {
 
   useEffect(() => {
     if (reportType === "users") {
-      UserService.getAllUsers().then(setUsers);
+      SchoolClassService.getAllClasses().then(setClasses);
     } else if (reportType === "books") {
       setLoading(true);
       ReportService.getBooksReport()
@@ -42,7 +43,7 @@ const ReportPage: React.FC = () => {
         const data = await ReportService.getUserReport(
           from || undefined,
           to || undefined,
-          userId === "all" ? undefined : userId
+          classId === "all" ? undefined : classId
         );
 
         if (!data || !data.records || data.records.length === 0) {
@@ -65,7 +66,7 @@ const ReportPage: React.FC = () => {
     const doc = new jsPDF();
     doc.setFont("FreeSans", "normal");
 
-    const title = `Raport wypożyczeń i rezerwacji - ${data.userName ?? "Wszyscy użytkownicy"}`;
+    const title = `Raport wypożyczeń i rezerwacji - ${data.className ?? "Wszyscy użytkownicy"}`;
     const subtitle = `Okres: ${data.fromDate ? new Date(data.fromDate).toLocaleDateString() : "początek"} - ${
       data.toDate ? new Date(data.toDate).toLocaleDateString() : "koniec"
     }`;
@@ -86,6 +87,17 @@ const ReportPage: React.FC = () => {
 
   doc.text("Wszystkie rekordy:", 14, currentY);
   doc.text(`${stats.summary.totalRecords}`, 70, currentY);
+  doc.text(`100%`, 100, currentY);
+  currentY += 6;
+
+  doc.text("Wypożyczenia:", 14, currentY);
+  doc.text(`${stats.summary.totalBorrows}`, 70, currentY);
+  doc.text(`${stats.summary.totalBorrowsPercent.toFixed(1)}%`, 100, currentY);
+  currentY += 6;
+
+  doc.text("Rezerwacje:", 14, currentY);
+  doc.text(`${stats.summary.totalReservationsPercent.toFixed(1)}%`, 100, currentY);
+  doc.text(`${stats.summary.totalReservations}`, 70, currentY);
   currentY += 6;
 
   doc.text("Aktywne:", 14, currentY);
@@ -108,6 +120,7 @@ const ReportPage: React.FC = () => {
 
   doc.text("Wszystkie:", 14, currentY);
   doc.text(`${stats.summary.totalBorrows}`, 70, currentY);
+  doc.text(`100%`, 100, currentY);
   currentY += 6;
 
   doc.text("Aktywne:", 14, currentY);
@@ -139,6 +152,7 @@ const ReportPage: React.FC = () => {
   currentY += 6;
 
   doc.text("Wszystkie:", 14, currentY);
+  doc.text(`100%`, 100, currentY);
   doc.text(`${stats.summary.totalReservations}`, 70, currentY);
   currentY += 6;
 
@@ -186,7 +200,7 @@ const ReportPage: React.FC = () => {
       doc.text("Brak danych do wyświetlenia.", 14, statY + 10);
     }
 
-    doc.save(`Raport_${data.userName || "wszyscy"}_${data.fromDate || "start"}-${data.toDate || "end"}.pdf`);
+    doc.save(`Raport_${data.className || "wszyscy"}_${data.fromDate || "start"}-${data.toDate || "end"}.pdf`);
   };
 
   const generateBooksPDF = () => {
@@ -247,12 +261,16 @@ const ReportPage: React.FC = () => {
           </div>
 
           <div>
-            <label>Użytkownik:</label>
-            <select value={userId} onChange={(e) => setUserId(e.target.value)} className={styles.select}>
+            <label>Klasa:</label>
+            <select
+              value={classId}
+              onChange={(e) => setClassId(e.target.value)}
+              className={styles.select}
+            >
               <option value="all">Wszyscy</option>
-              {users.map((u: User) => (
-                <option key={u.id} value={u.id}>
-                  {u.firstName} {u.lastName}
+              {classes.map((c: any) => (
+                <option key={c.id} value={c.id}>
+                  {c.className}
                 </option>
               ))}
             </select>

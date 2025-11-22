@@ -60,6 +60,11 @@ namespace Biblioteka.Api.Migrations
                     b.Property<int>("CategoryId")
                         .HasColumnType("int");
 
+                    b.Property<string>("Description")
+                        .IsRequired()
+                        .HasMaxLength(1000)
+                        .HasColumnType("varchar(1000)");
+
                     b.Property<string>("ISBN")
                         .IsRequired()
                         .HasMaxLength(13)
@@ -69,9 +74,6 @@ namespace Biblioteka.Api.Migrations
                         .HasColumnType("int");
 
                     b.Property<int>("PublisherId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("Quantity")
                         .HasColumnType("int");
 
                     b.Property<string>("Title")
@@ -92,6 +94,34 @@ namespace Biblioteka.Api.Migrations
                     b.ToTable("Books");
                 });
 
+            modelBuilder.Entity("Biblioteka.Api.Models.BookCopy", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("BarCode")
+                        .IsRequired()
+                        .HasColumnType("varchar(255)");
+
+                    b.Property<int>("BookId")
+                        .HasColumnType("int");
+
+                    b.Property<bool>("IsAvailable")
+                        .HasColumnType("tinyint(1)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("BarCode")
+                        .IsUnique();
+
+                    b.HasIndex("BookId");
+
+                    b.ToTable("BookCopies");
+                });
+
             modelBuilder.Entity("Biblioteka.Api.Models.Borrow", b =>
                 {
                     b.Property<int>("Id")
@@ -100,7 +130,7 @@ namespace Biblioteka.Api.Migrations
 
                     MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<int>("BookId")
+                    b.Property<int>("BookCopyId")
                         .HasColumnType("int");
 
                     b.Property<DateTime>("BorrowDate")
@@ -123,7 +153,7 @@ namespace Biblioteka.Api.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("BookId");
+                    b.HasIndex("BookCopyId");
 
                     b.HasIndex("ReservationId")
                         .IsUnique();
@@ -173,30 +203,6 @@ namespace Biblioteka.Api.Migrations
                     b.ToTable("Publishers");
                 });
 
-            modelBuilder.Entity("Biblioteka.Api.Models.Report", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<string>("Content")
-                        .IsRequired()
-                        .HasColumnType("longtext");
-
-                    b.Property<DateTime>("CreatedAt")
-                        .HasColumnType("datetime(6)");
-
-                    b.Property<string>("Title")
-                        .IsRequired()
-                        .HasColumnType("longtext");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("Reports");
-                });
-
             modelBuilder.Entity("Biblioteka.Api.Models.Reservation", b =>
                 {
                     b.Property<int>("Id")
@@ -227,6 +233,26 @@ namespace Biblioteka.Api.Migrations
                     b.HasIndex("UserId");
 
                     b.ToTable("Reservations");
+                });
+
+            modelBuilder.Entity("Biblioteka.Api.Models.SchoolClass", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("ClassName")
+                        .IsRequired()
+                        .HasColumnType("varchar(255)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ClassName")
+                        .IsUnique();
+
+                    b.ToTable("SchoolClasses");
                 });
 
             modelBuilder.Entity("Biblioteka.Api.Models.User", b =>
@@ -265,6 +291,9 @@ namespace Biblioteka.Api.Migrations
                     b.Property<int>("Role")
                         .HasColumnType("int");
 
+                    b.Property<int?>("SchoolClassId")
+                        .HasColumnType("int");
+
                     b.Property<string>("VerificationToken")
                         .HasColumnType("longtext");
 
@@ -272,6 +301,8 @@ namespace Biblioteka.Api.Migrations
 
                     b.HasIndex("Email")
                         .IsUnique();
+
+                    b.HasIndex("SchoolClassId");
 
                     b.ToTable("Users");
                 });
@@ -303,12 +334,23 @@ namespace Biblioteka.Api.Migrations
                     b.Navigation("Publisher");
                 });
 
-            modelBuilder.Entity("Biblioteka.Api.Models.Borrow", b =>
+            modelBuilder.Entity("Biblioteka.Api.Models.BookCopy", b =>
                 {
                     b.HasOne("Biblioteka.Api.Models.Book", "Book")
-                        .WithMany()
+                        .WithMany("BookCopies")
                         .HasForeignKey("BookId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("Book");
+                });
+
+            modelBuilder.Entity("Biblioteka.Api.Models.Borrow", b =>
+                {
+                    b.HasOne("Biblioteka.Api.Models.BookCopy", "BookCopy")
+                        .WithMany("Borrows")
+                        .HasForeignKey("BookCopyId")
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
                     b.HasOne("Biblioteka.Api.Models.Reservation", "Reservation")
@@ -322,7 +364,7 @@ namespace Biblioteka.Api.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("Book");
+                    b.Navigation("BookCopy");
 
                     b.Navigation("Reservation");
 
@@ -332,7 +374,7 @@ namespace Biblioteka.Api.Migrations
             modelBuilder.Entity("Biblioteka.Api.Models.Reservation", b =>
                 {
                     b.HasOne("Biblioteka.Api.Models.Book", "Book")
-                        .WithMany()
+                        .WithMany("Reservations")
                         .HasForeignKey("BookId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -348,9 +390,31 @@ namespace Biblioteka.Api.Migrations
                     b.Navigation("User");
                 });
 
+            modelBuilder.Entity("Biblioteka.Api.Models.User", b =>
+                {
+                    b.HasOne("Biblioteka.Api.Models.SchoolClass", "SchoolClass")
+                        .WithMany("Users")
+                        .HasForeignKey("SchoolClassId")
+                        .OnDelete(DeleteBehavior.SetNull);
+
+                    b.Navigation("SchoolClass");
+                });
+
             modelBuilder.Entity("Biblioteka.Api.Models.Author", b =>
                 {
                     b.Navigation("Books");
+                });
+
+            modelBuilder.Entity("Biblioteka.Api.Models.Book", b =>
+                {
+                    b.Navigation("BookCopies");
+
+                    b.Navigation("Reservations");
+                });
+
+            modelBuilder.Entity("Biblioteka.Api.Models.BookCopy", b =>
+                {
+                    b.Navigation("Borrows");
                 });
 
             modelBuilder.Entity("Biblioteka.Api.Models.Category", b =>
@@ -366,6 +430,11 @@ namespace Biblioteka.Api.Migrations
             modelBuilder.Entity("Biblioteka.Api.Models.Reservation", b =>
                 {
                     b.Navigation("Borrow");
+                });
+
+            modelBuilder.Entity("Biblioteka.Api.Models.SchoolClass", b =>
+                {
+                    b.Navigation("Users");
                 });
 
             modelBuilder.Entity("Biblioteka.Api.Models.User", b =>

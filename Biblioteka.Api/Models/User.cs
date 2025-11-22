@@ -15,6 +15,8 @@ public class User
     public string? VerificationToken { get; set; } 
     public string? PasswordResetToken { get; set; } 
     public DateTime? PasswordResetTokenExpiry { get; set; }
+    public int? SchoolClassId { get; set; } 
+    public virtual SchoolClass? SchoolClass { get; set; }
 
     public virtual ICollection<Borrow>? Borrows { get; set; }
     public virtual ICollection<Reservation>? Reservations { get; set; }

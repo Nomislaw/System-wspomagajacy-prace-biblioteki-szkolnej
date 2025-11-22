@@ -78,7 +78,7 @@
 .categoryTag {
   background-color: #007bff;
   color: white;
-  padding: 3px 8px;
+  padding: 5.5px 10px;
   border-radius: 5px;
   font-size: 12px;
 }
@@ -190,4 +190,101 @@
   margin-top: 20px;
   text-align: center;
   font-size: 15px;
+}
+
+.addButton {
+  background-color: #007BFF;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  padding: 5px 10px;
+  cursor: pointer;
+  margin-top: 15px;
+}
+
+.addButton:hover {
+  background-color: #0056b3;
+}
+
+.modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+.modalContent {
+  position: relative;
+  background: white;
+  padding: 20px;
+  border-radius: 8px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  width: 600px;
+}
+
+.bookTitleStyled {
+  font-size: 28px;
+  margin: 0;
+  font-weight: 700;
+  color: #333;
+  align-self: center;
+  margin-bottom: 25px;
+  margin-top: 15px;
+}
+
+
+.detailsRow {
+  display: flex;
+  justify-content: space-between;
+  padding: 6px 0;
+  border-bottom: 1px solid #eee;
+}
+
+.detailsLabel {
+  font-weight: 600;
+  color: #000;
+}
+
+.detailsValue {
+  font-weight: 400;
+  color: #111;
+}
+
+.detailsDescription {
+  margin-top: 20px;
+}
+
+.detailsDescription p {
+  margin-top: 10px;
+  padding: 12px;
+  background: #f7f7f7;
+  border-radius: 6px;
+  line-height: 1.5;
+}
+
+.closeButtonStyled {
+  position: absolute; 
+  top: 8px;
+  right: 13px;
+  background: transparent;
+  color: red;
+  border: none;
+  width: 32px;
+  height: 32px;
+  cursor: pointer;
+  font-size: 28px;
+  font-weight: bold;
+  transition: transform 0.2s ease;
+}
+
+.closeButtonStyled:hover {
+  transform: scale(1.1);
 }

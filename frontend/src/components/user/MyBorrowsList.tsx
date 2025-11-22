@@ -41,6 +41,23 @@ const MyBorrowsList: React.FC<MyBorrowsProps> = ({ statusFilter }) => {
     }
   };
 
+  const getStatusName = (status: any): string => {
+    switch (status) {
+      case BorrowStatus.Active:
+        return "Aktywny";
+      case BorrowStatus.Returned:
+        return "Zwrócony";
+      case BorrowStatus.ReturnedLate:
+        return "Zwrócony po terminie";
+      case BorrowStatus.Canceled:
+        return "Anulowany";
+      case BorrowStatus.Overdue:
+        return "Opóźniony";
+      default:
+        return "Nieznany";
+    }
+  };
+
   const formatDate = (dateStr: string) => {
     const date = new Date(dateStr);
     return date.toLocaleDateString("pl-PL", {
@@ -112,7 +129,7 @@ const MyBorrowsList: React.FC<MyBorrowsProps> = ({ statusFilter }) => {
               <p className={styles.p}>
                 <strong>Status:</strong>{" "}
                 <span style={{ color: getStatusColor(b.borrowStatus) }}>
-                  {b.borrowStatus}
+                  {getStatusName(b.borrowStatus)}
                 </span>
               </p>
             </div>

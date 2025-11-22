@@ -29,8 +29,8 @@ public class BooksController : ControllerBase
             .Include(b => b.Author)
             .Include(b => b.Category)
             .Include(b => b.Publisher)
-            .Include(b => b.Reservations)
-            .Include(b => b.Borrows)
+            .Include(b=>b.BookCopies)
+            .Include(b=>b.Reservations)
             .FirstOrDefaultAsync(b => b.Id == id);
 
         if (book == null)
@@ -42,7 +42,8 @@ public class BooksController : ControllerBase
             Title = book.Title,
             PublicationYear = book.PublicationYear,
             ISBN = book.ISBN,
-            Quantity = book.Quantity,
+            Description = book.Description,
+            Quantity = book.GetQuantity(),
             Available = book.GetAvailableQuantity(),
             AuthorId = book.AuthorId,
             AuthorName = book.Author.FirstName + " " + book.Author.LastName,
@@ -64,15 +65,16 @@ public class BooksController : ControllerBase
             .Include(b => b.Author)
             .Include(b => b.Category)
             .Include(b => b.Publisher)
-            .Include(b => b.Reservations)
-            .Include(b => b.Borrows)
+            .Include(b=>b.BookCopies)
+            .Include(b=>b.Reservations)
             .Select(b => new BookDto
             {
                 Id = b.Id,
                 Title = b.Title,
                 ISBN = b.ISBN,
+                Description = b.Description,
                 PublicationYear = b.PublicationYear,
-                Quantity = b.Quantity,
+                Quantity = b.GetQuantity(),
                 Available = b.GetAvailableQuantity(),
                 AuthorId = b.AuthorId,
                 CategoryId = b.CategoryId,
@@ -97,7 +99,7 @@ public class BooksController : ControllerBase
                 Title = dto.Title,
                 PublicationYear = dto.PublicationYear,
                 ISBN = dto.ISBN,
-                Quantity = dto.Quantity,
+                Description = dto.Description,
                 AuthorId = dto.AuthorId,
                 PublisherId = dto.PublisherId,
                 CategoryId = dto.CategoryId
@@ -139,7 +141,7 @@ public class BooksController : ControllerBase
         existing.Title = dto.Title;
         existing.PublicationYear = dto.PublicationYear;
         existing.ISBN = dto.ISBN;
-        existing.Quantity = dto.Quantity;
+        existing.Description = dto.Description;
         existing.AuthorId = dto.AuthorId;
         existing.PublisherId = dto.PublisherId;
         existing.CategoryId = dto.CategoryId;

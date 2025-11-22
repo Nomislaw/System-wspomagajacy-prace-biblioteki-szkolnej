@@ -11,8 +11,8 @@ public class Book
     [Required]
     [StringLength(13, MinimumLength = 13, ErrorMessage = "ISBN musi mieć dokładnie 13 znaków.")]
     public string ISBN { get; set; } = string.Empty;
-    public int Quantity { get; set; }
-
+    [MaxLength(1000)]
+    public string Description { get; set; } = string.Empty;
     public int AuthorId { get; set; }
     public virtual Author Author { get; set; } = null!;
 
@@ -23,13 +23,19 @@ public class Book
     public virtual Category Category { get; set; } = null!;
     
     public ICollection<Reservation>? Reservations { get; set; }
-    public ICollection<Borrow>? Borrows { get; set; }
+    
+    public ICollection<BookCopy>? BookCopies { get; set; }
     public int GetAvailableQuantity()
     {
-        int reserved = Reservations?.Count(r => r.ReservationStatus == ReservationStatus.Active) ?? 0;
-        int borrowed = Borrows?.Count(b => b.BorrowStatus is BorrowStatus.Active or BorrowStatus.Overdue) ?? 0;
+        int totalAvailableCopies = BookCopies?.Count(c => c.IsAvailable) ?? 0;
+        int activeReservations = Reservations?.Count(r => r.ReservationStatus == ReservationStatus.Active) ?? 0;
+        int availableAfterReservations = totalAvailableCopies - activeReservations;
 
-        int available = Quantity - reserved - borrowed;
-        return available < 0 ? 0 : available;
+        return availableAfterReservations > 0 ? availableAfterReservations : 0;
     }
+    public int GetQuantity()
+    {
+        return BookCopies?.Count() ?? 0;
+    }
+
 }

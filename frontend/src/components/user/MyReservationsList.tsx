@@ -49,6 +49,21 @@ const MyReservationsList: React.FC<MyReservationsProps> = ({ statusFilter }) => 
       }
     };
 
+    const getStatusLabel = (status: ReservationStatus): string => {
+        switch (status) {
+          case ReservationStatus.Active:
+            return "Aktywny";
+          case ReservationStatus.Completed:
+            return "Zrealizowany";
+          case ReservationStatus.Canceled:
+            return "Anulowany";
+          case ReservationStatus.Expired:
+            return "Wygasły";
+          default:
+            return "Nieznany";
+        }
+      };
+
     const formatTime = (dateStr: string) => {
   const date = new Date(dateStr);
   return date.toLocaleTimeString("pl-PL", {
@@ -81,7 +96,7 @@ const MyReservationsList: React.FC<MyReservationsProps> = ({ statusFilter }) => 
                <p className={styles.p}><strong>Godzina rezerwacji:</strong> {formatTime(res.reservationDate)}</p><br/>
               <p className={styles.p}><strong>Data wygaśnięcia:</strong> {formatDate(res.expirationDate)}</p>
               <p className={styles.p}><strong>Godzina wygaśnięcia:</strong> {formatTime(res.expirationDate)}</p><br/>
-              <p className={styles.p}><strong>Status:</strong>  <span  style={{ color: getStatusColor(res.reservationStatus) }}>{res.reservationStatus}</span></p>
+              <p className={styles.p}><strong>Status:</strong>  <span  style={{ color: getStatusColor(res.reservationStatus) }}>{getStatusLabel(res.reservationStatus)}</span></p>
 
               {res.reservationStatus === "Active" && (
                 <button

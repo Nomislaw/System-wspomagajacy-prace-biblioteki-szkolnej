@@ -42,6 +42,7 @@ export interface Book {
   title: string;
   publicationYear: number;
   isbn: string;
+  description: string;
   quantity: number;
   available: number;
   authorId: number;
@@ -56,6 +57,7 @@ export interface Borrow {
   id: number;
   bookId: number;
   bookTitle: string;
+  bookCopyId: number;
   userId: number;
   userName: string;
   borrowDate: string;
@@ -102,6 +104,7 @@ export interface User {
   borrows?: Borrow[];
   reservations?: Reservation[];
   reviews?: Review[];
+  className?: string;
 }
 
 export interface Report {
@@ -125,4 +128,17 @@ export interface UpdatePersonDto {
 export interface ChangePasswordDto{
   oldPassword: string;
   newPassword: string;
+}
+
+export interface BookCopy {
+  id: number;
+  barCode: string;
+  isAvailable: boolean;
+  bookId: number;
+}
+
+export interface SchoolClass{
+  id: number;
+  className: string;
+  users?: string[];
 }

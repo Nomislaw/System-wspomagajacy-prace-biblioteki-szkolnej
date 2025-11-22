@@ -33,7 +33,10 @@ public class AuthController : ControllerBase
     [HttpPost("login")]
     public async Task<IActionResult> Login([FromBody] LoginRequest request)
     {
-        var user = await _context.Users.FirstOrDefaultAsync(u => u.Email == request.Email);
+        var user = await _context.Users.
+            Include(u => u.SchoolClass).
+            FirstOrDefaultAsync(u => u.Email == request.Email);
+        
         if (user == null)
             return Unauthorized(new ErrorResponse { Errors = new List<string> { "Niepoprawny adres e-mail" } });
 
@@ -55,7 +58,8 @@ public class AuthController : ControllerBase
             Role = user.Role.ToString(),
             FirstName = user.FirstName,
             LastName = user.LastName,
-            Token = token
+            Token = token,
+            ClassName = user.SchoolClass?.ClassName ?? "Brak"
         });
     }
 

@@ -92,6 +92,9 @@ const Sidebar: React.FC<SidebarProps> = ({ user }) => {
                   <NavLink to="/librarian/publishers" className={({ isActive }) => `sidebar-item ${isActive ? "active" : ""}`}>Wydawnictwa</NavLink>
                 )}
                 {user.role === "Librarian" && (
+                  <NavLink to="/librarian/school-classes" className={({ isActive }) => `sidebar-item ${isActive ? "active" : ""}`}>Klasy szkolne</NavLink>
+                )}
+                {user.role === "Librarian" && (
                   <NavLink to="/librarian/reports" className={({ isActive }) => `sidebar-item ${isActive ? "active" : ""}`}>Generowanie raportów</NavLink>
                 )}
             </>

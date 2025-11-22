@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { User } from "../types/Index";
+import { User,Role } from "../types/Index";
 import { NavLink } from "react-router-dom";
 
 interface NavbarProps {
@@ -9,10 +9,23 @@ interface NavbarProps {
 
 const Navbar: React.FC<NavbarProps> = ({ user, onLogout}) => {
 
+  const mapUserRole = (role: Role): string => {
+      switch (role) {
+        case "Librarian":
+          return "Bibliotekarz"
+        default:
+          return role;
+      }
+    };
+
   return (
     <>
       <div className="navbar-top">
-        <h2>Witaj, {user.firstName} {user.lastName} ({user.role})</h2>
+        <h2>
+            Witaj, {user.firstName} {user.lastName} (
+            {user.role === "User" ? "Klasa: " + (user.className ?? "Brak") : mapUserRole(user.role)}
+            )
+          </h2>
         <div>
             {user.role === "Administrator" && (
                       <NavLink to="/admin" className="btn">Administrator</NavLink>

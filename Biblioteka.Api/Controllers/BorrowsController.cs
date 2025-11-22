@@ -24,15 +24,18 @@ namespace Biblioteka.Api.Controllers
         public async Task<IActionResult> GetBorrows()
         {
             var borrows = await _context.Borrows
-                .Include(b => b.Book)
+                .Include(b => b.BookCopy)
+                    .ThenInclude(bc => bc.Book)
                 .Include(b => b.User)
+                .ThenInclude(b=>b.SchoolClass)
                 .Select(b => new BorrowDto
                 {
                     Id = b.Id,
-                    BookId = b.BookId,
-                    BookTitle = b.Book.Title,
+                    BookId = b.BookCopy.BookId,
+                    BookTitle = b.BookCopy.Book.Title,
+                    BookCopyId = b.BookCopyId,
                     UserId = b.UserId,
-                    UserName = b.User.FirstName + " " + b.User.LastName,
+                    UserName = b.User.FirstName + " " + b.User.LastName + (" " + (b.User.SchoolClass != null ? b.User.SchoolClass.ClassName : "")),
                     BorrowDate = b.BorrowDate,
                     TerminDate = b.TerminDate,
                     ReturnDate = b.ReturnDate,
@@ -49,14 +52,16 @@ namespace Biblioteka.Api.Controllers
             var userId = GetCurrentUserId();
 
             var borrows = await _context.Borrows
-                .Include(b => b.Book)
+                .Include(b => b.BookCopy)
+                    .ThenInclude(bc => bc.Book)
                 .Include(b => b.User)
                 .Where(b => b.UserId == userId)
                 .Select(b => new BorrowDto
                 {
                     Id = b.Id,
-                    BookId = b.BookId,
-                    BookTitle = b.Book.Title,
+                    BookId = b.BookCopy.BookId,
+                    BookTitle = b.BookCopy.Book.Title,
+                    BookCopyId = b.BookCopyId,
                     UserId = b.UserId,
                     UserName = b.User.FirstName + " " + b.User.LastName,
                     BorrowDate = b.BorrowDate,
@@ -83,6 +88,12 @@ namespace Biblioteka.Api.Controllers
 
             borrow.BorrowStatus = newStatus;
             
+            if (newStatus == BorrowStatus.Canceled)
+            {
+                var bookCopy = await _context.BookCopies.FirstOrDefaultAsync(b => b.Id == borrow.BookCopyId);
+                bookCopy.IsAvailable = true;
+            }
+            
             await _context.SaveChangesAsync();
 
             return Ok(new { message = $"Status wypożyczenia został zmieniony na {newStatus}." });
@@ -106,6 +117,9 @@ namespace Biblioteka.Api.Controllers
                 borrow.BorrowStatus = BorrowStatus.ReturnedLate;
             else
                 borrow.BorrowStatus = BorrowStatus.Returned;
+            
+            var bookCopy = await _context.BookCopies.FirstOrDefaultAsync(b => b.Id == borrow.BookCopyId);
+            bookCopy.IsAvailable = true;
 
             await _context.SaveChangesAsync();
 

@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using Biblioteka.Api.Data;
 using Biblioteka.Api.DTOs;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.EntityFrameworkCore;
 
 namespace Biblioteka.Api.Controllers
 {
@@ -83,11 +84,50 @@ namespace Biblioteka.Api.Controllers
         }
         
         [HttpGet]
-        [Authorize(Roles = "Administrator,Librarian")]
+        [Authorize(Roles = "Administrator")]
         public async Task<IActionResult> GetAllUsers()
         {
             var users = await _userService.GetAllAsync();
             return Ok(users);
+        }
+        
+        [HttpGet("by-class/{classId}")]
+        [Authorize(Roles = "Librarian")]
+        public async Task<IActionResult> GetUsersByClass(int classId)
+        {
+            int? id = classId == 0 ? null : classId;
+                
+            var users = await _context.Users
+                .Where(u => u.SchoolClassId == id && u.Role == Role.User)
+                .Include(u => u.SchoolClass)
+                .Select(u => new UserDto
+                {
+                    Id = u.Id,
+                    Email = u.Email,
+                    FirstName = u.FirstName,
+                    LastName = u.LastName,
+                    ClassName = u.SchoolClass != null ? u.SchoolClass.ClassName : "Brak"
+                })
+                .ToListAsync();
+            
+            
+
+            return Ok(users);
+        }
+        
+        [HttpPut("{id}/change-class")]
+        [Authorize(Roles = "Librarian")]
+        public async Task<IActionResult> ChangeUserClass(int id, [FromBody] int? newClassId)
+        {
+            var user = await _context.Users.FindAsync(id);
+            if (user == null)
+                return NotFound(new { Errors = new List<string> { "Użytkownik nie istnieje" } });
+            
+
+            user.SchoolClassId = newClassId;
+            await _context.SaveChangesAsync();
+
+            return Ok(new { Message = "Klasa użytkownika została zmieniona" });
         }
         
         [HttpPut("{id}/role")]

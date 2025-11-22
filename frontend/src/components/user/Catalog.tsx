@@ -15,6 +15,14 @@ const Catalog: React.FC<CatalogProps> = ({ categoryId }) => {
   const [borrows, setBorrows] = useState<Borrow[]>([]);
   const [searchTitle, setSearchTitle] = useState("");
   const [searchAuthor, setSearchAuthor] = useState("");
+  const [showMoreBookDetails, setShowMoreBookDetails] = useState(false);
+  const [selectedBook, setSelectedBook] = useState<Book>();
+
+  const handleShowMore = async (selectedBook:Book) => {
+    setSelectedBook(selectedBook);
+    setShowMoreBookDetails(prev => !prev);
+  };
+
 
   const fetchData = async () => {
     try {
@@ -112,6 +120,11 @@ const Catalog: React.FC<CatalogProps> = ({ categoryId }) => {
                 <p className={styles.p}><strong>Wydawnictwo:</strong> {book.publisherName || "—"}</p>
                 <p className={styles.p}><strong>ISBN:</strong> {book.isbn}</p>
                 <p className={styles.p}><strong>Dostępne:</strong> {book.available}</p>
+                <button
+                  className={styles.addButton} onClick={() => handleShowMore(book)}
+                >
+                  Więcej
+                </button>
 
                 <button
                   className={`${styles.reserveButton} ${text === "Anuluj rezerwację" ? styles.cancelButton : ""} 
@@ -126,7 +139,57 @@ const Catalog: React.FC<CatalogProps> = ({ categoryId }) => {
           })}
         </div>
       )}
+
+      {showMoreBookDetails && selectedBook && (
+            <div className={styles.modal}>
+              <div className={styles.modalContent}>
+                  <button 
+                  className={styles.closeButtonStyled} 
+                  onClick={() => setShowMoreBookDetails(false)}
+                >
+                  ✕
+                </button>
+                <h2 className={styles.bookTitleStyled}>{selectedBook.title}</h2>
+
+
+                <div className={styles.detailsRow}>
+                  <span className={styles.detailsLabel}>Kategoria:</span>
+                  <span className={styles.detailsValue}>{selectedBook.categoryName || "—"}</span>
+                </div>
+
+                <div className={styles.detailsRow}>
+                  <span className={styles.detailsLabel}>Autor:</span>
+                  <span className={styles.detailsValue}>{selectedBook.authorName || "—"}</span>
+                </div>
+
+                <div className={styles.detailsRow}>
+                  <span className={styles.detailsLabel}>Rok wydania:</span>
+                  <span className={styles.detailsValue}>{selectedBook.publicationYear}</span>
+                </div>
+
+                <div className={styles.detailsRow}>
+                  <span className={styles.detailsLabel}>Wydawnictwo:</span>
+                  <span className={styles.detailsValue}>{selectedBook.publisherName || "—"}</span>
+                </div>
+
+                <div className={styles.detailsRow}>
+                  <span className={styles.detailsLabel}>ISBN:</span>
+                  <span className={styles.detailsValue}>{selectedBook.isbn}</span>
+                </div>
+
+                <div className={styles.detailsDescription}>
+                  <span className={styles.detailsLabel}>Opis:</span>
+                  <p>{selectedBook.description}</p>
+                </div>
+
+
+              </div>
+            </div>
+          )}
+
     </div>
+
+    
   );
 };
 

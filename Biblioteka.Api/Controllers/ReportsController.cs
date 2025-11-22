@@ -20,10 +20,11 @@ namespace Biblioteka.Api.Controllers
 
         [HttpGet("user-activity")]
         [Authorize(Roles = "Librarian")]
-        public async Task<IActionResult> GenerateUserReport(DateTime? fromDate, DateTime? toDate, int? userId)
+        public async Task<IActionResult> GenerateUserReport(DateTime? fromDate, DateTime? toDate, int? classId)
         {
             var borrowsQuery = _context.Borrows
-                .Include(b => b.Book)
+                .Include(b => b.BookCopy)
+                    .ThenInclude(bc => bc.Book)
                 .Include(b => b.User)
                 .AsQueryable();
 
@@ -44,16 +45,16 @@ namespace Biblioteka.Api.Controllers
                 reservationsQuery = reservationsQuery.Where(r => r.ReservationDate <= toDate.Value);
             }
 
-            if (userId.HasValue)
+            if (classId.HasValue)
             {
-                borrowsQuery = borrowsQuery.Where(b => b.UserId == userId.Value);
-                reservationsQuery = reservationsQuery.Where(r => r.UserId == userId.Value);
+                borrowsQuery = borrowsQuery.Where(b => b.User.SchoolClassId == classId.Value);
+                reservationsQuery = reservationsQuery.Where(r => r.User.SchoolClassId == classId.Value);
             }
 
             var borrowsDto = await borrowsQuery.Select(b => new ActivityRecordDto
             {
                 Id = b.Id,
-                BookTitle = b.Book.Title,
+                BookTitle = b.BookCopy.Book.Title + " #" + b.BookCopyId,
                 UserName = b.User.FirstName + " " + b.User.LastName,
                 FromDate = b.BorrowDate,
                 ToDate = b.TerminDate,
@@ -137,7 +138,9 @@ namespace Biblioteka.Api.Controllers
             {
                 TotalRecords = records.Count,
                 TotalBorrows = borrowsDto.Count,
+                TotalBorrowsPercent = records.Count > 0 ? borrowsDto.Count * 100.0 / records.Count : 0,
                 TotalReservations = reservationsDto.Count,
+                TotalReservationsPercent = records.Count > 0 ? reservationsDto.Count * 100.0 / records.Count : 0,
                 TotalActive = borrowStats.Active.Count + reservationStats.Active.Count,
                 TotalActivePercent = records.Count > 0 ? (borrowStats.Active.Count + reservationStats.Active.Count) * 100.0 / records.Count : 0,
                 TotalCompleted = borrowStats.Returned.Count + reservationStats.Completed.Count,
@@ -146,18 +149,25 @@ namespace Biblioteka.Api.Controllers
                 TotalCanceledPercent = records.Count > 0 ? (borrowStats.Canceled.Count + reservationStats.Canceled.Count) * 100.0 / records.Count : 0
             };
 
-            var userName = userId.HasValue
-                ? await _context.Users
-                    .Where(u => u.Id == userId.Value)
-                    .Select(u => u.FirstName + " " + u.LastName)
-                    .FirstOrDefaultAsync()
-                : "Wszyscy użytkownicy";
+            string className;
+
+            if (classId.HasValue)
+            {
+                className = await _context.SchoolClasses
+                    .Where(c => c.Id == classId.Value)
+                    .Select(c => c.ClassName)
+                    .FirstOrDefaultAsync() ?? "Nieznana klasa";
+            }
+            else
+            {
+                className = "Wszyscy";
+            }
 
             return Ok(new
             {
                 FromDate = fromDate,
                 ToDate = toDate,
-                UserName = userName,
+                ClassName = className,
                 Records = records,
                 Statistics = new
                 {
@@ -177,14 +187,14 @@ namespace Biblioteka.Api.Controllers
                 .Include(b => b.Category)
                 .Include(b => b.Publisher)
                 .Include(b=>b.Reservations)
-                .Include(b=>b.Borrows)
+                .Include(b=>b.BookCopies)
                 .Select(b => new BookDto
                 {
                     Id = b.Id,
                     Title = b.Title,
                     ISBN = b.ISBN,
                     PublicationYear = b.PublicationYear,
-                    Quantity = b.Quantity,
+                    Quantity = b.GetQuantity(),
                     Available = b.GetAvailableQuantity(),
                     AuthorName = b.Author.FirstName + " " + b.Author.LastName,
                     CategoryName = b.Category.Name,

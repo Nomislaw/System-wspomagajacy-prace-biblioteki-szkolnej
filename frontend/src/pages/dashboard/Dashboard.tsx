@@ -73,8 +73,8 @@ const Dashboard: React.FC<DashboardProps> = ({ onLogout, user }) => {
 
             <Route path="/my-borrows/" element={<Navigate to="active" />}/>
             <Route path="/my-borrows/">
-                 <Route path="active" element={<MyBorrowsList statusFilter={[BorrowStatus.Active]}/>} />
-                <Route path="overdue" element={<MyBorrowsList statusFilter={[BorrowStatus.Overdue]}/>} />
+                 <Route path="active" element={<MyBorrowsList statusFilter={[BorrowStatus.Active, BorrowStatus.Overdue]}/>} />
+                {/* <Route path="overdue" element={<MyBorrowsList statusFilter={[BorrowStatus.Overdue]}/>} /> */}
                 <Route path="returned" element={<MyBorrowsList statusFilter={[BorrowStatus.Returned,BorrowStatus.ReturnedLate]}/>} />                
             </Route>
 

@@ -37,7 +37,6 @@ const Sidebar: React.FC<SidebarProps> = ({ user }) => {
         return (
           <>
             <NavLink to="/my-borrows/active" className={({ isActive }) => `sidebar-item ${isActive ? "active" : ""}`}>Aktywne</NavLink>
-            <NavLink to="/my-borrows/overdue" className={({ isActive }) => `sidebar-item ${isActive ? "active" : ""}`}>Zaległe</NavLink>
             <NavLink to="/my-borrows/returned" className={({ isActive }) => `sidebar-item ${isActive ? "active" : ""}`}>Zwrócone</NavLink>
           </>
         );

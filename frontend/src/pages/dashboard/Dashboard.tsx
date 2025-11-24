@@ -32,6 +32,7 @@ import SchoolClassesList from "../../components/librarian/userDependenties/Schoo
 import AddSchoolClass from "../../components/librarian/userDependenties/AddSchoolClass";
 import StudentsList from "../../components/librarian/userDependenties/StudentsList";
 import AddStudent from "../../components/librarian/userDependenties/AddStudent";
+import ReportPageTeacher from "../../components/teacher/ReportPageTeacher";
 
 
 interface DashboardProps {
@@ -94,6 +95,11 @@ const Dashboard: React.FC<DashboardProps> = ({ onLogout, user }) => {
                     <Route path="users">
                     <Route path="add" element={<ProtectedRoute user={user} allowedRoles={["Administrator"]}><AddUser /></ProtectedRoute>} />
                     </Route>
+            </Route>
+
+            <Route path="/teacher/" element={<ProtectedRoute user={user} allowedRoles={["Teacher"]}><Navigate to="reports" /></ProtectedRoute>}/>
+            <Route path="/teacher/">
+                    <Route path="reports" element={<ProtectedRoute user={user} allowedRoles={["Teacher"]}><ReportPageTeacher /></ProtectedRoute>} />
             </Route>
 
             <Route path="/librarian/" element={<ProtectedRoute user={user} allowedRoles={["Librarian"]}><Navigate to="borrows" /></ProtectedRoute>}/>

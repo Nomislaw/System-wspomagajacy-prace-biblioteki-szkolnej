@@ -76,12 +76,19 @@ public class ReservationsController : ControllerBase
     {
         var userId = GetCurrentUserId();
         
+        var user = _context.Users.First(u => u.Id == userId);
+        
         var activeReservationsCount = await _context.Reservations
             .CountAsync(r => r.UserId == userId && r.ReservationStatus == ReservationStatus.Active);
 
-        if (activeReservationsCount >= 2)
+
+        if (user.Role == Role.Student && activeReservationsCount >= 2)
         {
             return BadRequest(new ErrorResponse { Errors = new List<string> { "Osiągnięto limit 2 aktywnych rezerwacji." } });
+        }
+        else if (activeReservationsCount >= 5)
+        {
+            return BadRequest(new ErrorResponse { Errors = new List<string> { "Osiągnięto limit 5 aktywnych rezerwacji." } });
         }
 
 
@@ -174,13 +181,20 @@ public class ReservationsController : ControllerBase
 
         if (!copy.IsAvailable)
             return BadRequest(new ErrorResponse { Errors =  new List<string>{ "Egzemplarz jest już wypożyczony" } });
+
+        var TerminDate = DateTime.Now.AddDays(14);
+        
+        if (reservation.User.Role != Role.Student)
+        {
+            TerminDate = DateTime.Now.AddDays(28);
+        }
         
         var borrow = new Borrow
         {
             BookCopyId = copy.Id,             
             UserId = reservation.UserId,
             BorrowDate = DateTime.Now,
-            TerminDate = DateTime.Now.AddDays(14),
+            TerminDate = TerminDate,
             BorrowStatus = BorrowStatus.Active,
             ReservationId = reservation.Id
         };

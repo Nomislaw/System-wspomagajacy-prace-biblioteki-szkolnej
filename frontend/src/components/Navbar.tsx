@@ -13,6 +13,8 @@ const Navbar: React.FC<NavbarProps> = ({ user, onLogout}) => {
       switch (role) {
         case "Librarian":
           return "Bibliotekarz"
+        case "Teacher":
+          return "Nauczyciel"
         default:
           return role;
       }
@@ -23,7 +25,7 @@ const Navbar: React.FC<NavbarProps> = ({ user, onLogout}) => {
       <div className="navbar-top">
         <h2>
             Witaj, {user.firstName} {user.lastName} (
-            {user.role === "User" ? "Klasa: " + (user.className ?? "Brak") : mapUserRole(user.role)}
+            {user.role === "Student" ? "Klasa: " + (user.className ?? "Brak") : mapUserRole(user.role)}
             )
           </h2>
         <div>
@@ -32,6 +34,9 @@ const Navbar: React.FC<NavbarProps> = ({ user, onLogout}) => {
             )}
             {user.role === "Librarian" && (
                       <NavLink to="/librarian" className="btn">Bibliotekarz</NavLink>
+            )}
+            {user.role === "Teacher" && (
+                      <NavLink to="/teacher" className="btn">Nauczyciel</NavLink>
             )}
         <button className="logout-btn" onClick={onLogout}>Wyloguj</button>
         </div>

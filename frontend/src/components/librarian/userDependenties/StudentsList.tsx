@@ -1,10 +1,21 @@
 import React, { useEffect, useState } from "react";
 import { useParams, useNavigate, useLocation } from "react-router-dom";
-import { User } from "../../../types/Index";
+import { Role, User } from "../../../types/Index";
 import { SchoolClassService } from "../../../api/SchoolClassService";
 import styles from "./../Librarian.module.css";
 
 const StudentsList: React.FC = () => {
+  const mapUserRole = (role: Role): string => {
+          switch (role) {
+            case "Student":
+              return "Uczeń"
+            case "Teacher":
+              return "Nauczyciel"
+            default:
+              return role;
+          }
+        };
+        
   const { id } = useParams(); 
   const classId = Number(id);
   const navigate = useNavigate();
@@ -59,10 +70,10 @@ const StudentsList: React.FC = () => {
             className={styles.navigateButton}
             onClick={() => navigate(`/librarian/school-classes/${classId}/students/add`, { state: { className: className}})}
           >
-            Dodaj uczniów
+            Dodaj użytkowników
           </button>
         </div>
-      <h2 className={styles.title}>Uczniowie klasy {className}</h2>
+      <h2 className={styles.title}>Użytkownicy klasy {className}</h2>
 
       <input
         type="text"
@@ -79,7 +90,7 @@ const StudentsList: React.FC = () => {
             <th>Imię</th>
             <th>Nazwisko</th>
             <th>Email</th>
-            <th>Klasa</th>
+            <th>Rola</th>
             <th>Akcje</th>
           </tr>
         </thead>
@@ -97,7 +108,7 @@ const StudentsList: React.FC = () => {
                 <td>{student.firstName}</td>
                 <td>{student.lastName}</td>
                 <td>{student.email}</td>
-                <td>{student.className}</td>
+                <td>{mapUserRole(student.role)}</td>
                 <td>
                     <button
                     className={styles.deleteButton}

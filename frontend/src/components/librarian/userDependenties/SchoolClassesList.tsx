@@ -152,7 +152,7 @@ const SchoolClassesList: React.FC = () => {
                           className={styles.copyButton}
                           onClick={() => navigate(`/librarian/school-classes/${schoolClass.id}/students`, { state: { className: schoolClass.className}})}
                         >
-                          Uczniowie
+                          Użytkownicy
                         </button>
                         <button
                           className={styles.editButton}

@@ -1,4 +1,6 @@
-﻿namespace Biblioteka.Api.DTOs;
+﻿using Biblioteka.Api.Models;
+
+namespace Biblioteka.Api.DTOs;
 
 public class UserDto
 {
@@ -7,4 +9,5 @@ public class UserDto
     public string FirstName { get; set; }
     public string LastName { get; set; }
     public string ClassName { get; set; }
+    public Role Role { get; set; }
 }

@@ -1,4 +1,5 @@
-﻿using Biblioteka.Api.Data;
+﻿using System.Security.Claims;
+using Biblioteka.Api.Data;
 using Biblioteka.Api.DTOs;
 using Biblioteka.Api.Models;
 using Microsoft.AspNetCore.Authorization;
@@ -19,9 +20,17 @@ namespace Biblioteka.Api.Controllers
         }
 
         [HttpGet("user-activity")]
-        [Authorize(Roles = "Librarian")]
+        [Authorize(Roles = "Librarian, Teacher")]
         public async Task<IActionResult> GenerateUserReport(DateTime? fromDate, DateTime? toDate, int? classId)
         {
+            var userId = GetCurrentUserId();
+            var user = _context.Users.First(u => u.Id == userId);
+            
+            if (user.Role == Role.Teacher)
+            {
+                classId = user.SchoolClassId;
+            }
+            
             var borrowsQuery = _context.Borrows
                 .Include(b => b.BookCopy)
                     .ThenInclude(bc => bc.Book)
@@ -47,8 +56,8 @@ namespace Biblioteka.Api.Controllers
 
             if (classId.HasValue)
             {
-                borrowsQuery = borrowsQuery.Where(b => b.User.SchoolClassId == classId.Value);
-                reservationsQuery = reservationsQuery.Where(r => r.User.SchoolClassId == classId.Value);
+                borrowsQuery = borrowsQuery.Where(b => (b.User.SchoolClassId == classId.Value && b.User.Role == Role.Student));
+                reservationsQuery = reservationsQuery.Where(r => (r.User.SchoolClassId == classId.Value  && r.User.Role == Role.Student));
             }
 
             var borrowsDto = await borrowsQuery.Select(b => new ActivityRecordDto
@@ -204,6 +213,13 @@ namespace Biblioteka.Api.Controllers
 
             return Ok(books);
         }
-
+        private int GetCurrentUserId()
+        {
+            var userIdClaim = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier);
+            if (userIdClaim == null)
+                throw new Exception("Nie udało się pobrać ID użytkownika z tokena");
+    
+            return int.Parse(userIdClaim.Value);
+        }
     }
 }

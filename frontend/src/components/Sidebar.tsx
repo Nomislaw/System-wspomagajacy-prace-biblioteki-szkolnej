@@ -36,7 +36,7 @@ const Sidebar: React.FC<SidebarProps> = ({ user }) => {
       case "my-borrows":
         return (
           <>
-            <NavLink to="/my-borrows/active" className={({ isActive }) => `sidebar-item ${isActive ? "active" : ""}`}>Aktywne</NavLink>
+            <NavLink to="/my-borrows/active" className={({ isActive }) => `sidebar-item ${isActive ? "active" : ""}`}>Aktualne</NavLink>
             <NavLink to="/my-borrows/returned" className={({ isActive }) => `sidebar-item ${isActive ? "active" : ""}`}>Zwrócone</NavLink>
           </>
         );
@@ -98,7 +98,14 @@ const Sidebar: React.FC<SidebarProps> = ({ user }) => {
                 )}
             </>
           );
-
+      case "teacher":
+        return(
+        <>
+         {user.role === "Teacher" && (
+                  <NavLink to="/teacher/reports" className={({ isActive }) => `sidebar-item ${isActive ? "active" : ""}`}>Generowanie raportów</NavLink>
+                )}
+        </>
+        );
       default:
         return <></>;
     }

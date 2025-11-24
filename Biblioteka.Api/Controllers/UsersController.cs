@@ -92,13 +92,13 @@ namespace Biblioteka.Api.Controllers
         }
         
         [HttpGet("by-class/{classId}")]
-        [Authorize(Roles = "Librarian")]
+        [Authorize(Roles = "Librarian,Teacher")]
         public async Task<IActionResult> GetUsersByClass(int classId)
         {
             int? id = classId == 0 ? null : classId;
                 
             var users = await _context.Users
-                .Where(u => u.SchoolClassId == id && u.Role == Role.User)
+                .Where(u => u.SchoolClassId == id && (u.Role == Role.Student || u.Role == Role.Teacher))
                 .Include(u => u.SchoolClass)
                 .Select(u => new UserDto
                 {
@@ -106,6 +106,7 @@ namespace Biblioteka.Api.Controllers
                     Email = u.Email,
                     FirstName = u.FirstName,
                     LastName = u.LastName,
+                    Role = u.Role,
                     ClassName = u.SchoolClass != null ? u.SchoolClass.ClassName : "Brak"
                 })
                 .ToListAsync();

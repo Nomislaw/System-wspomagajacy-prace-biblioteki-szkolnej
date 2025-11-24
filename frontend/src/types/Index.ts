@@ -1,5 +1,5 @@
 
-export type Role = "User" | "Librarian" | "Administrator"; 
+export type Role = "Student" | "Teacher" | "Librarian" | "Administrator"; 
 
 export enum ReservationStatus {
   Active = "Active",

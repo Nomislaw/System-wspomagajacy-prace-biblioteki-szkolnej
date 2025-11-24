@@ -77,7 +77,7 @@ public class AuthController : ControllerBase
             Email = req.Email,
             FirstName = req.FirstName,
             LastName = req.LastName,
-            Role = Role.User
+            Role = Role.Student
         };
 
         user.Password = _passwordHasher.HashPassword(user, req.Password);

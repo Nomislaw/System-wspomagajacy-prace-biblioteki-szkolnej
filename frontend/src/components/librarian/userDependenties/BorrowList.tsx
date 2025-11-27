@@ -79,15 +79,15 @@ const BorrowList: React.FC = () => {
 const getStatusName = (status: any): string => {
   switch (status) {
     case BorrowStatus.Active:
-      return "Aktywne";
+      return "Aktywny";
     case BorrowStatus.Returned:
-      return "Zwrócone";
+      return "Zwrócony";
     case BorrowStatus.ReturnedLate:
-      return "Zwrócone po terminie";
+      return "Zwrócony po terminie";
     case BorrowStatus.Canceled:
-      return "Anulowane";
+      return "Anulowany";
     case BorrowStatus.Overdue:
-      return "Opóźnione";
+      return "Opóźniony";
     default:
       return "Nieznany";
   }

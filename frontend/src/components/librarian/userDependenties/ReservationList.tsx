@@ -81,13 +81,13 @@ const ReservationList: React.FC = () => {
   const getStatusLabel = (status: ReservationStatus): string => {
     switch (status) {
       case ReservationStatus.Active:
-        return "Aktywna";
+        return "Aktywny";
       case ReservationStatus.Completed:
-        return "Zrealizowana";
+        return "Zrealizowany";
       case ReservationStatus.Canceled:
-        return "Anulowana";
+        return "Anulowany";
       case ReservationStatus.Expired:
-        return "Wygasła";
+        return "Wygasły";
       default:
         return "Nieznany";
     }

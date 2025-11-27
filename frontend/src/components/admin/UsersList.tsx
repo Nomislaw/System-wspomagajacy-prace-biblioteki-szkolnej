@@ -118,7 +118,7 @@ const UsersList: React.FC = () => {
                       onChange={(e) => handleChangeRole(user.id, e.target.value as Role)}
                       disabled={user.id === currentUser?.id}
                     >
-                      <option value="Student">Student</option>
+                      <option value="Student">Uczeń</option>
                       <option value="Teacher">Nauczyciel</option>
                       <option value="Librarian">Bibliotekarz</option>
                       <option value="Administrator">Administrator</option>

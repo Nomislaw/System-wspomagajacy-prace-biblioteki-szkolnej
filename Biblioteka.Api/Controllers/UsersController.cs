@@ -92,7 +92,7 @@ namespace Biblioteka.Api.Controllers
         }
         
         [HttpGet("by-class/{classId}")]
-        [Authorize(Roles = "Librarian,Teacher")]
+        [Authorize(Roles = "Administrator,Teacher")]
         public async Task<IActionResult> GetUsersByClass(int classId)
         {
             int? id = classId == 0 ? null : classId;
@@ -117,7 +117,7 @@ namespace Biblioteka.Api.Controllers
         }
         
         [HttpPut("{id}/change-class")]
-        [Authorize(Roles = "Librarian")]
+        [Authorize(Roles = "Administrator")]
         public async Task<IActionResult> ChangeUserClass(int id, [FromBody] int? newClassId)
         {
             var user = await _context.Users.FindAsync(id);

@@ -64,7 +64,10 @@ const Sidebar: React.FC<SidebarProps> = ({ user }) => {
         return (
           <>
                 {user.role === "Administrator" && (
-                  <NavLink to="/admin" className={({ isActive }) => `sidebar-item ${isActive ? "active" : ""}`}>Użytkownicy</NavLink>
+                  <NavLink to="/admin/users" className={({ isActive }) => `sidebar-item ${isActive ? "active" : ""}`}>Użytkownicy</NavLink>
+                )}
+                {user.role === "Administrator" && (
+                  <NavLink to="/admin/school-classes" className={({ isActive }) => `sidebar-item ${isActive ? "active" : ""}`}>Klasy szkolne</NavLink>
                 )}
           </>
         );
@@ -89,9 +92,6 @@ const Sidebar: React.FC<SidebarProps> = ({ user }) => {
                 )}
                 {user.role === "Librarian" && (
                   <NavLink to="/librarian/publishers" className={({ isActive }) => `sidebar-item ${isActive ? "active" : ""}`}>Wydawnictwa</NavLink>
-                )}
-                {user.role === "Librarian" && (
-                  <NavLink to="/librarian/school-classes" className={({ isActive }) => `sidebar-item ${isActive ? "active" : ""}`}>Klasy szkolne</NavLink>
                 )}
                 {user.role === "Librarian" && (
                   <NavLink to="/librarian/reports" className={({ isActive }) => `sidebar-item ${isActive ? "active" : ""}`}>Generowanie raportów</NavLink>

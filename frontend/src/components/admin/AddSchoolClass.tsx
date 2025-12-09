@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { SchoolClassService } from "../../../api/SchoolClassService";
-import styles from "./../Librarian.module.css";
+import { SchoolClassService } from "../../api/SchoolClassService";
+import styles from "./../librarian/Librarian.module.css";
 
 const AddSchoolClass: React.FC = () => {
   const navigate = useNavigate();
@@ -15,7 +15,7 @@ const AddSchoolClass: React.FC = () => {
 
     try {
       await SchoolClassService.addClass({ className });
-      navigate("/librarian/school-classes");
+      navigate("/admin/school-classes");
     } catch (err) {
       console.error(err);
       alert("Błąd podczas dodawania klasy.");
@@ -40,7 +40,7 @@ const AddSchoolClass: React.FC = () => {
         </button>
         <button
           className={styles.returnButton}
-          onClick={() => navigate("/librarian/school-classes")}
+          onClick={() => navigate("/admin/school-classes")}
         >
           Anuluj
         </button>

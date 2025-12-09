@@ -28,10 +28,10 @@ import MyBorrowsList from "../../components/user/MyBorrowsList";
 import ReportPage from "../../components/librarian/ReportPage";
 import BookCopiesList from "../../components/librarian/book/BookCopiesList";
 import AddBookCopy from "../../components/librarian/book/AddBookCopy";
-import SchoolClassesList from "../../components/librarian/userDependenties/SchoolClassesList";
-import AddSchoolClass from "../../components/librarian/userDependenties/AddSchoolClass";
-import StudentsList from "../../components/librarian/userDependenties/StudentsList";
-import AddStudent from "../../components/librarian/userDependenties/AddStudent";
+import SchoolClassesList from "../../components/admin/SchoolClassesList";
+import AddSchoolClass from "../../components/admin/AddSchoolClass";
+import StudentsList from "../../components/admin/StudentsList";
+import AddStudent from "../../components/admin/AddStudent";
 import ReportPageTeacher from "../../components/teacher/ReportPageTeacher";
 
 
@@ -95,6 +95,14 @@ const Dashboard: React.FC<DashboardProps> = ({ onLogout, user }) => {
                     <Route path="users">
                     <Route path="add" element={<ProtectedRoute user={user} allowedRoles={["Administrator"]}><AddUser /></ProtectedRoute>} />
                     </Route>
+                    <Route path="school-classes" element={<ProtectedRoute user={user} allowedRoles={["Administrator"]}><SchoolClassesList /></ProtectedRoute>} />
+                    <Route path="school-classes">
+                      <Route path="add" element={<ProtectedRoute user={user} allowedRoles={["Administrator"]}><AddSchoolClass /></ProtectedRoute>} />
+                      <Route path=":id/students" element={<ProtectedRoute user={user} allowedRoles={["Administrator"]}><StudentsList /></ProtectedRoute>} />
+                      <Route path=":id/students">
+                        <Route path="add" element={<ProtectedRoute user={user} allowedRoles={["Administrator"]}><AddStudent /></ProtectedRoute>} />
+                      </Route>
+                    </Route>
             </Route>
 
             <Route path="/teacher/" element={<ProtectedRoute user={user} allowedRoles={["Teacher"]}><Navigate to="reports" /></ProtectedRoute>}/>
@@ -133,14 +141,7 @@ const Dashboard: React.FC<DashboardProps> = ({ onLogout, user }) => {
 
                     <Route path="reservations" element={<ProtectedRoute user={user} allowedRoles={["Librarian"]}><ReservationList /></ProtectedRoute>} />
 
-                    <Route path="school-classes" element={<ProtectedRoute user={user} allowedRoles={["Librarian"]}><SchoolClassesList /></ProtectedRoute>} />
-                    <Route path="school-classes">
-                      <Route path="add" element={<ProtectedRoute user={user} allowedRoles={["Librarian"]}><AddSchoolClass /></ProtectedRoute>} />
-                      <Route path=":id/students" element={<ProtectedRoute user={user} allowedRoles={["Librarian"]}><StudentsList /></ProtectedRoute>} />
-                      <Route path=":id/students">
-                        <Route path="add" element={<ProtectedRoute user={user} allowedRoles={["Librarian"]}><AddStudent /></ProtectedRoute>} />
-                      </Route>
-                    </Route>
+                    
                     
                     <Route path="reports" element={<ProtectedRoute user={user} allowedRoles={["Librarian"]}><ReportPage /></ProtectedRoute>} />
             </Route>

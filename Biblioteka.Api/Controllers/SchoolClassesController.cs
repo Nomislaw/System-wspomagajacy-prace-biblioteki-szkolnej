@@ -22,7 +22,7 @@ public class SchoolClassesController : ControllerBase
     }
     
     [HttpGet]
-    [Authorize(Roles = "Librarian")]
+    [Authorize(Roles = "Administrator,Librarian")]
     public async Task<IActionResult> GetAllClasses()
     {
         var classes = await _service.GetAllAsync();
@@ -30,7 +30,7 @@ public class SchoolClassesController : ControllerBase
     }
     
     [HttpPut("{id}")]
-    [Authorize(Roles = "Librarian")]
+    [Authorize(Roles = "Administrator")]
     public async Task<ActionResult<SchoolClass>> UpdateClass(int id, [FromBody] SchoolClass dto)
     {
         var updated = await _service.UpdateAsync(id, dto);
@@ -44,7 +44,7 @@ public class SchoolClassesController : ControllerBase
     }
     
     [HttpPost]
-    [Authorize(Roles = "Librarian")]
+    [Authorize(Roles = "Administrator")]
     public async Task<IActionResult> AddClass([FromBody] SchoolClass schoolClass)
     {
         await _service.AddAsync(schoolClass);
@@ -52,7 +52,7 @@ public class SchoolClassesController : ControllerBase
     }
     
     [HttpDelete("{id}")]
-    [Authorize(Roles = "Librarian")]
+    [Authorize(Roles = "Administrator")]
     public async Task<IActionResult> DeleteClass(int id)
     {
         var schoolClass = await _service.GetByIdAsync(id);

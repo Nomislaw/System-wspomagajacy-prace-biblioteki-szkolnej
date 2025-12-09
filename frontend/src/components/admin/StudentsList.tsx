@@ -1,21 +1,21 @@
 import React, { useEffect, useState } from "react";
 import { useParams, useNavigate, useLocation } from "react-router-dom";
-import { Role, User } from "../../../types/Index";
-import { SchoolClassService } from "../../../api/SchoolClassService";
-import styles from "./../Librarian.module.css";
+import { Role, User } from "../../types/Index";
+import { SchoolClassService } from "../../api/SchoolClassService";
+import styles from "./../librarian/Librarian.module.css";
 
-const AddStudent: React.FC = () => {
-   const mapUserRole = (role: Role): string => {
-        switch (role) {
-          case "Student":
-            return "Uczeń"
-          case "Teacher":
-            return "Nauczyciel"
-          default:
-            return role;
-        }
-      };
-      
+const StudentsList: React.FC = () => {
+  const mapUserRole = (role: Role): string => {
+          switch (role) {
+            case "Student":
+              return "Uczeń"
+            case "Teacher":
+              return "Nauczyciel"
+            default:
+              return role;
+          }
+        };
+        
   const { id } = useParams(); 
   const classId = Number(id);
   const navigate = useNavigate();
@@ -28,23 +28,22 @@ const AddStudent: React.FC = () => {
 
   const fetchStudents = async () => {
     try {
-      const res = await SchoolClassService.getStudents(0);
+      const res = await SchoolClassService.getStudents(classId);
       setStudents(res);
     } catch (err) {
       console.error(err);
     }
   };
 
-  const handleAddClass = async (userId: number) => {
-
+  const handleRemoveClass = async (userId: number) => {
 
   try {
-    await SchoolClassService.changeUserClass(userId,classId);
+    await SchoolClassService.changeUserClass(userId,undefined);
     fetchStudents();
     
   } catch (err) {
     console.error(err);
-    alert("Wystąpił błąd podczas dodawania klasy ucznia");
+    alert("Wystąpił błąd podczas usuwania klasy ucznia");
   }
 };
 
@@ -60,15 +59,21 @@ const AddStudent: React.FC = () => {
 
   return (
     <div className={styles.container}>
-        <div className={styles.headerSection}>
+        <div className={styles.headerSectionMoreItems}>
             <button
                 className={styles.returnButton}
-                onClick={() => navigate(`/librarian/school-classes/${classId}/students`, { state: { className: className}})}
+                onClick={() => navigate("/admin/school-classes")}
             >
                 Cofnij
             </button>
+             <button
+            className={styles.navigateButton}
+            onClick={() => navigate(`/admin/school-classes/${classId}/students/add`, { state: { className: className}})}
+          >
+            Dodaj użytkowników
+          </button>
         </div>
-      <h2 className={styles.title}>Dodaj użytkowników do klasy {className}</h2>
+      <h2 className={styles.title}>Użytkownicy klasy {className}</h2>
 
       <input
         type="text"
@@ -106,10 +111,10 @@ const AddStudent: React.FC = () => {
                 <td>{mapUserRole(student.role)}</td>
                 <td>
                     <button
-                    className={styles.addButton}
-                    onClick={() => handleAddClass(student.id)}
+                    className={styles.deleteButton}
+                    onClick={() => handleRemoveClass(student.id)}
                     >
-                    Dodaj
+                    Usuń
                     </button>
                 </td>
               </tr>
@@ -121,4 +126,4 @@ const AddStudent: React.FC = () => {
   );
 };
 
-export default AddStudent;
+export default StudentsList;

@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
-import { SchoolClassService } from "../../../api/SchoolClassService";
-import { SchoolClass } from "../../../types/Index";
-import styles from "./../Librarian.module.css";
+import { SchoolClassService } from "../../api/SchoolClassService";
+import { SchoolClass } from "../../types/Index";
+import styles from "./../librarian/Librarian.module.css";
 import { useNavigate } from "react-router-dom";
 
 const SchoolClassesList: React.FC = () => {
@@ -81,7 +81,7 @@ const SchoolClassesList: React.FC = () => {
         <div className={styles.headerSection}>
           <button
             className={styles.navigateButton}
-            onClick={() => navigate("/librarian/school-classes/add")}
+            onClick={() => navigate("/admin/school-classes/add")}
           >
             Dodaj klasę
           </button>
@@ -150,7 +150,7 @@ const SchoolClassesList: React.FC = () => {
                       <>
                         <button
                           className={styles.copyButton}
-                          onClick={() => navigate(`/librarian/school-classes/${schoolClass.id}/students`, { state: { className: schoolClass.className}})}
+                          onClick={() => navigate(`/admin/school-classes/${schoolClass.id}/students`, { state: { className: schoolClass.className}})}
                         >
                           Użytkownicy
                         </button>

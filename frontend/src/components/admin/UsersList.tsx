@@ -71,6 +71,21 @@ const UsersList: React.FC = () => {
     }
   };
 
+  const handleDeactiveUser = async (id: number) => {
+    const user = users.find((u) => u.id === id);
+    if (!user) return;
+
+    if (!window.confirm("Na pewno chcesz dezaktywować to konto?")) return;
+
+    try {
+      await UserService.deactiveUser(id);
+      fetchUsers();
+    } catch (err) {
+      console.error(err);
+      alert("Błąd podczas dezaktywowania użytkownika");
+    }
+  };
+
   const handleSendTokenToUser = async (id: number) => {
     const user = users.find((u) => u.id === id);
     if (!user) return;
@@ -149,6 +164,15 @@ const UsersList: React.FC = () => {
                       Wyślij token
                     </button>
                    )}
+                    {(user.emailConfirmed === true) && (
+                    <button
+                      className={styles.activeButton}
+                      onClick={() => handleDeactiveUser(user.id)}
+                      disabled={user.id === currentUser?.id}
+                      style={{ cursor: user.id === currentUser?.id ? "not-allowed" : "pointer" }}>
+                      Dezaktywuj
+                    </button>
+                  )}
 
                   </td>
                 </tr>

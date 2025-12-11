@@ -53,6 +53,12 @@ export const UserService = {
     });
   },
 
+  deactiveUser: async (userId: number): Promise<void> => {
+    return fetchAPI(`/users/${userId}/deactive-profile`, {
+      method: "PUT",
+    });
+  },
+
   sendTokenToUser: async (userId: number): Promise<void> => {
     return fetchAPI(`/users/${userId}/send-verify-token`, {
       method: "POST",

@@ -66,6 +66,22 @@ namespace Biblioteka.Api.Controllers
             return Ok(user);
         }
         
+        [HttpPut("{id}/deactive-profile")]
+        [Authorize(Roles = "Administrator")]
+        public async Task<ActionResult<User>> DeactiveProfile(int id)
+        {
+            var user = await _userService.GetByIdAsync(id);
+            if (user == null) return null;
+            if (!user.EmailConfirmed) return BadRequest(new ErrorResponse { Errors = new List<string> { "Użytkownik już jest nieaktywny" } });
+            
+            user.VerificationToken = null;
+            user.EmailConfirmed = false;
+            
+            await _context.SaveChangesAsync();
+            
+            return Ok(user);
+        }
+        
         [HttpPut("{id}/change-password")]
         [Authorize]
         public async Task<IActionResult> ChangePassword(int id, [FromBody] ChangePasswordDto dto)

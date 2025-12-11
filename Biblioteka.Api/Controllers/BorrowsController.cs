@@ -109,7 +109,7 @@ namespace Biblioteka.Api.Controllers
                 return NotFound(new ErrorResponse { Errors = new List<string> { "Nie znaleziono wypożyczenia." } });
 
             if (borrow.BorrowStatus == BorrowStatus.Returned && borrow.BorrowStatus == BorrowStatus.ReturnedLate )
-                return BadRequest(new ErrorResponse { Errors = new List<string> { "To wypożyczenie nie jest aktywne." } });
+                return BadRequest(new ErrorResponse { Errors = new List<string> { "To wypożyczenie jest już zwrócone." } });
 
             borrow.ReturnDate = DateTime.Now;
 

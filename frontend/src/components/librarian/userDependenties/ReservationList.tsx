@@ -11,8 +11,6 @@ const ReservationList: React.FC = () => {
   const [filterStatus, setFilterStatus] = useState<ReservationStatus | "All">("All");
 
   const [scanningId, setScanningId] = useState<number | null>(null);
-  const [barcode, setBarcode] = useState("");
-  const [scanStatus, setScanStatus] = useState<"idle" | "scanning">("idle");
 
   const fetchData = async () => {
     setLoading(true);
@@ -53,29 +51,18 @@ const ReservationList: React.FC = () => {
 
   const tryConvert = async (reservationId: number, barcode: string) => {
     try {
-      setScanStatus("scanning");
 
       await ReservationService.convertToBorrow(reservationId, barcode);
 
       alert("Wypożyczono egzemplarz.");
         setScanningId(null);
-        setBarcode("");
-        setScanStatus("idle");
      
 
       fetchData();
     } catch (err: any) {
       alert(err);
       setScanningId(null);
-      setBarcode("");
-      setScanStatus("idle");
     }
-  };
-
-  const startScan = (id: number) => {
-    setScanningId(id);
-    setBarcode("");
-    setScanStatus("scanning");
   };
 
   const getStatusLabel = (status: ReservationStatus): string => {
@@ -204,9 +191,8 @@ const ReservationList: React.FC = () => {
                               type="text"
                               autoFocus
                               className={styles.hiddenInput}
-                              value={barcode}
+                              
                               onChange={(e) => {
-                                setBarcode(e.target.value);
 
                                 if (e.target.value.length >= 1) {
                                   tryConvert(r.id, e.target.value);
@@ -215,18 +201,16 @@ const ReservationList: React.FC = () => {
                             />
 
 
-                            {scanStatus === "scanning" && (
+                            
                               <button
                                 className={styles.deleteButton}
                                 onClick={() => {
                                   setScanningId(null);
-                                  setBarcode("");
-                                  setScanStatus("idle");
                                 }}
                               >
                                 Anuluj skanowanie
                               </button>
-                            )}
+                            
 
                             
 
@@ -234,7 +218,7 @@ const ReservationList: React.FC = () => {
                         ) : (
                           <button
                             className={styles.copyButton}
-                            onClick={() => startScan(r.id)}
+                            onClick={() => setScanningId(r.id)}
                           >
                             Skanuj kod
                           </button>

@@ -46,7 +46,7 @@ public class AuthController : ControllerBase
 
         if (!user.EmailConfirmed)
         {
-            return BadRequest(new { errors = "E-mail nie został zweryfikowany" });
+            return BadRequest(new { errors = "E-mail nie został zweryfikowany lub konto jest nieaktywne" });
         }
         
         var token = GenerateJwtToken(user);

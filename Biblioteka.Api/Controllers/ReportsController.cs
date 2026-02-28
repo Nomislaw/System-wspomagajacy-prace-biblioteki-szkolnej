@@ -68,7 +68,7 @@ namespace Biblioteka.Api.Controllers
                 FromDate = b.BorrowDate,
                 ToDate = b.TerminDate,
                 ReturnDate = b.ReturnDate,
-                Status = b.BorrowStatus.ToString(),
+                Status = BorrowStatusToPolish(b.BorrowStatus),
                 Type = "Wypożyczenie"
             }).ToListAsync();
 
@@ -80,7 +80,7 @@ namespace Biblioteka.Api.Controllers
                 FromDate = r.ReservationDate,
                 ToDate = r.ExpirationDate,
                 ReturnDate = null,
-                Status = r.ReservationStatus.ToString(),
+                Status = ReservationStatusToPolish(r.ReservationStatus),
                 Type = "Rezerwacja"
             }).ToListAsync();
             
@@ -93,28 +93,28 @@ namespace Biblioteka.Api.Controllers
                 Total = borrowsDto.Count,
                 Active = new
                 {
-                    Count = borrowsDto.Count(b => b.Status == BorrowStatus.Active.ToString()),
-                    Percent = borrowsDto.Count > 0 ? borrowsDto.Count(b => b.Status == BorrowStatus.Active.ToString()) * 100.0 / borrowsDto.Count : 0
+                    Count = borrowsDto.Count(b => b.Status == "Aktywny"),
+                    Percent = borrowsDto.Count > 0 ? borrowsDto.Count(b => b.Status == "Aktywny") * 100.0 / borrowsDto.Count : 0
                 },
                 Returned = new
                 {
-                    Count = borrowsDto.Count(b => b.Status == BorrowStatus.Returned.ToString()),
-                    Percent = borrowsDto.Count > 0 ? borrowsDto.Count(b => b.Status == BorrowStatus.Returned.ToString()) * 100.0 / borrowsDto.Count : 0
+                    Count = borrowsDto.Count(b => b.Status == "Zwrócony"),
+                    Percent = borrowsDto.Count > 0 ? borrowsDto.Count(b => b.Status == "Zwrócony") * 100.0 / borrowsDto.Count : 0
                 },
                 ReturnedLate = new
                 {
-                    Count = borrowsDto.Count(b => b.Status == BorrowStatus.ReturnedLate.ToString()),
-                    Percent = borrowsDto.Count > 0 ? borrowsDto.Count(b => b.Status == BorrowStatus.ReturnedLate.ToString()) * 100.0 / borrowsDto.Count : 0
+                    Count = borrowsDto.Count(b => b.Status == "Zwrócony po terminie"),
+                    Percent = borrowsDto.Count > 0 ? borrowsDto.Count(b => b.Status == "Zwrócony po terminie") * 100.0 / borrowsDto.Count : 0
                 },
                 Overdue = new
                 {
-                    Count = borrowsDto.Count(b => b.Status == BorrowStatus.Overdue.ToString()),
-                    Percent = borrowsDto.Count > 0 ? borrowsDto.Count(b => b.Status == BorrowStatus.Overdue.ToString()) * 100.0 / borrowsDto.Count : 0
+                    Count = borrowsDto.Count(b => b.Status == "Opóźniony"),
+                    Percent = borrowsDto.Count > 0 ? borrowsDto.Count(b => b.Status == "Opóźniony") * 100.0 / borrowsDto.Count : 0
                 },
                 Canceled = new
                 {
-                    Count = borrowsDto.Count(b => b.Status == BorrowStatus.Canceled.ToString()),
-                    Percent = borrowsDto.Count > 0 ? borrowsDto.Count(b => b.Status == BorrowStatus.Canceled.ToString()) * 100.0 / borrowsDto.Count : 0
+                    Count = borrowsDto.Count(b => b.Status == "Anulowany"),
+                    Percent = borrowsDto.Count > 0 ? borrowsDto.Count(b => b.Status == "Anulowany") * 100.0 / borrowsDto.Count : 0
                 }
             };
             
@@ -123,23 +123,23 @@ namespace Biblioteka.Api.Controllers
                 Total = reservationsDto.Count,
                 Active = new
                 {
-                    Count = reservationsDto.Count(r => r.Status == ReservationStatus.Active.ToString()),
-                    Percent = reservationsDto.Count > 0 ? reservationsDto.Count(r => r.Status == ReservationStatus.Active.ToString()) * 100.0 / reservationsDto.Count : 0
+                    Count = reservationsDto.Count(r => r.Status == "Aktywny"),
+                    Percent = reservationsDto.Count > 0 ? reservationsDto.Count(r => r.Status == "Aktywny") * 100.0 / reservationsDto.Count : 0
                 },
                 Completed = new
                 {
-                    Count = reservationsDto.Count(r => r.Status == ReservationStatus.Completed.ToString()),
-                    Percent = reservationsDto.Count > 0 ? reservationsDto.Count(r => r.Status == ReservationStatus.Completed.ToString()) * 100.0 / reservationsDto.Count : 0
+                    Count = reservationsDto.Count(r => r.Status == "Zrealizowany"),
+                    Percent = reservationsDto.Count > 0 ? reservationsDto.Count(r => r.Status == "Zrealizowany") * 100.0 / reservationsDto.Count : 0
                 },
                 Canceled = new
                 {
-                    Count = reservationsDto.Count(r => r.Status == ReservationStatus.Canceled.ToString()),
-                    Percent = reservationsDto.Count > 0 ? reservationsDto.Count(r => r.Status == ReservationStatus.Canceled.ToString()) * 100.0 / reservationsDto.Count : 0
+                    Count = reservationsDto.Count(r => r.Status == "Anulowany"),
+                    Percent = reservationsDto.Count > 0 ? reservationsDto.Count(r => r.Status == "Anulowany") * 100.0 / reservationsDto.Count : 0
                 },
                 Expired = new
                 {
-                    Count = reservationsDto.Count(r => r.Status == ReservationStatus.Expired.ToString()),
-                    Percent = reservationsDto.Count > 0 ? reservationsDto.Count(r => r.Status == ReservationStatus.Expired.ToString()) * 100.0 / reservationsDto.Count : 0
+                    Count = reservationsDto.Count(r => r.Status == "Wygasły"),
+                    Percent = reservationsDto.Count > 0 ? reservationsDto.Count(r => r.Status == "Wygasły") * 100.0 / reservationsDto.Count : 0
                 }
             };
             
@@ -221,5 +221,33 @@ namespace Biblioteka.Api.Controllers
     
             return int.Parse(userIdClaim.Value);
         }
+
+        public static string BorrowStatusToPolish(BorrowStatus status)
+        {
+            return status switch
+            {
+                BorrowStatus.Active => "Aktywny",
+                BorrowStatus.Returned => "Zwrócony",
+                BorrowStatus.ReturnedLate => "Zwrócony po terminie",
+                BorrowStatus.Canceled => "Anulowany",
+                BorrowStatus.Overdue => "Opóźniony",
+                _ => "Nieznany status"
+            };
+        }
+        
+        public static string ReservationStatusToPolish(ReservationStatus status)
+        {
+            return status switch
+            {
+                ReservationStatus.Active => "Aktywny",
+                ReservationStatus.Completed => "Zrealizowany",
+                ReservationStatus.Canceled => "Anulowany",
+                ReservationStatus.Expired => "Wygasły",
+                _ => "Nieznany status"
+            };
+        }
+
+
+        
     }
 }

@@ -4,6 +4,7 @@ import { BookService } from "../../api/BookService";
 import { ReservationService } from "../../api/ReservationService";
 import { BorrowService } from "../../api/BorrowService";
 import styles from "./User.module.css";
+import { useLocation } from "react-router-dom";
 
 interface CatalogProps {
   categoryId?: number;
@@ -17,6 +18,9 @@ const Catalog: React.FC<CatalogProps> = ({ categoryId }) => {
   const [searchAuthor, setSearchAuthor] = useState("");
   const [showMoreBookDetails, setShowMoreBookDetails] = useState(false);
   const [selectedBook, setSelectedBook] = useState<Book>();
+  const location = useLocation();
+
+  const user = JSON.parse(localStorage.getItem("user") || "{}");
 
   const handleShowMore = async (selectedBook:Book) => {
     setSelectedBook(selectedBook);
@@ -26,11 +30,17 @@ const Catalog: React.FC<CatalogProps> = ({ categoryId }) => {
 
   const fetchData = async () => {
     try {
-      const [booksRes, reservationsRes, borrowsRes] = await Promise.all([
-        BookService.getAllBooks(),
-        ReservationService.getAllUserReservations(),
-        BorrowService.getAllUserBorrows(),
-      ]);
+      const booksPromise = location.pathname === "/catalog/for-teachers"
+      ? BookService.getAllTeacherBooks()
+      : user.role === "Teacher" || user.role === "Administrator" || user.role === "Librarian"
+        ? BookService.getAllBooks()
+        : BookService.getAllStudentBooks();
+
+    const [booksRes, reservationsRes, borrowsRes] = await Promise.all([
+      booksPromise,
+      ReservationService.getAllUserReservations(),
+      BorrowService.getAllUserBorrows(),
+    ]);
 
       setBooks(booksRes);
       setReservations(reservationsRes);
@@ -43,7 +53,7 @@ const Catalog: React.FC<CatalogProps> = ({ categoryId }) => {
 
   useEffect(() => {
     fetchData();
-  }, []);
+  }, [location.pathname]);
 
   const filteredBooks = books.filter((book) => {
     const matchesTitle = book.title.toLowerCase().includes(searchTitle.toLowerCase());
@@ -106,11 +116,18 @@ const Catalog: React.FC<CatalogProps> = ({ categoryId }) => {
         <p className={styles.noResults}>Brak książek spełniających kryteria.</p>
       ) : (
         <div className={styles.booksGrid}>
-          {filteredBooks.map((book) => {
+          {[...filteredBooks]
+            .sort((a, b) => Number(b.isForTeacherOnly) - Number(a.isForTeacherOnly))
+            .map((book) => {
             const { text, disabled } = getButtonState(book);
 
             return (
-              <div key={book.id} className={styles.bookCard}>
+              <div
+                  key={book.id}
+                  className={`${styles.bookCard} ${
+                    book.isForTeacherOnly ? styles.teacherBookCard : ""
+                  }`}
+                >
                 <div className={styles.bookHeader}>
                   <h3 className={styles.bookTitle}>{book.title}</h3>
                   <span className={styles.categoryTag}>{book.categoryName || "Bez kategorii"}</span>

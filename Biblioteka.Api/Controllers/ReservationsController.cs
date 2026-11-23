@@ -110,8 +110,8 @@ public class ReservationsController : ControllerBase
             BookId = bookId,
             UserId = userId,
             ReservationStatus = ReservationStatus.Active,
-            ReservationDate = DateTime.Now,
-            ExpirationDate = DateTime.Now.AddDays(7)
+            ReservationDate = DateTime.UtcNow,
+            ExpirationDate = DateTime.UtcNow.AddDays(7)
         };
 
         _context.Reservations.Add(reservation);
@@ -182,18 +182,18 @@ public class ReservationsController : ControllerBase
         if (!copy.IsAvailable)
             return BadRequest(new ErrorResponse { Errors =  new List<string>{ "Egzemplarz jest już wypożyczony" } });
 
-        var TerminDate = DateTime.Now.AddDays(14);
+        var TerminDate = DateTime.UtcNow.AddDays(14);
         
         if (reservation.User.Role != Role.Student)
         {
-            TerminDate = DateTime.Now.AddDays(28);
+            TerminDate = DateTime.UtcNow.AddDays(28);
         }
         
         var borrow = new Borrow
         {
             BookCopyId = copy.Id,             
             UserId = reservation.UserId,
-            BorrowDate = DateTime.Now,
+            BorrowDate = DateTime.UtcNow,
             TerminDate = TerminDate,
             BorrowStatus = BorrowStatus.Active,
             ReservationId = reservation.Id

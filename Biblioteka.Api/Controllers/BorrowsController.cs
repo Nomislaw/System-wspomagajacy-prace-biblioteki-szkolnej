@@ -111,7 +111,7 @@ namespace Biblioteka.Api.Controllers
             if (borrow.BorrowStatus == BorrowStatus.Returned && borrow.BorrowStatus == BorrowStatus.ReturnedLate )
                 return BadRequest(new ErrorResponse { Errors = new List<string> { "To wypożyczenie jest już zwrócone." } });
 
-            borrow.ReturnDate = DateTime.Now;
+            borrow.ReturnDate = DateTime.UtcNow;
 
             if (borrow.ReturnDate > borrow.TerminDate)
                 borrow.BorrowStatus = BorrowStatus.ReturnedLate;

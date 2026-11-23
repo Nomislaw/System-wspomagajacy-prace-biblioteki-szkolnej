@@ -43,6 +43,7 @@ export interface Book {
   publicationYear: number;
   isbn: string;
   description: string;
+  isForTeacherOnly: boolean;
   quantity: number;
   available: number;
   authorId: number;

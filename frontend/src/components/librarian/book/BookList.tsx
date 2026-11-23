@@ -44,9 +44,9 @@ const BookList: React.FC = () => {
       <div className={styles.authorsListSection}>
         <div className={styles.headerSection}>
           <button
-            className={styles.navigateButton}
-            onClick={() => navigate("/librarian/books/add")}
-          >
+              className={styles.navigateButton}
+              onClick={() => navigate("/librarian/books/add")}
+            >
             Dodaj książkę
           </button>
         </div>

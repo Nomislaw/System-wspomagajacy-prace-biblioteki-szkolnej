@@ -70,6 +70,9 @@ namespace Biblioteka.Api.Migrations
                         .HasMaxLength(13)
                         .HasColumnType("character varying(13)");
 
+                    b.Property<bool>("IsForTeacherOnly")
+                        .HasColumnType("boolean");
+
                     b.Property<int>("PublicationYear")
                         .HasColumnType("integer");
 

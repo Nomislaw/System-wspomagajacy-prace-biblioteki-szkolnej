@@ -8,6 +8,18 @@ export const BookService = {
     });
   },
 
+  getAllStudentBooks: async (): Promise<Book[]> => {
+    return fetchAPI(`/books/students`, {
+      method: "GET",
+    });
+  },
+
+  getAllTeacherBooks: async (): Promise<Book[]> => {
+    return fetchAPI(`/books/teachers`, {
+      method: "GET",
+    });
+  },
+
   addBook: async (data: Partial<Book>): Promise<Book> => {
     return fetchAPI(`/books`, {
       method: "POST",
@@ -25,6 +37,12 @@ export const BookService = {
   deleteBook: async (bookId: number): Promise<void> => {
     return fetchAPI(`/books/${bookId}`, {
       method: "DELETE",
+    });
+  },
+
+  changeIsOnlyForTeacher: async (bookId: number): Promise<void> => {
+    return fetchAPI(`/books/${bookId}/change-is-only-for-teacher`, {
+      method: "PUT",
     });
   },
 

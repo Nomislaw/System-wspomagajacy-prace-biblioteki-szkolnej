@@ -55,10 +55,9 @@ public class BooksController : ControllerBase
 
         return Ok(result);
     }
-
-
+    
     [HttpGet]
-    [Authorize]
+    [Authorize(Roles = "Teacher,Librarian,Administrator")]
     public async Task<IActionResult> GetAllBooks()
     {
         var books = await _context.Books
@@ -74,6 +73,73 @@ public class BooksController : ControllerBase
                 ISBN = b.ISBN,
                 Description = b.Description,
                 PublicationYear = b.PublicationYear,
+                IsForTeacherOnly = b.IsForTeacherOnly,
+                Quantity = b.GetQuantity(),
+                Available = b.GetAvailableQuantity(),
+                AuthorId = b.AuthorId,
+                CategoryId = b.CategoryId,
+                PublisherId = b.PublisherId,
+                AuthorName = b.Author.FirstName + " " + b.Author.LastName,
+                CategoryName = b.Category.Name,
+                PublisherName = b.Publisher.Name
+            })
+            .ToListAsync();
+
+        return Ok(books);
+    }
+
+    [HttpGet("students")]
+    [Authorize]
+    public async Task<IActionResult> GetAllStudentBooks()
+    {
+        var books = await _context.Books
+            .Include(b => b.Author)
+            .Include(b => b.Category)
+            .Include(b => b.Publisher)
+            .Include(b=>b.BookCopies)
+            .Include(b=>b.Reservations)
+            .Where(b => b.IsForTeacherOnly == false)
+            .Select(b => new BookDto
+            {
+                Id = b.Id,
+                Title = b.Title,
+                ISBN = b.ISBN,
+                Description = b.Description,
+                PublicationYear = b.PublicationYear,
+                IsForTeacherOnly = b.IsForTeacherOnly,
+                Quantity = b.GetQuantity(),
+                Available = b.GetAvailableQuantity(),
+                AuthorId = b.AuthorId,
+                CategoryId = b.CategoryId,
+                PublisherId = b.PublisherId,
+                AuthorName = b.Author.FirstName + " " + b.Author.LastName,
+                CategoryName = b.Category.Name,
+                PublisherName = b.Publisher.Name
+            })
+            .ToListAsync();
+
+        return Ok(books);
+    }
+    
+    [HttpGet("teachers")]
+    [Authorize(Roles = "Librarian,Administrator,Teacher")]
+    public async Task<IActionResult> GetAllTeachersBooks()
+    {
+        var books = await _context.Books
+            .Include(b => b.Author)
+            .Include(b => b.Category)
+            .Include(b => b.Publisher)
+            .Include(b=>b.BookCopies)
+            .Include(b=>b.Reservations)
+            .Where(b => b.IsForTeacherOnly == true)
+            .Select(b => new BookDto
+            {
+                Id = b.Id,
+                Title = b.Title,
+                ISBN = b.ISBN,
+                Description = b.Description,
+                PublicationYear = b.PublicationYear,
+                IsForTeacherOnly = b.IsForTeacherOnly,
                 Quantity = b.GetQuantity(),
                 Available = b.GetAvailableQuantity(),
                 AuthorId = b.AuthorId,
@@ -171,5 +237,19 @@ public class BooksController : ControllerBase
                 Errors = new List<string> { "Nie można usunąć książki, ponieważ jest powiązana z innymi danymi." } 
             });
         }
+    }
+    
+    [HttpPut("{id}/change-is-only-for-teacher")]
+    [Authorize(Roles = "Librarian")]
+    public async Task<IActionResult> ChangeTeachersBook(int id)
+    {
+        var book = await _service.GetByIdAsync(id);
+        if (book == null) return null;
+        
+        book.IsForTeacherOnly = !book.IsForTeacherOnly;
+            
+        await _context.SaveChangesAsync();
+            
+        return Ok(book);
     }
 }

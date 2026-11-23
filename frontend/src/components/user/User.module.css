@@ -62,6 +62,12 @@
   justify-content: space-between;
 }
 
+.teacherBookCard {
+  background-color: #eff8ff;
+  border: 2px solid #60a5fa;
+  box-shadow: 0 3px 10px rgba(59, 130, 246, 0.12);
+}
+
 .bookHeader {
   display: flex;
   justify-content: space-between;

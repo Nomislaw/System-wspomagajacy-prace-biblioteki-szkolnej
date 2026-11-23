@@ -44,10 +44,13 @@ const Sidebar: React.FC<SidebarProps> = ({ user }) => {
         return (
           <>
             <NavLink to="/catalog/all" className={({ isActive }) => `sidebar-item ${isActive ? "active" : ""}`}>Wszystkie</NavLink>
-             {categories.map(category => (
-            <NavLink key={category.id} to={`/catalog/${category.name}`} className={({ isActive }) => `sidebar-item ${isActive ? "active" : ""}`}>
-              {category.name}
-            </NavLink>
+            {user.role === "Administrator" || user.role === "Librarian" || user.role === "Teacher" ? (
+              <NavLink to="/catalog/for-teachers" className={({ isActive }) => `sidebar-item ${isActive ? "active" : ""}`}>Materiały dla nauczycieli</NavLink>
+            ) : null}
+            {categories.map(category => (
+              <NavLink key={category.id} to={`/catalog/${category.name}`} className={({ isActive }) => `sidebar-item ${isActive ? "active" : ""}`}>
+                {category.name}
+              </NavLink>
           ))}
 
           </>
@@ -83,6 +86,9 @@ const Sidebar: React.FC<SidebarProps> = ({ user }) => {
                 )}
                 {user.role === "Librarian" && (
                   <NavLink to="/librarian/books" className={({ isActive }) => `sidebar-item ${isActive ? "active" : ""}`}>Książki</NavLink>
+                )}
+                {user.role === "Librarian" && (
+                  <NavLink to="/librarian/teachers-books" className={({ isActive }) => `sidebar-item ${isActive ? "active" : ""}`}>Książki dla nauczycieli</NavLink>
                 )}
               {user.role === "Librarian" && (
                   <NavLink to="/librarian/authors" className={({ isActive }) => `sidebar-item ${isActive ? "active" : ""}`}>Autorzy</NavLink>

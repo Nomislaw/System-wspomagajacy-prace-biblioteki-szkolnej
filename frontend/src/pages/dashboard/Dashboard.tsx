@@ -18,6 +18,7 @@ import AddPublisher from "../../components/librarian/bookProperties/AddPublisher
 
 import AddBook from "../../components/librarian/book/AddBook";
 import BookList from "../../components/librarian/book/BookList";
+import TeacherBookList from "../../components/librarian/book/TeacherBookList";
 import EditBook from "../../components/librarian/book/EditBook";
 import ReservationList from "../../components/librarian/userDependenties/ReservationList";
 import BorrowList from "../../components/librarian/userDependenties/BorrowList";
@@ -33,6 +34,7 @@ import AddSchoolClass from "../../components/admin/AddSchoolClass";
 import StudentsList from "../../components/admin/StudentsList";
 import AddStudent from "../../components/admin/AddStudent";
 import ReportPageTeacher from "../../components/teacher/ReportPageTeacher";
+import AddTeacherBook from "../../components/librarian/book/AddTeacherBook";
 
 
 interface DashboardProps {
@@ -83,6 +85,7 @@ const Dashboard: React.FC<DashboardProps> = ({ onLogout, user }) => {
             <Route path="/catalog/" element={<Navigate to="all" />}/>
             <Route path="/catalog/">
                 <Route path="all" element={<Catalog/>} />
+                <Route path="for-teachers" element={<Catalog/>} />
                  {categories.map(category => (
                 <Route path={category.name} element={<Catalog categoryId={category.id}/>} />
                 ))}
@@ -125,6 +128,11 @@ const Dashboard: React.FC<DashboardProps> = ({ onLogout, user }) => {
                       <Route path=":id/copies">
                         <Route path="add" element={<ProtectedRoute user={user} allowedRoles={["Librarian"]}><AddBookCopy /></ProtectedRoute>} />
                       </Route>
+                    </Route>
+
+                    <Route path="teachers-books" element={<ProtectedRoute user={user} allowedRoles={["Librarian"]}><TeacherBookList /></ProtectedRoute>} />
+                    <Route path="teachers-books">
+                      <Route path="add" element={<ProtectedRoute user={user} allowedRoles={["Librarian"]}><AddTeacherBook /></ProtectedRoute>} />
                     </Route>
 
                     <Route path="categories" element={<ProtectedRoute user={user} allowedRoles={["Librarian"]}><CategoryList /></ProtectedRoute>} />

@@ -13,6 +13,8 @@ public class Book
     public string ISBN { get; set; } = string.Empty;
     [MaxLength(1000)]
     public string Description { get; set; } = string.Empty;
+
+    public bool IsForTeacherOnly { get; set; } = false;
     public int AuthorId { get; set; }
     public virtual Author Author { get; set; } = null!;
 

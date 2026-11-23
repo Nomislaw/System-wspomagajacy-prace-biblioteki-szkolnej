@@ -44,12 +44,14 @@ namespace Biblioteka.Api.Controllers
 
             if (fromDate.HasValue)
             {
+                fromDate = DateTime.SpecifyKind(fromDate.Value, DateTimeKind.Utc);
                 borrowsQuery = borrowsQuery.Where(b => b.BorrowDate >= fromDate.Value);
                 reservationsQuery = reservationsQuery.Where(r => r.ReservationDate >= fromDate.Value);
             }
 
             if (toDate.HasValue)
             {
+                toDate = DateTime.SpecifyKind(toDate.Value, DateTimeKind.Utc);
                 borrowsQuery = borrowsQuery.Where(b => b.BorrowDate <= toDate.Value);
                 reservationsQuery = reservationsQuery.Where(r => r.ReservationDate <= toDate.Value);
             }
